@@ -28,7 +28,6 @@ export STARSHIP_CONFIG=/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_
 eval "$(starship init zsh)" # initilize starship prompt
 alias ls='ls --color=auto' # colorize ls by default
 
-
 #          __                                     __
 #   ____  / /_     ____ ___  __  __   ____  _____/ /_
 #  / __ \/ __ \   / __ `__ \/ / / /  /_  / / ___/ __ \
