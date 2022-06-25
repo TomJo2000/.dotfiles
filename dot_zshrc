@@ -24,7 +24,7 @@ PATH="$PATH:$HOME/.cargo/bin/" # amend the $PATH variable
 # set up nvim as default EDITOR and DIFF program.
 export EDITOR="nvim"
 export DIFFPROG="nvim -d"
-export STARSHIP_CONFIG=/mnt/c/Users/Josh/Desktop/stuff/VScode/TOML/starship.toml
+export STARSHIP_CONFIG=/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml
 eval "$(starship init zsh)" # initilize starship prompt
 alias ls='ls --color=auto' # colorize ls by default
 
