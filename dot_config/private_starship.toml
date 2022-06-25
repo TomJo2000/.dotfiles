@@ -1,0 +1,273 @@
+###<Unnamed> theme by @TomIO#2000
+# Color palette
+# #0A75AD - User/Hostname bg
+# #D61E1C - Error/Attention
+# #E26D0E - Abort/Interrupt
+# #EDBC00 - Informational
+# #1DA65A - Success/Time
+# #F5FBFF - Text color general
+# #B0B2B4 - Text light
+# #4F4D4B - bg dark
+# #0A0400 - Text inverse
+
+
+# Order of modules on prompt
+format = """\
+        $time\
+        $memory_usage\
+        $shlvl\
+        $jobs\
+        $sudo\
+        $username\
+        $hostname\
+        $shell\
+	$env_var\
+        $directory\
+        $hg_branch\
+        $git_branch\
+        $git_commit\
+        $git_status\
+        $git_state\
+        $cmd_duration\
+        $status\
+        $character\
+    """
+
+# No idea what even prompts this, but if I find out I can decide if I wanna add stuff to it...
+# Only supported in Bash, Zsh and PowerShell.
+continuation_prompt = """\
+[continuation prompt >>>](fg:#0A75AD)
+"""
+
+# disable generic character module since I'm handling this in [status], otherwise vestigial
+[character]
+disabled = true
+success_symbol = "[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A bg:0)"
+error_symbol = "[](fg:#4F4D4B bg:#D61E1C)[](fg:#D61E1C bg:0)"
+vicmd_symbol = "[](bold fg:#1DA65A bg:#B0B2B4)"
+format = "$symbol"
+
+# disable multiline prompt
+[line_break]
+disabled = true
+
+# track runtime of a command
+[cmd_duration]
+# disabled = true
+style = "fg:#EDBC00 bg:#4F4D4B"
+min_time = 1_000
+show_milliseconds = true
+show_notifications = false
+min_time_to_notify = 45_000
+format = "[ $duration]($style)"
+
+# current directory
+[directory]
+style = "fg:#D61E1C bg:#4F4D4B"
+read_only = ""
+read_only_style = "fg:#D61E1C bg:#4F4D4B"
+use_os_path_sep = true # '/' for Linux/MacOS or other UNIX based systems; '\' for Windows
+truncation_length = 255 # maximum path depth before truncation
+truncation_symbol = "…/"
+truncate_to_repo = false # change this if you prefer starting the directory at the git repo
+repo_root_style = "fg:#E26D0E bg:#4F4D4B"
+repo_root_format = "[$before_root_path]($style)[ $repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style)"
+use_logical_path = false
+format = "([$read_only]($read_only_style))[$path]($style)"
+
+# ANSI escape sequence rituals for 
+# differential coloring of substituted directories.
+# ------Generic  forms------+--Esc-sequences--+
+# ESC[38;2;{r};{g};{b}m - fg|                 |
+# ESC[48;2;{r};{g};{b}m - bg|                 |
+# --HEX-- ->   R| G | B     |                 |
+# ------------bg------------|                 |
+# #4F4D4B ->  79; 77; 75 -> |48;2;79;77;75m   |
+# ------------fg------------|                 |
+# #B0B2B4 -> 176;178;180 -> |38;2;176;178;180m|
+# #0A75AD ->  10;117;173 -> |38;2;10;117;173m |
+# #D61E1C -> 214; 30; 28 -> |38;2;214;30;28m  |
+# #E26D0E -> 226;109; 14 -> |38;2;226;109;14m |
+# #EDBC00 -> 237;188;  0 -> |38;2;237;188;m   |
+# #1DA65A ->  29;166; 90 -> |38;2;29;166;90m  |
+# --------------------------+-----------------+
+# example substitution:
+# "/dir/example" = "<CSI><48;2;r;g;b><38;2;r;g;b>mSubstitution<CSI><48;2;r;g;b><38;2;r;g;b>m"
+#        !!Substitute string has to be a basic string ("<str>") for Escape sequences to work!!↲
+
+# "/dir/example", the directory to be substituted; "basic" or 'literal' string
+#   <CSI> = <U+0098> = ␛[ - The Control Sequence Introducer starts a ANSI escape sequence
+#   <48;2;r;g;b> - Escape sequence for setting the background color in 24bit truecolor mode
+#   <38;2;r;g;b> - Escape sequence for setting the foreground color in 24bit truecolor mode
+#   m - ends the escape sequence
+#   Substitution - the actual text to be used as substitution;
+#     ↳ since this has to be a literal string any characters with special purposes like " have to be escaped with a \
+#       ↳ Lastly we set the foreground and background back to the desired default value using another escape sequence
+#   <CSI><48;2;r;g;b><38;2;r;g;b>m
+# for more info see: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797#rgb-colors
+
+[directory.substitutions]
+### special cases - bg:#4F4D4B
+'~' = "\u001B\u005B48;2;79;77;75;38;2;29;166;90m~\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #                  <~> fg:#1DA65A 
+'/etc' = "\u001B\u005B48;2;79;77;75;38;2;10;117;173m/etc\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #        </etc> fg:#0A75AD
+'/tmp' = "\u001B\u005B48;2;79;77;75;38;2;226;109;14m/tmp\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #        </tmp> fg:#E26D0E
+'/var' = "\u001B\u005B48;2;79;77;75;38;2;237;188;5m/var\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #         </var> fg:#EDBC00
+'/root' = "\u001B\u005B48;2;79;77;75;38;2;214;30;28m/root\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #      </root> fg:#D61E1C
+'/mnt' = "\u001B\u005B48;2;79;77;75;38;2;10;117;173m/mnt\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #        </mnt> fg:#0A75AD
+'/usr' = "\u001B\u005B38;2;226;109;14;48;2;79;77;75m/usr\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #        </usr> fg:#E26D0E
+'/home' = "\u001B\u005B48;2;79;77;75;38;2;29;166;90m/home\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #      </home> fg:#1DA65A
+'/data/data/com.termux/files' = "\u001B\u005B48;2;79;77;75;38;2;214;30;28mTermux\u001B\u005B38;2;176;178;180;48;2;79;77;75m" # fg:#D61E1C
+### general case - fg:#B0B2B4 bg:#4F4D4B
+'/bin' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/bin\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/boot' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/boot\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/dev' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/dev\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/init' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/init\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/lib' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/lib\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/lib64' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/lib64\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/lost+found' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/lost+found\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/media' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/media\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/opt' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/opt\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/proc' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/proc\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/run' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/run\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/sbin' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/sbin\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/srv' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/srv\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/sys' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/sys\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+
+# Detect if the prompt is running on Android/Termux, if so add an Android symbol infront of the directory.
+[env_var.termux]
+variable = "ANDROID_ROOT"
+symbol = " "
+style = "fg:#1DA65A bg:#4F4D4B"
+format = "[$symbol]($style)"
+disabled = false
+
+### Standard modules for git
+[git_branch]
+#disabled = true
+# symbol = " "
+symbol = " " # alternate
+style = "fg:#EDBC00 bg:#4F4D4B"
+# truncation_length = 4
+# truncation_symbol = ""
+format = "[$symbol$branch]($style)"
+
+[git_commit]
+#disabled = true
+style = "fg:#EDBC00 bg:#4F4D4B"
+commit_hash_length = 4
+# only_detached = true
+format = "[#$hash]($style)"
+
+[git_state]
+#disabled = true
+style = "fg:#EDBC00 bg:#4F4D4B"
+rebase = "rebasing"
+merge = "merging"
+revert = "reverting"
+cherry_pick = " picking"
+bisect = "bisecting"
+am = "am'ing"
+am_or_rebase = "am/rebase"
+format = '\([$state($progress_current/$progress_total)]($style)\)'
+
+[git_status]
+#disabled = true
+style = "fg:#EDBC00 bg:#4F4D4B"
+stashed = " ${count}"
+staged = "  ${count}"
+modified = " 凜${count}"
+renamed = "﫦${count}"
+untracked = "  ${count}"
+deleted = " ${count}"
+conflicted = "${count}"
+ahead = "ﲗ ${count}"
+behind = "ﲔ ${count}"
+diverged = "李 ${ahead_count} ${behind_count}"
+format = "([$stashed$staged$modified$renamed$untracked$deleted$conflicted$ahead_behind]($style))"
+
+# system hostname, with indicator if logged in via SSH session.
+[hostname]
+disabled = false
+style = "fg:#F5FBFF bg:#0A75AD"
+ssh_only = false
+ssh_symbol = " "
+#trim_at = "."
+format = "[[@](fg:#F5FBFF bg:#0A75AD)$hostname$ssh_symbol[](fg:#B0B2B4 bg:#4F4D4B)]($style)"
+
+# background tasks
+[jobs]
+disabled = false
+symbol = " "
+style = "bold fg:#EDBC00 bg:#0A75AD"
+number_threshold = 1
+symbol_threshold = 1
+format = "[$number$symbol]($style)"
+
+# RAM utilization, disabled to save space on the prompt.
+[memory_usage]
+disabled = true
+symbol = " "
+style = "fg:#0A0400 bg:#B0B2B4"
+threshold = 66
+format = "[$symbol$ram]($style)"
+
+# Mercurial
+[hg_branch]
+#disabled = false
+symbol = " "
+style = "fg:#EDBC00 bg:#4F4D4B"
+# truncation_length = 8 # default = 2^63 - 1
+# truncation_symbol = "…"
+format = "[$symbol$branch]($style)"
+
+# indicator for nested shells
+[shlvl]
+disabled = false
+symbol = ""
+style = "bold fg:#EDBC00 bg:#0A75AD"
+threshold = 2
+format = "[$symbol$shlvl]($style)"
+
+# customized end segments for the prompt based on exit code
+[status]
+disabled = false
+symbol = '[](fg:#4F4D4B bg:#D61E1C)[](fg:#D61E1C)'
+success_symbol = '[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A)'
+not_executable_symbol = '[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)'
+not_found_symbol = '[?](fg:#EDBC00 bg:#4F4D4B)[](bg:#EDBC00 fg:#4F4D4B)[](fg:#EDBC00)'
+sigint_symbol = '[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)'
+signal_symbol = '[](fg:#0A75AD bg:#4F4D4B)[](bg:#0A75AD fg:#4F4D4B)[](fg:#0A75AD)'
+style = 'bold bg:#4F4D4B'
+map_symbol = true
+recognize_signal_code = true
+format = '[$status$symbol]($style)'
+### Pipe Status handling - not currently implemented, it'd be very janky with this setup. Might add it if I get a good idea how to handle the formatting properly
+#pipestatus = true
+#pipestatus_separator = "|"
+#pipestatus_format = '[易$pipestatus](fg:#EDBC00 bg:#4F4D4B)[$common_meaning$signal_name]($style)'
+
+# indicate stored sudo credentials
+[sudo]
+disabled = false
+style = "fg:#D61E1C bg:#0A75AD"
+symbol = " "
+format = "[$symbol]($style)"
+
+# current time
+[time]
+disabled = false
+style = "fg:#0A0400 bg:#1DA65A"
+use_12hr = false
+time_format = "%H:%M:%S"
+utc_time_offset = "local"
+# time_range = "20:00:00-06:00:00"
+format = "[⎡[$time](underline $style)⎤]($style)"
+
+# username
+[username]
+# disabled = true
+show_always = true
+style_root = "bold fg:#D61E1C bg:#0A75AD"
+style_user = "fg:#F5FBFF bg:#0A75AD"
+format = "[$user]($style)"
+#EOF.
