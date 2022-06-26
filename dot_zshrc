@@ -19,7 +19,6 @@ else
     eval "$(ssh-agent)" # startup the SSH Agent; discard confirmation message
 fi
 
-
 PATH="$PATH:$HOME/.cargo/bin/" # amend the $PATH variable
 # set up nvim as default EDITOR and DIFF program.
 export EDITOR="nvim"
