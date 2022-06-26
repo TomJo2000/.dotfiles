@@ -15,7 +15,20 @@ Host *
     AddKeysToAgent ask
     UpdateHostKeys ask
     VisualHostKey yes
-    
+
+# identification file for GitHub
+Host GitHub
+	Hostname github.com
+	    User git
+    IdentityFile ~/.ssh/keys/github/rsa-4096_github
+ 
+# ssh access for Termux in home network
+Host Termux
+    User u0_a294
+    Port 8022
+    IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
+    HostName 192.168.111.3
+
 # Work cluster
 Host deb
 	Hostname debian-Athlon.lan
@@ -31,15 +44,3 @@ Host pi
 	Hostname AmogOS.lan
 	    User pi
     IdentityFile ~/.ssh/keys/work/rsa-4096_pi
-
-# identification file for GitHub
-Host GitHub
-	Hostname *github.com*
-    IdentityFile ~/.ssh/keys/github/rsa-4096_github
- 
-# ssh access for Termux in home network
-Host Termux
-    User u0_a294
-    Port 8022
-    IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
-    HostName 192.168.111.3
