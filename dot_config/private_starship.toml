@@ -24,6 +24,7 @@ format = """\
 	$env_var\
         $directory\
         $hg_branch\
+        $git_metrics\
         $git_branch\
         $git_commit\
         $git_status\
@@ -66,16 +67,16 @@ format = "[ $duration]($style)"
 # current directory
 [directory]
 style = "fg:#D61E1C bg:#4F4D4B"
-read_only = ""
 read_only_style = "fg:#D61E1C bg:#4F4D4B"
-use_os_path_sep = true # '/' for Linux/MacOS or other UNIX based systems; '\' for Windows
-truncation_length = 255 # maximum path depth before truncation
-truncation_symbol = "…/"
-truncate_to_repo = false # change this if you prefer starting the directory at the git repo
 repo_root_style = "fg:#E26D0E bg:#4F4D4B"
-repo_root_format = "[$before_root_path]($style)[\n]($repo_root_style)[ $repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style)"
+truncation_length = 255 # maximum path depth before truncation
+read_only = ""
+truncation_symbol = " "
+use_os_path_sep = true # '/' for Linux/MacOS or other UNIX based systems; '\' for Windows
 use_logical_path = false
+truncate_to_repo = true # change this if you prefer showing the full path
 format = "([$read_only]($read_only_style))[$path]($style)"
+repo_root_format = "[$before_root_path](fg:#B0B2B4 bg:#4F4D4B)[$read_only]($read_only_style)[\n $repo_root]($repo_root_style)[$path](fg:#B0B2B4 bg:#4F4D4B)"
 
 # ANSI escape sequence rituals for 
 # differential coloring of substituted directories.
@@ -98,7 +99,8 @@ format = "([$read_only]($read_only_style))[$path]($style)"
 #        !!Substitute string has to be a basic string ("<str>") for Escape sequences to work!!↲
 
 # "/dir/example", the directory to be substituted; "basic" or 'literal' string
-#   <CSI> = <U+0098> = ␛[ - The Control Sequence Introducer starts a ANSI escape sequence
+#   <CSI> = <U+001B><U+005B> = ␛[ - The Control Sequence Introducer starts a ANSI escape sequence
+#   <U+009B> is a single character Control Sequence Introducer, however it is not universally supportted and does not work in Termux.
 #   <48;2;r;g;b> - Escape sequence for setting the background color in 24bit truecolor mode
 #   <38;2;r;g;b> - Escape sequence for setting the foreground color in 24bit truecolor mode
 #   m - ends the escape sequence
@@ -145,7 +147,7 @@ disabled = false
 
 ### Standard modules for git
 [git_branch]
-#disabled = true
+disabled = false
 # symbol = " "
 symbol = " " # alternate
 style = "fg:#EDBC00 bg:#4F4D4B"
@@ -154,14 +156,25 @@ style = "fg:#EDBC00 bg:#4F4D4B"
 format = "[$symbol$branch]($style)"
 
 [git_commit]
-#disabled = true
+disabled = false
+only_detached = false
+tag_disabled = false
 style = "fg:#EDBC00 bg:#4F4D4B"
-commit_hash_length = 4
+commit_hash_length = 7
 # only_detached = true
-format = "[#$hash]($style)"
+format = "[\\(#$hash$tag\\)]($style)"
+
+# show additions and deletions since last push
+[git_metrics]
+disabled = false
+only_nonzero_diffs = false # enable for testing purposes
+added_style = "fg:#1DA65A bg:#4F4D4B"
+deleted_style = "fg:#D61E1C bg:#4F4D4B"
+format = "[](fg:#EDBC00 bg:#4F4D4B)[$added]($added_style)[⥮](fg:#B0B2B4 bg:#4F4D4B)[$deleted]($deleted_style)"
+
 
 [git_state]
-#disabled = true
+disabled = false
 style = "fg:#EDBC00 bg:#4F4D4B"
 rebase = "rebasing"
 merge = "merging"
@@ -206,7 +219,7 @@ style = "fg:#F5FBFF bg:#0A75AD"
 ssh_only = false
 ssh_symbol = " "
 #trim_at = "."
-format = "[[@](fg:#F5FBFF bg:#0A75AD)$hostname$ssh_symbol[](fg:#B0B2B4 bg:#4F4D4B)]($style)"
+format = "[[@](fg:#F5FBFF bg:#0A75AD)$hostname$ssh_symbol]($style)[](fg:#B0B2B4 bg:#4F4D4B)"
 
 # background tasks
 [jobs]
@@ -216,23 +229,6 @@ style = "bold fg:#EDBC00 bg:#0A75AD"
 number_threshold = 1
 symbol_threshold = 1
 format = "[$number$symbol]($style)"
-
-# RAM utilization, disabled to save space on the prompt.
-[memory_usage]
-disabled = true
-symbol = " "
-style = "fg:#0A0400 bg:#B0B2B4"
-threshold = 66
-format = "[$symbol$ram]($style)"
-
-# Mercurial
-[hg_branch]
-#disabled = false
-symbol = " "
-style = "fg:#EDBC00 bg:#4F4D4B"
-# truncation_length = 8 # default = 2^63 - 1
-# truncation_symbol = "…"
-format = "[$symbol$branch]($style)"
 
 # indicator for nested shells
 [shlvl]
@@ -267,17 +263,14 @@ style = "fg:#D61E1C bg:#0A75AD"
 symbol = " "
 format = "[$symbol]($style)"
 
-# current time
 [time]
 disabled = false
 style = "fg:#0A0400 bg:#1DA65A"
 use_12hr = false
 time_format = "%H:%M:%S"
 utc_time_offset = "local"
-# time_range = "20:00:00-06:00:00"
 format = "[⎡[$time](underline $style)⎤]($style)"
 
-# username
 [username]
 # disabled = true
 show_always = true
