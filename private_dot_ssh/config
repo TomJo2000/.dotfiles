@@ -30,9 +30,15 @@ Host Termux
     IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
 
 # ssh access to PC in home network
-Host Josh
-	    User Josh
-	Hostname 192.168.111.16
+
+Host PC-Lan
+            User Josh
+        Hostname 192.168.111.22
+    IdentityFile ~/.ssh/keys/personal/rsa-4096_pc
+
+Host PC-WiFi
+            User Josh
+        Hostname 192.168.111.16
     IdentityFile ~/.ssh/keys/personal/rsa-4096_pc
 
 # Work cluster
