@@ -1,0 +1,14 @@
+[user]
+	email = tomjo00@web.de
+	name = TomIO
+[diff]
+	tool = nvim -d
+[merge]
+	tool = vimdiff
+
+[mergetool "nvim"] # define command which will be used when "nvim" is set as a merge tool
+  cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
+[merge] # set "nvim" as tool for merging
+  tool = nvim
+[mergetool] # automatically launch merge tool without displaying a prompt
+  prompt = false

@@ -14,6 +14,7 @@ return require("packer").startup(function()
     	requires = { {'nvim-lua/plenary.nvim'} } } -- Plenary, dependency for Telescope
     use 'kyazdani42/nvim-tree.lua' -- a file explorer for Neovim written in Lua
     use 'kyazdani42/nvim-web-devicons' -- file icons
+    use 'tpope/vim-fugitive' -- Git plugin
     use 'lukas-reineke/indent-blankline.nvim' -- better guide lines
     use 'norcalli/nvim-colorizer.lua' -- highlight color codes
 end)

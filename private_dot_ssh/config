@@ -25,9 +25,15 @@ Host GitHub
 # ssh access for Termux in home network
 Host Termux
             User u0_a294
-        HostName 192.168.111.3
+        Hostname 192.168.111.3
             Port 8022
     IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
+
+# ssh access to PC in home network
+Host Josh
+	    User Josh
+	Hostname 192.168.111.16
+    IdentityFile ~/.ssh/keys/personal/rsa-4096_pc
 
 # Work cluster
 Host deb
