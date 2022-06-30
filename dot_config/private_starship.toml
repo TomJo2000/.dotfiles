@@ -14,7 +14,6 @@
 # Order of modules on prompt
 format = """\
         $time\
-        $memory_usage\
         $shlvl\
         $jobs\
         $sudo\
@@ -23,7 +22,6 @@ format = """\
         $shell\
 	$env_var\
         $directory\
-        $hg_branch\
         $git_metrics\
         $git_branch\
         $git_commit\
@@ -31,7 +29,6 @@ format = """\
         $git_state\
         $cmd_duration\
         $status\
-        $character\
     """
 
 # No idea what even prompts this, but if I find out I can decide if I wanna add stuff to it...
@@ -39,14 +36,6 @@ format = """\
 continuation_prompt = """\
 [continuation prompt >>>](fg:#0A75AD)
 """
-
-# disable generic character module since I'm handling this in [status], otherwise vestigial
-[character]
-disabled = true
-success_symbol = "[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A bg:0)"
-error_symbol = "[](fg:#4F4D4B bg:#D61E1C)[](fg:#D61E1C bg:0)"
-vicmd_symbol = "[](bold fg:#1DA65A bg:#B0B2B4)"
-format = "$symbol"
 
 # disable multiline prompt
 [line_break]
@@ -158,7 +147,7 @@ tag_disabled = false
 style = "fg:#EDBC00 bg:#4F4D4B"
 commit_hash_length = 7
 only_detached = true # Don't show Hash when on regular main branch
-format = "[\\(#$hash$tag\\)]($style)"
+format = "([#$hash$tag]($style))"
 
 # show additions and deletions since last push
 [git_metrics]
@@ -179,7 +168,7 @@ cherry_pick = " picking"
 bisect = "bisecting"
 am = "am'ing"
 am_or_rebase = "am/rebase"
-format = '\([$state($progress_current/$progress_total)]($style)\)'
+format = "[$state($progress_current/$progress_total)]($style)"
 
 # Symbolic and plaintext versions for clairity since I am still very new to Git.
 [git_status]
@@ -214,7 +203,7 @@ style = "fg:#F5FBFF bg:#0A75AD"
 ssh_only = false
 ssh_symbol = " "
 #trim_at = "."
-format = "[[@](fg:#F5FBFF bg:#0A75AD)$hostname$ssh_symbol]($style)[](fg:#B0B2B4 bg:#4F4D4B)"
+format = "[@$hostname$ssh_symbol]($style)[](fg:#B0B2B4 bg:#4F4D4B)"
 
 # background tasks
 [jobs]
@@ -236,13 +225,13 @@ format = "[$symbol$shlvl]($style)"
 # customized end segments for the prompt based on exit code
 [status]
 disabled = false
-symbol = '[](fg:#4F4D4B bg:#D61E1C)[](fg:#D61E1C)'
-success_symbol = '[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A)'
-not_executable_symbol = '[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)'
-not_found_symbol = '[?](fg:#EDBC00 bg:#4F4D4B)[](bg:#EDBC00 fg:#4F4D4B)[](fg:#EDBC00)'
-sigint_symbol = '[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)'
-signal_symbol = '[](fg:#0A75AD bg:#4F4D4B)[](bg:#0A75AD fg:#4F4D4B)[](fg:#0A75AD)'
-style = 'bold bg:#4F4D4B'
+symbol = "[](fg:#4F4D4B bg:#D61E1C)[](fg:#D61E1C)"
+success_symbol = "[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A)"
+not_executable_symbol = "[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)"
+not_found_symbol = "[?](fg:#EDBC00 bg:#4F4D4B)[](bg:#EDBC00 fg:#4F4D4B)[](fg:#EDBC00)"
+sigint_symbol = "[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)"
+signal_symbol = "[](fg:#0A75AD bg:#4F4D4B)[](bg:#0A75AD fg:#4F4D4B)[](fg:#0A75AD)"
+style = "bold bg:#4F4D4B"
 map_symbol = true
 recognize_signal_code = true
 format = '[$status$symbol]($style)'
@@ -264,7 +253,7 @@ style = "fg:#0A0400 bg:#1DA65A"
 use_12hr = false
 time_format = "%H:%M:%S"
 utc_time_offset = "local"
-format = "[⎡[$time](underline $style)⎤]($style)"
+format = "[❮]($style)[$time](underline $style)[❯]($style)"
 
 [username]
 # disabled = true
