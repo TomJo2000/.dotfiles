@@ -35,14 +35,15 @@
 <img alt="Starship Discord" src="https://img.shields.io/discord/567163873606500352?color=%235865F2&label=Starship%20Discord&logo=Discord">
 
 <h3>
-  <abbr title="File renamed due to <chezmoi>.
+  <u style="text-decoration:underline dashed">
+    <span title="File renamed due to <chezmoi>.
 Rename to starship.toml to use."><a 
       href="./dot_config/private_starship.toml">
-      starship.toml
-    </a>
-  </abbr>
+      starship.toml</a></u><sup>*</sup>
+  </span>
 </h3>
 
+I have a dashed underline</u>
 
 Main configuration file for [Starship Prompt](https://starship.rs/)
 
