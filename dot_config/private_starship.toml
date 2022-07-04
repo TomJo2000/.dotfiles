@@ -1,4 +1,4 @@
-###<Unnamed> theme by @TomIO#2000
+###<Name TBD> theme by @TomIO#2000
 # Color palette
 # #0A75AD - User/Hostname bg
 # #D61E1C - Error/Attention
@@ -152,7 +152,7 @@ format = "([#$hash$tag]($style))"
 # show additions and deletions since last push
 [git_metrics]
 disabled = false
-only_nonzero_diffs = true # disable for testing purposes
+only_nonzero_diffs = false # disable for testing purposes
 added_style = "fg:#1DA65A bg:#4F4D4B"
 deleted_style = "fg:#D61E1C bg:#4F4D4B"
 format = "([](fg:#EDBC00 bg:#4F4D4B)[$added]($added_style)[⥮](fg:#B0B2B4 bg:#4F4D4B)[$deleted]($deleted_style))"
