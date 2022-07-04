@@ -25,7 +25,7 @@ export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;
 export EDITOR="nvim"
 export DIFFPROG="nvim -d"
 export STARSHIP_CONFIG=/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml
-eval "$(starship init zsh)" # initilize starship prompt
+eval "$(starship init zsh)" && if (($SHLVL == 1)); then cat ~/.config/col_banner.ascii; fi || echo "Error: failed to initialize starship prompt" # initilize starship prompt
 alias ls='ls --color=auto' # colorize ls by default
 
 #          __                                     __
