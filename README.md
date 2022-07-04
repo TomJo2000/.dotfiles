@@ -37,10 +37,10 @@
 
 ### [starship.toml](dot_config/private_starship.toml)
 
+Main configuration file for [Starship Prompt](https://starship.rs/)
+
 >File renamed due to `chezmoi`.<br>
 >Rename to `starship.toml`, and place in `~/.config` to use.
-
-Main configuration file for [Starship Prompt](https://starship.rs/)
 
 <!-- Main demo GIF. -->
 <!--<details>   #Dropdown will be implemented once I write a summary for it. 
