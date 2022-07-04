@@ -34,7 +34,7 @@
 <img alt="Starship Discord" src="https://img.shields.io/discord/567163873606500352?color=%235865F2&label=Starship%20Discord&logo=Discord">
 
 ## [starship.toml](dot_config/private_starship.toml)
-Main configuration file for [Starship Prompt](dot_config/private_starship.toml)
+Main configuration file for [Starship Prompt](https://starship.rs/)
 
 <!--Main demo GIF.-->
 
