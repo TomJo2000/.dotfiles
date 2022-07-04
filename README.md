@@ -26,6 +26,7 @@
 <summary>Table of contents: <i><b>*(WIP)*</i></b></summary>
 
 - [Starship Prompt theme](#starship-prompt-theme)
+  - [starship.toml](#starshiptoml)
 
 </details>
 
@@ -34,21 +35,14 @@
 ## Starship Prompt theme
 <img alt="Starship Discord" src="https://img.shields.io/discord/567163873606500352?color=%235865F2&label=Starship%20Discord&logo=Discord">
 
-<h3>
-  <u style="text-decoration:underline dashed">
-    <span title="File renamed due to <chezmoi>.
-Rename to starship.toml to use."><a 
-      href="./dot_config/private_starship.toml">
-      starship.toml</a></u><sup>*</sup>
-  </span>
-</h3>
+### [starship.toml](dot_config/private_starship.toml)
 
-I have a dashed underline</u>
+>File renamed due to `chezmoi`.<br>
+>Rename to `starship.toml`, and place in `~/.config` to use.
 
 Main configuration file for [Starship Prompt](https://starship.rs/)
 
-<!--Main demo GIF.-->
-
+<!-- Main demo GIF. -->
 <!--<details>   #Dropdown will be implemented once I write a summary for it. 
 <summary>"Here be GIFs"</summary> --> 
 
