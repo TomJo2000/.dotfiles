@@ -26,7 +26,6 @@
 <summary>Table of contents: <i><b>*(WIP)*</i></b></summary>
 
 - [Starship Prompt theme](#starship-prompt-theme)
-  - [starship.toml](#starshiptoml)
 
 </details>
 
@@ -35,7 +34,16 @@
 ## Starship Prompt theme
 <img alt="Starship Discord" src="https://img.shields.io/discord/567163873606500352?color=%235865F2&label=Starship%20Discord&logo=Discord">
 
-### [starship.toml](dot_config/private_starship.toml)
+<h3>
+  <abbr title="File renamed due to <chezmoi>.
+Rename to starship.toml to use."><a 
+      href="./dot_config/private_starship.toml">
+      starship.toml
+    </a>
+  </abbr>
+</h3>
+
+
 Main configuration file for [Starship Prompt](https://starship.rs/)
 
 <!--Main demo GIF.-->
