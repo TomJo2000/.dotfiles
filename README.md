@@ -40,6 +40,11 @@ Main configuration file for [Starship Prompt](https://starship.rs/)
 >File renamed due to `chezmoi`.<br>
 >Rename to `starship.toml`, and place in `~/.config` to use.
 
+<details>
+<summary>Demo GIF</summary>
+    <img src="documentation/prompt_demo.gif" alt="Demo GIF showing some theme" width="80%" align="center" id="demo-gif"/>
+</details>
+
 <details open>
 <summary>Overview:</summary>
 
@@ -67,14 +72,10 @@ Main configuration file for [Starship Prompt](https://starship.rs/)
 ---
 
 <br>
-    <details open>
-        <summary>Demo GIF</summary>
-            <img src="documentation/prompt_demo.gif" alt="Demo GIF showing some theme" width="80%" align="center" id="demo-gif"/>
-    </details>
 
 </details>
 
-<h1><em></em></h1> <!-- thin separator line -->
+<h1><em></em></h1> <!-- thin separator -->
 
 <details open>
   <summary>Time Module</summary>
@@ -89,5 +90,10 @@ Main configuration file for [Starship Prompt](https://starship.rs/)
 <img style="vertical-align:middle display:inline;" src="documentation/time.png" alt="picture of the time module" align=""/>
 </pre>
 </div>
-</details>
+
+<h1><em></em></h1> <!-- thin separator -->
+
+
+
 <h2>🚧🚧🚧(Dropdown content under construction)🚧🚧🚧</h2>
+</details>
