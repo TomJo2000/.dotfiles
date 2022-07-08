@@ -47,10 +47,7 @@ Main configuration file for [Starship Prompt](https://starship.rs/)
 
 <h1><em></em></h1> <!-- thin separator -->
 
-
-
 <!-- starship.toml ToC -->
-
 <details open> <!-- L1 -->
 <summary>Overview:</summary>
   <ul> 
@@ -99,30 +96,46 @@ Main configuration file for [Starship Prompt](https://starship.rs/)
 
 <h2>
 Full Prompt:<br>
-<div max-width 80%>
-   <a href=#time><img src="documentation/time.png" alt="#000292 module"/></a><!--
---><a href=#sudo><img src="documentation/sudo.png" alt="#000292 module"/></a><!--
---><a href=#jobs><img src="documentation/jobs.png" alt="#000292 module"/></a><!--
---><a href=#shlvl><img src="documentation/shlvl.png" alt="shlvl module"/></a><!--
---><a href=#username><img src="documentation/username.png" alt="username module"/></a><!--
---><a href=#hostname><img src="documentation/hostname.png" alt="hostname module"/><!--
-                  --><img src="documentation/ssh_session.png" alt="SSH session symbol"/></a><!--
---><a href=#env_var-termux><img src="documentation/env_var_termux.png" alt="env_var.Termux module"/></a><!--
---><a href=#directory><img src="documentation/dir_lock.png" alt="locked directory icon"/></a><!--
---><a href=#dir_sub><img src="documentation/dir_sub.png" alt="directory substitution"/></a><!--
---><a href=#directory><img src="documentation/directory.png" alt="directory module"/></a><!--
---><a href=#git_metrics><img src="documentation/git_metrics.png" alt="git_metrics module"/></a><!--
---><a href=#git_branch><img src="documentation/git_branch.png" alt="git_branch module"/></a><!--
---><a href=#git_commit><img src="documentation/git_commit.png" alt="git_commit module"/></a><!--
---><a href=#git_status><img src="documentation/git_status.png" alt="git_status module"/></a><!--
---><a href=#git_state><img src="documentation/git_state.png" alt="git_state module"/></a><!--
---><a href=#cmd_duration><img src="documentation/cmd_duration.png" alt="cmd_duration module"/></a><!--
---><a href=#status><img src="documentation/status.png" alt="status module"/></a>
-</div>
+<picture>
+   <a href=#time><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/time.png" alt="time module"/></a><!--
+--><a href=#sudo><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/sudo.png" alt="sudo module"/></a><!--
+--><a href=#jobs><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/jobs.png" alt="jobs module"/></a><!--
+--><a href=#shlvl><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/shlvl.png" alt="shlvl module"/></a><!--
+--><a href=#username><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/username.png" alt="username module"/></a><!--
+--><a href=#hostname><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/hostname.png" alt="hostname module"/><!--
+--><a href=#env_var-termux><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/env_var_termux.png" alt="env_var.Termux module"/></a><!--
+--><a href=#directory><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/dir_lock.png" alt="locked directory icon"/></a><!--
+--><a href=#dir_sub><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/dir_sub.png" alt="directory substitution"/></a><!--
+--><a href=#directory><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/directory.png" alt="directory module"/></a><!--
+--><a href=#git_metrics><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/git_metrics.png" alt="git_metrics module"/></a><!--
+--><a href=#git_branch><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/git_branch.png" alt="git_branch module"/></a><!--
+--><a href=#git_commit><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/git_commit.png" alt="git_commit module"/></a><!--
+--><a href=#git_status><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/git_status.png" alt="git_status module"/></a><!--
+--><a href=#git_state><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/git_state.png" alt="git_state module"/></a><!--
+--><a href=#cmd_duration><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/cmd_duration.png" alt="cmd_duration module"/></a><!--
+--><a href=#status><!--
+--><img image-rendering= "pixelated" width="auto" height="22px" src="documentation/status.png" alt="status module"/></a>
+</picture>
 <!--
 ❮HH:MM:SS❯ 32user@hostname /usr/ex/am.ple72⥮19 main#4ec0fa8merging❮3/5❯1s993ms148
 -->
-  <details open>
+  <details>
   <summary><a href=https://github.com/github/markup/issues/1440>Why is this a set static images?</a></summary>
   <blockquote>
   <samp style="font-size: 14pt">
