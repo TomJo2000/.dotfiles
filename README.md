@@ -201,9 +201,9 @@ Full Prompt:<br>
 --></samp><!--
 --  <uE0B0> --><svg width="11" height="22" viewBox="0 0 11 22" transform="translate(0,6)" xmlns="http://www.w3.org/2000/svg"><g id="svgGroup" stroke-linecap="round" fill-rule="evenodd" font-size="14pt" stroke="currentColor" stroke-width="0.25mm" fill="currentColor" style="stroke:currentColor;stroke-width:0.25mm;fill:currentColor"><path d="M 0 0 L 0 21.796 L 10.404 10.889 L 0 0 Z" vector-effect="non-scaling-stroke"/></g></svg></a>
   </samp>
-  <aside style="font-size: 10pt">I have all of this nicely parsed in pure Markdown/HTML,<br>
+  <aside><h6>I have all of this nicely parsed in pure Markdown/HTML,<br>
   but <a href=https://github.com/github/markup/issues/1440>GitHub refuses to add proper color support</a>,<br>
-  so we're stuck with PNGs for the time being.</aside>
+  so we're stuck with PNGs for the time being.</h6></aside>
   </h2>
   </details>
 
