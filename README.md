@@ -246,7 +246,7 @@ Click any individual module for more information.
 │ Format      │ <code style="background-color:#4F4D4B">HH:MM:SS</code> (24h)
 │ Colors      │ <code style="color:#1DA65A ;background-color:#4F4D4B">#1DA65A</code> <code style="background-color:#0A0400">#0A0400</code>
 │ Appearance  │ <code style="background-color:#1DA65A;color:#0A0400">❮<u>17:06:19</u>❯</code><br>
-<img style="vertical-align:middle display:inline;" src="documentation/time.png" alt="picture of the time module" align="left"/>
+<img width="auto" height="45px" src="documentation/time.png" alt="picture of the time module" align="left"/>
 </pre>
 </div>
 
