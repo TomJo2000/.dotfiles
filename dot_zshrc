@@ -28,7 +28,7 @@ export DIFFPROG="nvim -d"
 if [[ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]]; # if this is my Personal PC, use the working copy of the prompt.
     then export STARSHIP_CONFIG=/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml
 fi
-eval "$(starship init zsh)" && if (($SHLVL == 1)); then cat ~/.config/col_banner.ascii; fi || echo "Error: failed to initialize starship prompt" # initilize starship prompt
+eval "$(starship init zsh)" && if (($SHLVL == 1)); then echo "🚀 Starship Prompt Initialized"; [[ ${ANDROID_ROOT:-"unset"} == "unset" ]] && cat ~/.config/col_banner.ascii; fi || echo "Error: failed to initialize starship prompt" # initilize starship prompt
 alias ls='ls --color=auto' # colorize ls by default
 
 #          __                                     __
