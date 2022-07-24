@@ -10,7 +10,7 @@ Host *
 
     # Key management
     AddKeysToAgent ask
-    UpdateHostKeys ask
+    UpdateHostKeys yes
     VisualHostKey yes
 
     # Authentication
