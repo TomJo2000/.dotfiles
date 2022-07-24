@@ -4,55 +4,59 @@ Host *
     ControlPath ~/.ssh/mux-%r@%h:%p.socket
     ControlPersist 15m
     Compression yes
-    
-    # Authentication
-    CheckHostIP yes
-    HostbasedAuthentication yes
-    #    PreferredAuthentications hostbased,publickey,gssapi-with-mic,keyboard-interactive,password
-    #    PubkeyAcceptedAlgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,cdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+
+    #Disable X11 Forwarding by default to speed up connection
+    ForwardX11 no
 
     # Key management
     AddKeysToAgent ask
     UpdateHostKeys ask
     VisualHostKey yes
 
-# identification file for GitHub
+    # Authentication
+    CheckHostIP yes
+    HostbasedAuthentication yes
+
+
+### Identification file for GitHub
 Host GitHub
-	    User git
-	Hostname github.com
+    User git
+    Hostname github.com
     IdentityFile ~/.ssh/keys/github/rsa-4096_github
- 
+
+
+### Home network
 # ssh access for Termux in home network
 Host Termux
-            User u0_a294
-        Hostname 192.168.111.3
-            Port 8022
+    User u0_a294
+    Hostname 192.168.111.3
+    Port 8022
     IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
 
 # ssh access to PC in home network
-
 Host PC-Lan
-            User Josh
-        Hostname 192.168.111.22
+    User Josh
+    Hostname 192.168.111.22
     IdentityFile ~/.ssh/keys/personal/rsa-4096_pc
 
 Host PC-WiFi
-            User Josh
-        Hostname 192.168.111.16
+    User Josh
+    Hostname 192.168.111.16
     IdentityFile ~/.ssh/keys/personal/rsa-4096_pc
 
-# Work cluster
+
+### Work cluster
 Host deb
-	    User tom
-	Hostname debian-Athlon.lan
+    User tom
+    Hostname debian-Athlon.lan
     IdentityFile ~/.ssh/keys/work/rsa-4096_deb
 
 Host fedora
-	    User tom
-	Hostname Fedora.lan
+    User tom
+    Hostname Fedora.lan
     IdentityFile ~/.ssh/keys/work/rsa-4096_fedora
 
 Host pi
-	    User pi
-	Hostname AmogOS.lan
+    User pi
+    Hostname AmogOS.lan
     IdentityFile ~/.ssh/keys/work/rsa-4096_pi
