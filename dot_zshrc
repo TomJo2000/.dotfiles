@@ -25,6 +25,8 @@ export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;
 export EDITOR="nvim"
 export DIFFPROG="nvim -d"
 
+set -o vi # enable vi mode
+
 if [[ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]]; # if this is my Personal PC, use the working copy of the prompt.
     then export STARSHIP_CONFIG=/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml
 fi
