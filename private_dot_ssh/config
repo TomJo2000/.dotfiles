@@ -58,6 +58,11 @@ Host TermuxWork
     Port 8022
     IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
 
+Host Josh-ISE
+    User PC
+    Hostname Josh-ISE.lan
+    IdentityFile ~/.ssh/keys/work/rsa-4096_ISE
+
 Host Deb
     User tom
     Hostname debian-Athlon.lan
