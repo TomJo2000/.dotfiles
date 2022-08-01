@@ -46,17 +46,29 @@ Host PC-WiFi
 
 
 ### Work cluster
-Host deb
+Host OpenWRT
+    User root
+    Hostname 192.168.1.1
+    IdentityFile ~/.ssh/keys/work/rsa-4096_router
+
+# ssh access for Termux in work network
+Host TermuxWork
+    User u0_a294
+    Hostname RedmiNote7-Josh.lan
+    Port 8022
+    IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
+
+Host Deb
     User tom
     Hostname debian-Athlon.lan
     IdentityFile ~/.ssh/keys/work/rsa-4096_deb
 
-Host fedora
+Host Fedora
     User tom
     Hostname Fedora.lan
     IdentityFile ~/.ssh/keys/work/rsa-4096_fedora
 
-Host pi
+Host Pi
     User pi
     Hostname AmogOS.lan
     IdentityFile ~/.ssh/keys/work/rsa-4096_pi
