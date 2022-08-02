@@ -45,6 +45,12 @@ Host PC-WiFi
     IdentityFile ~/.ssh/keys/personal/rsa-4096_pc
 
 
+# # ssh access to personal Laptop in home network
+# Host Laptop
+#    User tom
+#    Hostname 192.168.111.<I don't remember>
+#    IdentityFile ~/.ssh/keys/personal/rsa-4096_laptop
+
 ### Work cluster
 Host OpenWRT
     User root
@@ -58,10 +64,17 @@ Host TermuxWork
     Port 8022
     IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
 
+# Personal Laptop
+Host LaptopWork
+    User tom
+    Hostname ArchLaptop.lan
+    IdentityFile ~/.ssh/keys/personal/rsa-4096_laptop
+    
+# Work laptop
 Host Josh-ISE
     User PC
     Hostname Josh-ISE.lan
-    IdentityFile ~/.ssh/keys/work/rsa-4096_ISE
+    IdentityFile ~/.ssh/keys/work/rsa-4096_ise
 
 Host Deb
     User tom
