@@ -21,8 +21,8 @@ format = """\
         $hostname\
 	$env_var\
         $directory\
-        $git_metrics\
         $git_branch\
+        $git_metrics\
         $git_commit\
         $git_status\
         $git_state\
@@ -226,7 +226,7 @@ format = "[$symbol$shlvl]($style)"
 [status]
 disabled = false
 symbol = "[$status](underline fg:#D61E1C bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[](fg:#4F4D4B bg:#D61E1C)[](fg:#D61E1C)"
-success_symbol = "[$status](fg:#1DA65A bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A)"
+success_symbol = "[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A)" # Don't show exit code <0> on success
 not_executable_symbol = "[$status](underline fg:#E26D0E bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)"
 not_found_symbol = "[$status](underline fg:#EDBC00 bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[?](fg:#EDBC00 bg:#4F4D4B)[](bg:#EDBC00 fg:#4F4D4B)[](fg:#EDBC00)"
 sigint_symbol = "[$status](underline fg:#E26D0E bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)"
