@@ -19,6 +19,7 @@ format = """\
         $shlvl\
         $username\
         $hostname\
+	$battery\
 	$env_var\
         $directory\
         $git_branch\
@@ -39,6 +40,72 @@ continuation_prompt = """\
 # disable multiline prompt
 [line_break]
 disabled = true
+
+# Battery Charge state
+[battery]
+charging_symbol = ""
+discharging_symbol = ""
+format = "[$symbol$percentage]($style)"
+
+[[battery.display]]
+threshold = 10 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#D61E1C bg:#4F4D4B"
+
+[[battery.display]]
+threshold = 20 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#D61E1C bg:#4F4D4B"
+
+[[battery.display]]
+threshold = 30 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#E26D0E bg:#4F4D4B"
+
+[[battery.display]]
+threshold = 40 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#E26D0E bg:#4F4D4B"
+
+[[battery.display]]
+threshold = 50 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#EDBC00 bg:#4F4D4B"
+
+[[battery.display]]
+threshold = 60 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#EDBC00 bg:#4F4D4B"
+
+[[battery.display]]
+threshold = 70 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#EDBC00 bg:#4F4D4B"
+
+[[battery.display]]
+threshold = 80 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#1DA65A bg:#4F4D4B"
+
+[[battery.display]]
+threshold = 90 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#1DA65A bg:#4F4D4B"
+
+[[battery.display]]
+threshold = 99 # %
+charging_symbol = ""
+discharging_symbol = ""
+style = "fg:#1DA65A bg:#4F4D4B"
 
 # track runtime of a command
 [cmd_duration]
