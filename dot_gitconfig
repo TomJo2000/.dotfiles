@@ -2,9 +2,9 @@
 	email = tomjo00@web.de
 	name = TomIO
 [diff]
-	tool = nvim -d
+	tool = nvimdiff
 [merge]
-	tool = vimdiff
+	tool = nvimdiff
 
 [mergetool "nvim"] # define command which will be used when "nvim" is set as a merge tool
   cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
