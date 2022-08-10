@@ -9,7 +9,7 @@ Host *
     ForwardX11 no
 
     # Key management
-    AddKeysToAgent ask
+    AddKeysToAgent yes
     UpdateHostKeys yes
     VisualHostKey yes
 
