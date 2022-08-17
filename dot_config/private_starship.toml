@@ -12,8 +12,9 @@
 
 
 # Order of modules on prompt
+# Starting with an arcane incantation to remove the forced newline between prompts
 format = """\
-        $time\
+	$time\
         $sudo\
         $jobs\
         $shlvl\
@@ -29,7 +30,8 @@ format = """\
         $git_state\
         $cmd_duration\
         $status\
-    """
+	\u001B\\[3 q\
+    """ #         ^^^^--- This forces a blinking underline cursor.
 
 # No idea what even prompts this, but if I find out I can decide if I wanna add stuff to it...
 # Only supported in Bash, Zsh and PowerShell.
@@ -39,73 +41,78 @@ continuation_prompt = """\
 
 # disable multiline prompt
 [line_break]
-disabled = true
+disabled = false
+
+# accursed expermentations utilizing the fill module to remove the forced newline
+[fill]
+symbol = "\b\b"
+style = ""
 
 # Battery Charge state
-[battery]
-charging_symbol = ""
-discharging_symbol = ""
-format = "[$symbol$percentage]($style)"
-
-[[battery.display]]
-threshold = 10 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#D61E1C bg:#4F4D4B"
-
-[[battery.display]]
-threshold = 20 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#D61E1C bg:#4F4D4B"
-
-[[battery.display]]
-threshold = 30 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#E26D0E bg:#4F4D4B"
-
-[[battery.display]]
-threshold = 40 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#E26D0E bg:#4F4D4B"
-
-[[battery.display]]
-threshold = 50 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#EDBC00 bg:#4F4D4B"
-
-[[battery.display]]
-threshold = 60 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#EDBC00 bg:#4F4D4B"
-
-[[battery.display]]
-threshold = 70 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#EDBC00 bg:#4F4D4B"
-
-[[battery.display]]
-threshold = 80 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#1DA65A bg:#4F4D4B"
-
-[[battery.display]]
-threshold = 90 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#1DA65A bg:#4F4D4B"
-
-[[battery.display]]
-threshold = 99 # %
-charging_symbol = ""
-discharging_symbol = ""
-style = "fg:#1DA65A bg:#4F4D4B"
+#[battery]
+#charging_symbol = ""
+#discharging_symbol = ""
+#format = "[$symbol$percentage]($style)"
+#
+#[[battery.display]]
+#threshold = 10 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#D61E1C bg:#4F4D4B"
+#
+#[[battery.display]]
+#threshold = 20 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#D61E1C bg:#4F4D4B"
+#
+#[[battery.display]]
+#threshold = 30 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#E26D0E bg:#4F4D4B"
+#
+#[[battery.display]]
+#threshold = 40 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#E26D0E bg:#4F4D4B"
+#
+#[[battery.display]]
+#threshold = 50 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#EDBC00 bg:#4F4D4B"
+#
+#[[battery.display]]
+#threshold = 60 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#EDBC00 bg:#4F4D4B"
+#
+#[[battery.display]]
+#threshold = 70 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#EDBC00 bg:#4F4D4B"
+#
+#[[battery.display]]
+#threshold = 80 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#1DA65A bg:#4F4D4B"
+#
+#[[battery.display]]
+#threshold = 90 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#1DA65A bg:#4F4D4B"
+#
+#[[battery.display]]
+#threshold = 99 # %
+#charging_symbol = ""
+#discharging_symbol = ""
+#style = "fg:#1DA65A bg:#4F4D4B"
 
 # track runtime of a command
 [cmd_duration]
