@@ -14,14 +14,14 @@
 # Order of modules on prompt
 # Starting with an arcane incantation to remove the forced newline between prompts
 format = """\
-	$time\
+        $time\
         $sudo\
         $jobs\
         $shlvl\
         $username\
         $hostname\
-	$battery\
-	$env_var\
+        $battery\
+        $env_var\
         $directory\
         $git_branch\
         $git_metrics\
@@ -30,8 +30,8 @@ format = """\
         $git_state\
         $cmd_duration\
         $status\
-	\u001B\\[3 q\
-    """ #         ^^^^--- This forces a blinking underline cursor.
+        \u001B\\[3 q\
+    """ #       ^^^^--- This forces a blinking underline cursor.
 
 # No idea what even prompts this, but if I find out I can decide if I wanna add stuff to it...
 # Only supported in Bash, Zsh and PowerShell.
@@ -42,11 +42,6 @@ continuation_prompt = """\
 # disable multiline prompt
 [line_break]
 disabled = false
-
-# accursed expermentations utilizing the fill module to remove the forced newline
-[fill]
-symbol = "\b\b"
-style = ""
 
 # Battery Charge state
 #[battery]
@@ -115,7 +110,7 @@ style = ""
 #style = "fg:#1DA65A bg:#4F4D4B"
 
 # track runtime of a command
-[cmd_duration]
+[cmd_duration] # run time of last command
 # disabled = true
 style = "fg:#EDBC00 bg:#4F4D4B"
 min_time = 1_000
@@ -125,7 +120,7 @@ min_time_to_notify = 45_000
 format = "[ $duration]($style)"
 
 # current directory
-[directory]
+[directory] # working directory
 style = "fg:#D61E1C bg:#4F4D4B"
 read_only_style = "fg:#D61E1C bg:#4F4D4B"
 repo_root_style = "fg:#E26D0E bg:#4F4D4B"
@@ -172,41 +167,41 @@ repo_root_format = "[$before_root_path](fg:#B0B2B4 bg:#4F4D4B)[$read_only]($read
 
 [directory.substitutions]
 ### special cases - bg:#4F4D4B
-'~' = "\u001B\u005B48;2;79;77;75;38;2;29;166;90m~\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #                  <~> fg:#1DA65A 
-'/etc' = "\u001B\u005B48;2;79;77;75;38;2;10;117;173m/etc\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #        </etc> fg:#0A75AD
-'/tmp' = "\u001B\u005B48;2;79;77;75;38;2;226;109;14m/tmp\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #        </tmp> fg:#E26D0E
-'/var' = "\u001B\u005B48;2;79;77;75;38;2;237;188;5m/var\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #         </var> fg:#EDBC00
-'/root' = "\u001B\u005B48;2;79;77;75;38;2;214;30;28m/root\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #      </root> fg:#D61E1C
-'/mnt' = "\u001B\u005B48;2;79;77;75;38;2;10;117;173m/mnt\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #        </mnt> fg:#0A75AD
-'/usr' = "\u001B\u005B38;2;226;109;14;48;2;79;77;75m/usr\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #        </usr> fg:#E26D0E
-'/home' = "\u001B\u005B48;2;79;77;75;38;2;29;166;90m/home\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #      </home> fg:#1DA65A
-'/data/data/com.termux/files' = "\u001B\u005B48;2;79;77;75;38;2;214;30;28mTermux\u001B\u005B38;2;176;178;180;48;2;79;77;75m" # fg:#D61E1C
+'~' = "\u001B\\[48;2;79;77;75;38;2;29;166;90m~\u001B\\[38;2;176;178;180;48;2;79;77;75m" #                  <~> fg:#1DA65A 
+'/etc' = "\u001B\\[48;2;79;77;75;38;2;10;117;173m/etc\u001B\\[38;2;176;178;180;48;2;79;77;75m" #        </etc> fg:#0A75AD
+'/tmp' = "\u001B\\[48;2;79;77;75;38;2;226;109;14m/tmp\u001B\\[38;2;176;178;180;48;2;79;77;75m" #        </tmp> fg:#E26D0E
+'/var' = "\u001B\\[48;2;79;77;75;38;2;237;188;5m/var\u001B\\[38;2;176;178;180;48;2;79;77;75m" #         </var> fg:#EDBC00
+'/root' = "\u001B\\[48;2;79;77;75;38;2;214;30;28m/root\u001B\\[38;2;176;178;180;48;2;79;77;75m" #      </root> fg:#D61E1C
+'/mnt' = "\u001B\\[48;2;79;77;75;38;2;10;117;173m/mnt\u001B\\[38;2;176;178;180;48;2;79;77;75m" #        </mnt> fg:#0A75AD
+'/usr' = "\u001B\\[38;2;226;109;14;48;2;79;77;75m/usr\u001B\\[38;2;176;178;180;48;2;79;77;75m" #        </usr> fg:#E26D0E
+'/home' = "\u001B\\[48;2;79;77;75;38;2;29;166;90m/home\u001B\\[38;2;176;178;180;48;2;79;77;75m" #      </home> fg:#1DA65A
+'/data/data/com.termux/files' = "\u001B\\[48;2;79;77;75;38;2;214;30;28mTermux\u001B\\[38;2;176;178;180;48;2;79;77;75m" # fg:#D61E1C
 ### general case - fg:#B0B2B4 bg:#4F4D4B
-'/bin' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/bin\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/boot' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/boot\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/dev' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/dev\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/init' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/init\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/lib' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/lib\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/lib64' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/lib64\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/lost+found' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/lost+found\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/media' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/media\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/opt' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/opt\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/proc' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/proc\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/run' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/run\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/sbin' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/sbin\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/srv' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/srv\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
-'/sys' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/sys\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
+'/bin' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/bin\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/boot' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/boot\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/dev' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/dev\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/init' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/init\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/lib' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/lib\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/lib64' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/lib64\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/lost+found' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/lost+found\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/media' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/media\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/opt' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/opt\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/proc' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/proc\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/run' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/run\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/sbin' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/sbin\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/srv' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/srv\u001B\\[38;2;176;178;180;48;2;79;77;75m"
+'/sys' = "\u001B\\[38;2;176;178;180;48;2;79;77;75m/sys\u001B\\[38;2;176;178;180;48;2;79;77;75m"
 
 # Detect if the prompt is running on Android/Termux, if so add an Android symbol infront of the directory.
-[env_var.termux]
+[env_var.termux] # Termux/Android indicator
 variable = "ANDROID_ROOT"
 symbol = " "
 style = "fg:#1DA65A bg:#4F4D4B"
 format = "[$symbol]($style)"
 disabled = false
 
-### Standard modules for git
-[git_branch]
+### Modules for git
+[git_branch] # branch name
 disabled = false
 symbol = " "
 style = "fg:#EDBC00 bg:#4F4D4B"
@@ -214,7 +209,7 @@ style = "fg:#EDBC00 bg:#4F4D4B"
 # truncation_symbol = ""
 format = "[$symbol$branch]($style)"
 
-[git_commit]
+[git_commit] # hash of the current selected commit
 disabled = false
 tag_disabled = false
 tag_symbol = "#"
@@ -223,8 +218,7 @@ commit_hash_length = 7
 only_detached = true # Don't show Hash when on regular main branch
 format = "([$tag$hash]($style))"
 
-# show additions and deletions since last push
-[git_metrics]
+[git_metrics] # additions and deletions since last commit
 disabled = false
 only_nonzero_diffs = false # disable for testing purposes
 added_style = "fg:#1DA65A bg:#4F4D4B"
@@ -232,20 +226,25 @@ deleted_style = "fg:#D61E1C bg:#4F4D4B"
 format = "([](fg:#EDBC00 bg:#4F4D4B)[$added]($added_style)[⥮](fg:#B0B2B4 bg:#4F4D4B)[$deleted]($deleted_style))"
 
 
-[git_state]
+[git_state] # resolution progress
 disabled = false
 style = "fg:#EDBC00 bg:#4F4D4B"
 rebase = "rebasing"
+#rebase = "⛕"
 merge = "merging"
+#merge = "⛙"
 revert = "reverting"
+#revert = "⌫"
 cherry_pick = " picking"
+#cherry_pick = " "
 bisect = "bisecting"
+#bisect = "ﬡ "
 am = "am'ing"
-am_or_rebase = "am/rebase"
+#am = "ﯬ " 
 format = "[$state(❮$progress_current/$progress_total❯)]($style)"
 
 # Symbolic and plaintext versions for clairity since I am still very new to Git.
-[git_status]
+[git_status] # changes since last commit
 #disabled = true
 style = "fg:#EDBC00 bg:#4F4D4B"
 #stashed = " ${count}" # Regular symbol for stashed files
@@ -271,7 +270,7 @@ diverged = "divergent: ${ahead_count} ${behind_count}"
 format = "([$stashed$staged$modified$renamed$untracked$deleted$conflicted$ahead_behind]($style))"
 
 # system hostname, with indicator if logged in via SSH session.
-[hostname]
+[hostname] # system hostname and SSH status
 disabled = false
 style = "fg:#F5FBFF bg:#0A75AD"
 ssh_only = false
@@ -280,7 +279,7 @@ ssh_symbol = " "
 format = "[@$hostname$ssh_symbol]($style)[](fg:#B0B2B4 bg:#4F4D4B)"
 
 # background tasks
-[jobs]
+[jobs] # number of suspended tasks
 disabled = false
 symbol = " "
 style = "bold fg:#EDBC00 bg:#0A75AD"
@@ -289,7 +288,7 @@ symbol_threshold = 1
 format = "[$number$symbol]($style)"
 
 # indicator for nested shells
-[shlvl]
+[shlvl] # shells within shells
 disabled = false
 symbol = ""
 style = "bold fg:#EDBC00 bg:#0A75AD"
@@ -297,7 +296,7 @@ threshold = 2
 format = "[$symbol$shlvl]($style)"
 
 # customized end segments for the prompt based on exit code
-[status]
+[status] # exit code of last command and corresponding end cap
 disabled = false
 symbol = "[$status](underline fg:#D61E1C bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[](fg:#4F4D4B bg:#D61E1C)[](fg:#D61E1C)"
 success_symbol = "[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A)" # Don't show exit code <0> on success
@@ -315,13 +314,13 @@ format = '[$symbol]($style)'
 #pipestatus_format = '[易$pipestatus](fg:#EDBC00 bg:#4F4D4B)[$common_meaning$signal_name]($style)'
 
 # indicate stored sudo credentials
-[sudo]
+[sudo] # indicates stored sudo credentials
 disabled = false
 style = "fg:#D61E1C bg:#0A75AD"
 symbol = " "
 format = "[$symbol]($style)"
 
-[time]
+[time] # current time
 disabled = false
 style = "fg:#0A0400 bg:#1DA65A"
 use_12hr = false
@@ -329,7 +328,7 @@ time_format = "%H:%M:%S"
 utc_time_offset = "local"
 format = "[❮]($style)[$time](underline $style)[❯]($style)"
 
-[username]
+[username] # username
 # disabled = true
 show_always = true
 style_root = "bold fg:#D61E1C bg:#0A75AD"
