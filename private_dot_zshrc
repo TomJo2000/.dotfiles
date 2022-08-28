@@ -4,13 +4,6 @@ HISTSIZE=4000
 SAVEHIST=10000
 bindkey -e
 
-if [[ -n $SSH_AUTH_SOCK ]] ; then # see if SSH Agent is running
-    : # if it is, do nothing
-else
-    eval "$(ssh-agent)" >> /dev/null # startup the SSH Agent; discard confirmation message
-    echo -ne "SSH Agent started\nPID: \e[2;47;35m${SSH_AGENT_PID}\e[0m\n\r"
-fi
-
 # Color banner
 read -rd '' col_banner << MOTD_EOF
 \e[1A
@@ -46,9 +39,16 @@ fi
 # initilize starship prompt
 eval "$(starship init zsh)" || \
 echo "Error: failed to initialize starship prompt" && { # Print error message if starship failed to initilize, otherwise;
-((${SHLVL:-0} <= 1)) && # if we're in a top level shell,
-[[ -z $ANDROID_ROOT ]] && # and not on Android/Termux,
-echo -ne $col_banner; echo "🚀 Starship Prompt Initialized";} # print banner.
+    ((${SHLVL:-0} <= 1)) && # if we're in a top level shell,
+    [[ -z $ANDROID_ROOT ]] && # and not on Android/Termux,
+    echo -ne $col_banner; echo "🚀 Starship Prompt Initialized";} # print banner.
+
+if [[ -n $SSH_AUTH_SOCK ]] ; then # see if SSH Agent is running
+    : # if it is, do nothing
+else
+    eval "$(ssh-agent)" >> /dev/null # startup the SSH Agent; discard confirmation message
+    echo -ne "SSH Agent started\nPID: \e[2;47;35m${SSH_AGENT_PID}\e[0m\n\r"
+fi
 
 unset col_banner # prevent the banner from getting passed on as an environment variable
 alias ls='ls --color=auto' # colorize ls by default
