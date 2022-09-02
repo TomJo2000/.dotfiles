@@ -1,5 +1,5 @@
-# shellcheck disable=SC2034,SC2148,SC1091
-HISTFILE=$HOME/.histfile
+# shellcheck disable=SC2148,SC2128,SC2034,SC1091
+HISTFILE="$HOME/.histfile"
 HISTSIZE=4000
 SAVEHIST=10000
 bindkey -e
@@ -32,7 +32,7 @@ export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;
 export EDITOR="nvim"
 export DIFFPROG="nvim -d"
 
-if [[ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]] ; then # if this is my Personal PC, use the working copy of the prompt.
+if [ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]; then # if this is my Personal PC, use the working copy of the prompt.
     export STARSHIP_CONFIG=/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml
 fi
 
@@ -41,20 +41,64 @@ eval "$(starship init zsh)" || \
 echo "Error: failed to initialize starship prompt" && { # Print error message if starship failed to initilize, otherwise;
     ((${SHLVL:-0} <= 1)) && # if we're in a top level shell,
     [[ -z $ANDROID_ROOT ]] && # and not on Android/Termux,
-    echo -ne $col_banner; echo "🚀 Starship Prompt Initialized";} # print banner.
+    echo -ne "$col_banner" # print banner,
+    echo "🚀 Starship Prompt Initialized";} # and confirmation message
 
-if [[ -n $SSH_AUTH_SOCK ]] ; then # see if SSH Agent is running
+if [[ -n $SSH_AUTH_SOCK ]]; then # see if SSH Agent is running
     : # if it is, do nothing
 else
     eval "$(ssh-agent)" >> /dev/null # startup the SSH Agent; discard confirmation message
-    echo -ne "SSH Agent started\nPID: \e[2;47;35m${SSH_AGENT_PID}\e[0m\n\r"
+    echo -ne "SSH Agent started\nPID: \e[2;47;35m$SSH_AGENT_PID\e[0m\n\r"
 fi
 
-unset col_banner # prevent the banner from getting passed on as an environment variable
 alias ls='ls --color=auto' # colorize ls by default
 
 set -o vi # enable vi mode
 
-### Load "plug-in" scripts
-source $HOME/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh # Load autosuggestions
-source $HOME/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh # Load syntax highlighting; should be last
+
+### Update checking
+zsh_script_dir="$HOME/.config/zsh/scripts/" # script location
+update_frequency=0 # interval between update checks (in days)
+
+echo -e "Last checked for updates at: \e[38;2;10;117;173m$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )\e[0m"
+
+if find "$zsh_script_dir" -maxdepth 0 -mtime +${update_frequency}; then # check the modification time of the script directory against the update frequency
+( # Do this in a subshell so we don't have to clean up variables
+    check_upstream() { # Based on https://stackoverflow.com/a/3278427
+        UPSTREAM=${1:-'@{u}'}
+        LOCAL=$(git rev-parse '@{0}')
+        REMOTE=$(git rev-parse "$UPSTREAM")
+        BASE=$(git merge-base '@{0}' "$UPSTREAM")
+
+        if [ "$LOCAL" = "$REMOTE" ]; then
+            echo -e "[\e[38;2;29;166;90m${PWD##*\/}\e[0m] Up to date" # Remove all but the last part of the directory name, leaving the plugin name.
+        elif [ "$LOCAL" = "$BASE" ]; then
+            echo -e "[\e[38;2;226;109;14m${PWD##*\/}\e[0m] New changes available"
+            touch -cm . # Update the modification time of this plugin's folder.
+            ### Prompt user for update. (I'll add this later)
+        fi
+    }
+
+    # Doing a literal array assignment here is fine and much clearer.
+    # https://www.shellcheck.net/wiki/SC2207
+    # shellcheck disable=SC2207
+    plugin_array=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
+
+    for index in "${plugin_array[@]}"; do # loop over the array of plugins
+        { cd "$index" && check_upstream ''; } || echo "An error occured while checking: $index"; continue
+    done
+touch -cm "$zsh_script_dir" # Update the script directories modification time.
+)
+fi
+
+
+
+### Load "plug-in" scripts; explicitly.
+source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" # Load autosuggestions
+source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" # Syntax highlighting; should be loaded last
+
+
+### Variable clean up
+unset col_banner
+unset update_frequency
+unset zsh_script_dir
