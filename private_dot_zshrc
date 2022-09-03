@@ -4,15 +4,53 @@ HISTSIZE=4000
 SAVEHIST=10000
 bindkey -e
 
+### Color palette array for easier colorization
+
+# Permutations for forground and background
+typeset -A per
+per=(
+  "fg_"  "38;2;"
+  "bg_"  "48;2;"
+)
+
+typeset -A pal # Array of base colors for the pallet
+pal=(
+  "blue"  "10;117;173"        # #0A75AD
+  "red"  "214;30;28"          # #D61E1C
+  "pink"  "255;51;184"        # #FF33B8
+  "purple"  "144;16;240"      # #9010F0
+  "orange"  "226;109;14"      # #E26D0E
+  "yellow"  "237;188;"        # #EDBC00
+  "green"  "29;166;90"        # #1DA65A
+  "white"  "245;251;255"      # #F5FBFF
+  "light_grey"  "176;178;180" # #B0B2B4
+  "dark_grey"  "79;77;75"     # #4F4D4B
+  "black"  "10;4;"            # #0A0400
+)
+typeset -A col # add indicies for:
+echo "=====DEBUG====="
+for mut in "${(@k)per}"; do # assign the keys of [per] to $mut
+    for color in "${(@k)pal}"; do # # assign the keys of [pal] to $color
+        col[$mut$color]="\e[${per[$mut]}${pal[$color]}m" # index names follow the pattern ${col[<fg/bg>_<color>]}
+    done
+done
+col[reset]="\e[0m" # Index for ANSI reset sequence
+
+#for key value in ${(kv)col}; do # Debug: Color Array
+#    echo -E "$key -> $value"
+#done
+
+echo "=====DEBUG====="
+
 # Color banner
 read -rd '' col_banner << MOTD_EOF
 \e[1A
-           \e[38;2;10;117;173mdt
-          I@@w       \e[38;2;255;51;184mStarship Prompt
-         \e[38;2;10;117;173mr@@@@l                \e[38;2;176;178;180musing
-        \e[38;2;10;117;173mf#@@@@#b    \e[38;2;226;109;14m<Name TBD> \e[38;2;176;178;180mtheme
-     \e[38;2;10;117;173m,%gg@@@@@@0}m,   \e[38;2;176;178;180mby \e[38;2;237;188;5m@TomIO#2000
-   \e[38;2;10;117;173myPwZ/@@@@@@@@µ&oPa
+           ${col[fg_blue]}dt
+          I@@w       ${col[fg_pink]}Starship Prompt
+         ${col[fg_blue]}r@@@@l                ${col[fg_light_grey]}using
+        ${col[fg_blue]}f#@@@@#b    ${col[fg_orange]}<Name TBD> ${col[fg_light_grey]}theme
+     ${col[fg_blue]},%gg@@@@@@0}m,   ${col[fg_light_grey]}by ${col[fg_yellow]}@TomIO#2000
+   ${col[fg_blue]}yPwZ/@@@@@@@@µ&oPa
  ;O0´  Q@@@@@@@@$  \`r6.
 (Q°   .@@@@@@@@@@;   \`0,
 Gj    G@@@@@@@@@@Q    kD
@@ -21,7 +59,7 @@ Vy   A@@@@Q°   v@@0   q)
  uP.y@@@#%      v@@l dv
   ?o\$@@6%        k@8y'
     ##zEosyuyweaIuMQ
-   ´%°             m\e[0m\n
+   ´%°             m${col[reset]}\n
 MOTD_EOF
 
 ### Environment setup
@@ -48,7 +86,7 @@ if [[ -n $SSH_AUTH_SOCK ]]; then # see if SSH Agent is running
     : # if it is, do nothing
 else
     eval "$(ssh-agent)" >> /dev/null # startup the SSH Agent; discard confirmation message
-    echo -ne "SSH Agent started\nPID: \e[2;47;35m$SSH_AGENT_PID\e[0m\n\r"
+    echo -ne "SSH Agent started\nPID: ${col[fg_dark_grey]}${col[bg_white]}$SSH_AGENT_PID${col[reset]}\n\r"
 fi
 
 alias ls='ls --color=auto' # colorize ls by default
@@ -60,7 +98,7 @@ set -o vi # enable vi mode
 zsh_script_dir="$HOME/.config/zsh/scripts/" # script location
 update_frequency=0 # interval between update checks (in days)
 
-echo -e "Last checked for updates at: \e[38;2;10;117;173m$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )\e[0m"
+echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
 
 if find "$zsh_script_dir" -maxdepth 0 -mtime +${update_frequency}; then # check the modification time of the script directory against the update frequency
 ( # Do this in a subshell so we don't have to clean up variables
@@ -71,9 +109,9 @@ if find "$zsh_script_dir" -maxdepth 0 -mtime +${update_frequency}; then # check 
         BASE=$(git merge-base '@{0}' "$UPSTREAM")
 
         if [ "$LOCAL" = "$REMOTE" ]; then
-            echo -e "[\e[38;2;29;166;90m${PWD##*\/}\e[0m] Up to date" # Remove all but the last part of the directory name, leaving the plugin name.
+            echo -e "${col[fg_green]}${PWD##*\/}${col[reset]}] Up to date" # Remove all but the last part of the directory name, leaving the plugin name.
         elif [ "$LOCAL" = "$BASE" ]; then
-            echo -e "[\e[38;2;226;109;14m${PWD##*\/}\e[0m] New changes available"
+            echo -e "[${col[fg_orange]}${PWD##*\/}${col[reset]}] New changes available"
             touch -cm . # Update the modification time of this plugin's folder.
             ### Prompt user for update. (I'll add this later)
         fi
@@ -99,6 +137,5 @@ source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" # S
 
 
 ### Variable clean up
-unset col_banner
-unset update_frequency
-unset zsh_script_dir
+unset -v col pal per # color scheme array and permutations
+unset -v col_banner update_frequency zsh_script_dir # color banner, update frequency and, top directory for Zsh plugin scripts
