@@ -1,8 +1,5 @@
-# shellcheck disable=SC2296,SC2190,SC2148,SC2128,SC2034,SC1091
-HISTFILE="$HOME/.histfile"
-HISTSIZE=4000
-SAVEHIST=10000
-bindkey -e
+#!/usr/bin/env zsh
+# shellcheck shell=bash # Shellcheck doesn't officially support Zsh linting, Bash is a close enough analog in most cases.
 
 ### Change value to enable debug output from this script.
 # Valid values:
@@ -19,58 +16,63 @@ wanted_plugins=( # List plugins you wish to use by repo URL
 )
 
 ### Color palette array for easier colorization
-typeset -A per # Permutations for forground and background
+typeset -A per # Permutations for foreground and background
 per=(
-    "fg_" "38;2;"
-    "bg_" "48;2;"
+    [fg_]="38;2;"
+    [bg_]="48;2;"
 )
 
 typeset -A pal # Array of base colors for the pallet
 pal=(
-      "blue" "10;117;173"  # #0A75AD
-       "red" "214;30;28"   # #D61E1C
-      "pink" "255;51;184"  # #FF33B8
-    "purple" "144;16;240"  # #9010F0
-    "orange" "226;109;14"  # #E26D0E
-    "yellow" "237;188;"    # #EDBC00
-     "green" "29;166;90"   # #1DA65A
-     "white" "245;251;255" # #F5FBFF
-"light_grey" "176;178;180" # #B0B2B4
- "dark_grey" "79;77;75"    # #4F4D4B
-     "black" "10;4;"       # #0A0400
+      [blue]="10;117;173"  # #0A75AD
+       [red]="214;30;28"   # #D61E1C
+      [pink]="255;51;184"  # #FF33B8
+    [purple]="144;16;240"  # #9010F0
+    [orange]="226;109;14"  # #E26D0E
+    [yellow]="237;188;"    # #EDBC00
+     [green]="29;166;90"   # #1DA65A
+     [white]="245;251;255" # #F5FBFF
+[light_grey]="176;178;180" # #B0B2B4
+ [dark_grey]="79;77;75"    # #4F4D4B
+     [black]="10;4;"       # #0A0400
 )
+
 typeset -A col
+# shellcheck disable=SC2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
 for mut in ${(@k)per}; do # assign the keys of [per] to $mut
     for color in ${(@k)pal}; do # assign the keys of [pal] to $color
         col[$mut$color]="\e[${per[$mut]}${pal[$color]}m" # index names follow the pattern ${col[<fg/bg>_<color>]}
     done
 done
 col+=( # append the following sequences
-    "reset" "\e[0m"  # reset all escape sequences
-     "bold" "\e[1m"
-      "dim" "\e[2m"  # dimmed color
-   "no_dim" "\e[22m" # also resets bold
-     "ital" "\e[3m"  # italic
-  "no_ital" "\e[23m"
-    "uline" "\e[4m"  # underline
- "no_uline" "\e[24m"
-    "blink" "\e[5m"  # blinking text
- "no_blink" "\e[25m"
-      "inv" "\e[7m"  # swapped foreground and background
-   "no_inv" "\e[27m"
-   "strike" "\e[9m"  # strikethrough
-"no_strike" "\e[29m"
+    [reset]="\e[0m"  # reset all escape sequences
+     [bold]="\e[1m"
+      [dim]="\e[2m"  # dimmed color
+   [no_dim]="\e[22m" # also resets bold
+     [ital]="\e[3m"  # italic
+  [no_ital]="\e[23m"
+    [uline]="\e[4m"  # underline
+ [no_uline]="\e[24m"
+    [blink]="\e[5m"  # blinking text
+ [no_blink]="\e[25m"
+      [inv]="\e[7m"  # swapped foreground and background
+   [no_inv]="\e[27m"
+   [strike]="\e[9m"  # strikethrough
+[no_strike]="\e[29m"
 )
 
 case $debug_verbosity in ## Debug: Color Array
     "color"|"all")
     echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
+    # shellcheck disable=SC2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
+    ( # Put this in a subshell to avoid making $value a variable in the parent shell
         for key in ${(k)col}; do
             value=${col[$key]}
             echo -ne "$value$key ->${col[reset]}" # apply current escape sequence -> print current key -> reset sequence
             echo -E " $value" # print current escape sequence uninterpreted
         done
-        echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}";;
+    )
+    echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}";;
 esac
 
 # Color banner
@@ -95,21 +97,16 @@ MOTD_EOF
 # Prefixing a \0 (NULL) gets around this by making the whitespace, technically, not leading.
 # while not actually printing a character to the output.
 
-### Environment setup
-export PATH="$PATH:$HOME/.cargo/bin/" # amend the $PATH variable
-export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:' # set custom $LS_COLORS
-
-# setup nvim as default EDITOR and DIFF program.
-export EDITOR="nvim"
-export DIFFPROG="nvim -d"
-
 if [ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]; then # if this is my Personal PC, use the working copy of the prompt.
     export STARSHIP_CONFIG=/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml
 fi
 
-# initilize starship prompt
+# $PATH needs to be amended at this point to ensure the cargo build of starship is available if installed
+export PATH="$PATH:$HOME/.cargo/bin/" # amend the $PATH variable
+
+# initialize starship prompt
 eval "$(starship init zsh)" || \
-echo "Error: failed to initialize starship prompt" && { # Print error message if starship failed to initilize, otherwise;
+echo "Error: failed to initialize starship prompt" && { # Print error message if starship failed to initialize, otherwise;
     ((${SHLVL:-0} <= 1)) && # if we're in a top level shell,
     [[ -z $ANDROID_ROOT ]] && # and not on Android/Termux,
     echo -ne "$col_banner" # print banner,
@@ -138,7 +135,7 @@ zsh_script_dir="$HOME/.config/zsh/scripts" # script location
 update_frequency="7d" # interval between update checks (in days)
 
 typeset -a found_plugins # list of installed plugins
-# shellcheck disable=SC2207 # We actually want splitting here
+# shellcheck disable=SC2207 # We're taking care of this ourselves
 found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
 
 echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
@@ -179,7 +176,7 @@ if (( EPOCHSECONDS - $(date -r "$zsh_script_dir" +%s) >= update_frequency )) ; t
 
     for index in "${found_plugins[@]}"; do # loop over the array of plugins
         ( cd "$index" && check_upstream # Do update checking in a subshell to avoid creating the function variables in the parent shell
-        ) || echo "An error occured while checking: $index"; continue
+        ) || echo "An error occurred while checking: $index"; continue
     done
 touch -cm "$zsh_script_dir" # Update the script directories modification time.
 }
@@ -196,7 +193,6 @@ case $debug_verbosity in ## Debug Missing plugins
         "https://127.0.0.1/fake/zsh-fake-debug-plugins"
         );;
 esac
-
 typeset -a diff
 diff=()
     for plugins in "${wanted_plugins[@]##*\/}"; do # Based on: https://stackoverflow.com/a/2315459
@@ -212,11 +208,25 @@ for missing in "${diff[@]}"; do
     echo "[${col[fg_red]}$missing${col[reset]}] Missing"
 done
 
+### History Setup
+export HISTFILE="$HOME/.histfile"
+export HISTSIZE=4000
+export SAVEHIST=10000
+bindkey -e
 
+export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:' # set custom $LS_COLORS
+
+# setup nvim as default EDITOR and DIFF program.
+export EDITOR="nvim"
+export DIFFPROG="nvim -d"
 
 ### Load "plug-in" scripts; explicitly.
+# shellcheck source=/dev/null # Ignore Shellcheck's inability to parse external sources by default
 source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" # Load autosuggestions
+
 fpath+=("$zsh_script_dir/zsh-completions") # Zsh Completions does not get sourced, it gets appended to $fpath
+
+# shellcheck source=/dev/null # Ignore Shellcheck's inability to parse external sources by default
 source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" # Syntax highlighting; should be loaded last
 
 ### Variable clean up
