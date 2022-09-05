@@ -1,51 +1,81 @@
-# shellcheck disable=SC2148,SC2128,SC2034,SC1091
+# shellcheck disable=SC2296,SC2190,SC2148,SC2128,SC2034,SC1091
 HISTFILE="$HOME/.histfile"
 HISTSIZE=4000
 SAVEHIST=10000
 bindkey -e
 
-### Color palette array for easier colorization
+### Change value to enable debug output from this script.
+# Valid values:
+# Disable debug -> off (default)
+# Section specific -> color; updates; installed; missing; ssh;
+# Everything -> all
+debug_verbosity="off"
 
-# Permutations for forground and background
-typeset -A per
+typeset -a wanted_plugins
+wanted_plugins=( # List plugins you wish to use by repo URL
+"https://github.com/zsh-users/zsh-completions"
+"https://github.com/zsh-users/zsh-autosuggestions"
+"https://github.com/zsh-users/zsh-syntax-highlighting"
+)
+
+### Color palette array for easier colorization
+typeset -A per # Permutations for forground and background
 per=(
-  "fg_"  "38;2;"
-  "bg_"  "48;2;"
+    "fg_" "38;2;"
+    "bg_" "48;2;"
 )
 
 typeset -A pal # Array of base colors for the pallet
 pal=(
-  "blue"  "10;117;173"        # #0A75AD
-  "red"  "214;30;28"          # #D61E1C
-  "pink"  "255;51;184"        # #FF33B8
-  "purple"  "144;16;240"      # #9010F0
-  "orange"  "226;109;14"      # #E26D0E
-  "yellow"  "237;188;"        # #EDBC00
-  "green"  "29;166;90"        # #1DA65A
-  "white"  "245;251;255"      # #F5FBFF
-  "light_grey"  "176;178;180" # #B0B2B4
-  "dark_grey"  "79;77;75"     # #4F4D4B
-  "black"  "10;4;"            # #0A0400
+      "blue" "10;117;173"  # #0A75AD
+       "red" "214;30;28"   # #D61E1C
+      "pink" "255;51;184"  # #FF33B8
+    "purple" "144;16;240"  # #9010F0
+    "orange" "226;109;14"  # #E26D0E
+    "yellow" "237;188;"    # #EDBC00
+     "green" "29;166;90"   # #1DA65A
+     "white" "245;251;255" # #F5FBFF
+"light_grey" "176;178;180" # #B0B2B4
+ "dark_grey" "79;77;75"    # #4F4D4B
+     "black" "10;4;"       # #0A0400
 )
-typeset -A col # add indicies for:
-echo "=====DEBUG====="
-for mut in "${(@k)per}"; do # assign the keys of [per] to $mut
-    for color in "${(@k)pal}"; do # # assign the keys of [pal] to $color
+typeset -A col
+for mut in ${(@k)per}; do # assign the keys of [per] to $mut
+    for color in ${(@k)pal}; do # assign the keys of [pal] to $color
         col[$mut$color]="\e[${per[$mut]}${pal[$color]}m" # index names follow the pattern ${col[<fg/bg>_<color>]}
     done
 done
-col[reset]="\e[0m" # Index for ANSI reset sequence
+col+=( # append the following sequences
+    "reset" "\e[0m"  # reset all escape sequences
+     "bold" "\e[1m"
+      "dim" "\e[2m"  # dimmed color
+   "no_dim" "\e[22m" # also resets bold
+     "ital" "\e[3m"  # italic
+  "no_ital" "\e[23m"
+    "uline" "\e[4m"  # underline
+ "no_uline" "\e[24m"
+    "blink" "\e[5m"  # blinking text
+ "no_blink" "\e[25m"
+      "inv" "\e[7m"  # swapped foreground and background
+   "no_inv" "\e[27m"
+   "strike" "\e[9m"  # strikethrough
+"no_strike" "\e[29m"
+)
 
-#for key value in ${(kv)col}; do # Debug: Color Array
-#    echo -E "$key -> $value"
-#done
-
-echo "=====DEBUG====="
+case $debug_verbosity in ## Debug: Color Array
+    "color"|"all")
+    echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
+        for key in ${(k)col}; do
+            value=${col[$key]}
+            echo -ne "$value$key ->${col[reset]}" # apply current escape sequence -> print current key -> reset sequence
+            echo -E " $value" # print current escape sequence uninterpreted
+        done
+        echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}";;
+esac
 
 # Color banner
 read -rd '' col_banner << MOTD_EOF
-\e[1A
-           ${col[fg_blue]}dt
+\0              ${col[fg_blue]}dt
           I@@w       ${col[fg_pink]}Starship Prompt
          ${col[fg_blue]}r@@@@l                ${col[fg_light_grey]}using
         ${col[fg_blue]}f#@@@@#b    ${col[fg_orange]}<Name TBD> ${col[fg_light_grey]}theme
@@ -61,6 +91,9 @@ Vy   A@@@@Q°   v@@0   q)
     ##zEosyuyweaIuMQ
    ´%°             m${col[reset]}\n
 MOTD_EOF
+# Leading whitespace on the first line of the heredoc is ignored
+# Prefixing a \0 (NULL) gets around this by making the whitespace, technically, not leading.
+# while not actually printing a character to the output.
 
 ### Environment setup
 export PATH="$PATH:$HOME/.cargo/bin/" # amend the $PATH variable
@@ -82,12 +115,18 @@ echo "Error: failed to initialize starship prompt" && { # Print error message if
     echo -ne "$col_banner" # print banner,
     echo "🚀 Starship Prompt Initialized";} # and confirmation message
 
-if [[ -n $SSH_AUTH_SOCK ]]; then # see if SSH Agent is running
+if [[ -n $SSH_AUTH_SOCK ]]; then # see if SSH Agent is running #breaking -v?
     : # if it is, do nothing
 else
     eval "$(ssh-agent)" >> /dev/null # startup the SSH Agent; discard confirmation message
     echo -ne "SSH Agent started\nPID: ${col[fg_dark_grey]}${col[bg_white]}$SSH_AGENT_PID${col[reset]}\n\r"
 fi
+
+case $debug_verbosity in ## Debug: Color Array
+    "ssh"|"all")
+    echo -e "$(ss -pl | grep -oP ".*\/ssh-.{12}\/agent\.[0-9]+" | wc -l) SSH agents running" || echo "Could not determine SSH Debug information"
+    ;;
+esac
 
 alias ls='ls --color=auto' # colorize ls by default
 
@@ -95,21 +134,42 @@ set -o vi # enable vi mode
 
 
 ### Update checking
-zsh_script_dir="$HOME/.config/zsh/scripts/" # script location
-update_frequency=0 # interval between update checks (in days)
+zsh_script_dir="$HOME/.config/zsh/scripts" # script location
+update_frequency="7d" # interval between update checks (in days)
+
+typeset -a found_plugins # list of installed plugins
+# shellcheck disable=SC2207 # We actually want splitting here
+found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
 
 echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
 
-if find "$zsh_script_dir" -maxdepth 0 -mtime +${update_frequency}; then # check the modification time of the script directory against the update frequency
-( # Do this in a subshell so we don't have to clean up variables
+case $debug_verbosity in ## Debug: Updates - Always check for updates
+    "installed"|"updates"|"all")
+        update_frequency="0"
+        echo "${col[fg_purple]}DEBUG:${col[reset]} setting update frequency to $update_frequency days"
+    ;;
+esac
+
+
+case $update_frequency in
+        0) ;;
+    *[Ss]) update_frequency=$(grep -oE "^[0-9]*" <<< "$update_frequency");;
+    *[Mm]) update_frequency=$((60 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));;
+    *[Hh]) update_frequency=$((3600 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));;
+    *[Dd]) update_frequency=$((24 * 3600 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));;
+    *[Ww]) update_frequency=$((7 * 24 * 3600 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));;
+        *) update_frequency=${24 * 3600};;
+esac
+
+if (( EPOCHSECONDS - $(date -r "$zsh_script_dir" +%s) >= update_frequency )) ; then { # The difference of now and the last update has to be greater or equal to the update frequency
     check_upstream() { # Based on https://stackoverflow.com/a/3278427
-        UPSTREAM=${1:-'@{u}'}
+        UPSTREAM='@{u}'
         LOCAL=$(git rev-parse '@{0}')
         REMOTE=$(git rev-parse "$UPSTREAM")
         BASE=$(git merge-base '@{0}' "$UPSTREAM")
 
         if [ "$LOCAL" = "$REMOTE" ]; then
-            echo -e "${col[fg_green]}${PWD##*\/}${col[reset]}] Up to date" # Remove all but the last part of the directory name, leaving the plugin name.
+            echo -e "[${col[fg_green]}${PWD##*\/}${col[reset]}] Up to date" # Remove all but the last part of the directory name, leaving the plugin name.
         elif [ "$LOCAL" = "$BASE" ]; then
             echo -e "[${col[fg_orange]}${PWD##*\/}${col[reset]}] New changes available"
             touch -cm . # Update the modification time of this plugin's folder.
@@ -117,24 +177,47 @@ if find "$zsh_script_dir" -maxdepth 0 -mtime +${update_frequency}; then # check 
         fi
     }
 
-    # Doing a literal array assignment here is fine and much clearer.
-    # https://www.shellcheck.net/wiki/SC2207
-    # shellcheck disable=SC2207
-    plugin_array=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
-
-    for index in "${plugin_array[@]}"; do # loop over the array of plugins
-        { cd "$index" && check_upstream ''; } || echo "An error occured while checking: $index"; continue
+    for index in "${found_plugins[@]}"; do # loop over the array of plugins
+        ( cd "$index" && check_upstream # Do update checking in a subshell to avoid creating the function variables in the parent shell
+        ) || echo "An error occured while checking: $index"; continue
     done
 touch -cm "$zsh_script_dir" # Update the script directories modification time.
-)
+}
 fi
+
+case $debug_verbosity in ## Debug Missing plugins
+    "missing"|"updates"|"all")
+        echo "${col[fg_purple]}DEBUG:${col[reset]} Adding some fake plugins for missing detection"
+        wanted_plugins+=( # Add a couple fake missing plug-ins for debugging
+        "https://127.0.0.1/fake_plugin/zsh-fake-plugin"
+        "https://127.0.0.1/fake_plugin/zsh-not-a-real-plugin"
+        "https://127.0.0.1/fake_plugin/zsh-also-not-a-real-plugin"
+        "https://127.0.0.1/fake_plugin/zsh-get-real"
+        "https://127.0.0.1/fake/zsh-fake-debug-plugins"
+        );;
+esac
+
+typeset -a diff
+diff=()
+    for plugins in "${wanted_plugins[@]##*\/}"; do # Based on: https://stackoverflow.com/a/2315459
+        skip=''
+        for found in "${found_plugins[@]##*\/}"; do
+            [[ "$plugins" == "$found" ]] && { skip=1; break; }
+        done
+        [[ -n $skip ]] || diff+=("$plugins")
+    done
+
+
+for missing in "${diff[@]}"; do
+    echo "[${col[fg_red]}$missing${col[reset]}] Missing"
+done
 
 
 
 ### Load "plug-in" scripts; explicitly.
 source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" # Load autosuggestions
+fpath+=("$zsh_script_dir/zsh-completions") # Zsh Completions does not get sourced, it gets appended to $fpath
 source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" # Syntax highlighting; should be loaded last
-
 
 ### Variable clean up
 unset -v col pal per # color scheme array and permutations
