@@ -132,7 +132,8 @@ set -o vi # enable vi mode
 
 ### Update checking
 zsh_script_dir="$HOME/.config/zsh/scripts" # script location
-update_frequency="7d" # interval between update checks (in days)
+[[ ! -d $zsh_script_dir || ! -e $zsh_script_dir ]] && mkdir -p "$zsh_script_dir" # if script dir doesn't exist, make it.
+update_frequency="a7d" # interval between update checks. Format: <int>[s|m|h|d|w]; 15m = 15 Minutes = 900 Seconds; Default, 7D = 1w = 168h = 10080m = 604800s
 
 typeset -a found_plugins # list of installed plugins
 # shellcheck disable=SC2207 # We're taking care of this ourselves
@@ -149,16 +150,17 @@ esac
 
 
 case $update_frequency in
-        0) ;;
-    *[Ss]) update_frequency=$(grep -oE "^[0-9]*" <<< "$update_frequency");;
-    *[Mm]) update_frequency=$((60 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));;
-    *[Hh]) update_frequency=$((3600 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));;
-    *[Dd]) update_frequency=$((24 * 3600 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));;
-    *[Ww]) update_frequency=$((7 * 24 * 3600 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));;
-        *) update_frequency=${24 * 3600};;
+            0) ;;
+        *[Ss]) update_frequency=$(grep -oE "^[0-9]*" <<< "$update_frequency");; # Seconds
+        *[Mm]) update_frequency=$((60 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));; # Minutes
+        *[Hh]) update_frequency=$((3600 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));; # Hours
+        *[Dd]) update_frequency=$((24 * 3600 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));; # Days
+        *[Ww]) update_frequency=$((7 * 24 * 3600 * $(grep -oE "^[0-9]*" <<< "$update_frequency") ));; # Weeks
+            *) echo "${col[fg_orange]}Error:${col[reset]} Could not resolve value for ${col[fg_orange]}\$update_frequency=${col[reset]}\"$update_frequency\", defaulting to 1 Week"
+               update_frequency=$((7 * 24 * 3600));; # Fallthrough in case the pattern doesn't match
 esac
 
-if (( EPOCHSECONDS - $(date -r "$zsh_script_dir" +%s) >= update_frequency )) ; then { # The difference of now and the last update has to be greater or equal to the update frequency
+if (( EPOCHSECONDS - $(date -r "$zsh_script_dir" +%s) >= update_frequency )) || true ; then { # The difference of now and the last update has to be greater or equal to the update frequency
     check_upstream() { # Based on https://stackoverflow.com/a/3278427
         UPSTREAM='@{u}'
         LOCAL=$(git rev-parse '@{0}')
