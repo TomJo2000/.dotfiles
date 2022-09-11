@@ -12,16 +12,15 @@
 
 
 # Order of modules on prompt
-# Starting with an arcane incantation to remove the forced newline between prompts
 format = """\
-	$time\
+        $time\
         $sudo\
         $jobs\
         $shlvl\
         $username\
         $hostname\
-	$battery\
-	$env_var\
+        $battery\
+        $env_var\
         $directory\
         $git_branch\
         $git_metrics\
@@ -32,89 +31,80 @@ format = """\
         $status\
     """
 
-# No idea what even prompts this, but if I find out I can decide if I wanna add stuff to it...
+# A continuation prompt is trigged if you enter an incomplete statement on the command line.
 # Only supported in Bash, Zsh and PowerShell.
 continuation_prompt = """\
 [continuation prompt >>>](fg:#0A75AD)
 """
 
-# disable multiline prompt
-[line_break]
-disabled = false
+add_newline = false # disable multiline prompt
 
-# accursed expermentations utilizing the fill module to remove the forced newline
-[fill]
-symbol = "\b\b"
-style = ""
+# [battery] # Battery Charge state (This breaks the Termux version of starship)
+# charging_symbol = ""
+# discharging_symbol = ""
+# format = "[$symbol$percentage]($style)"
+# 
+# [[battery.display]]
+# threshold = 10 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#D61E1C bg:#4F4D4B"
+# 
+# [[battery.display]]
+# threshold = 20 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#D61E1C bg:#4F4D4B"
+# 
+# [[battery.display]]
+# threshold = 30 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#E26D0E bg:#4F4D4B"
+# 
+# [[battery.display]]
+# threshold = 40 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#E26D0E bg:#4F4D4B"
+# 
+# [[battery.display]]
+# threshold = 50 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#EDBC00 bg:#4F4D4B"
+# 
+# [[battery.display]]
+# threshold = 60 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#EDBC00 bg:#4F4D4B"
+# 
+# [[battery.display]]
+# threshold = 70 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#EDBC00 bg:#4F4D4B"
+# 
+# [[battery.display]]
+# threshold = 80 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#1DA65A bg:#4F4D4B"
+# 
+# [[battery.display]]
+# threshold = 90 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#1DA65A bg:#4F4D4B"
+# 
+# [[battery.display]]
+# threshold = 99 # %
+# charging_symbol = ""
+# discharging_symbol = ""
+# style = "fg:#1DA65A bg:#4F4D4B"
 
-# Battery Charge state
-#[battery]
-#charging_symbol = ""
-#discharging_symbol = ""
-#format = "[$symbol$percentage]($style)"
-#
-#[[battery.display]]
-#threshold = 10 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#D61E1C bg:#4F4D4B"
-#
-#[[battery.display]]
-#threshold = 20 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#D61E1C bg:#4F4D4B"
-#
-#[[battery.display]]
-#threshold = 30 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#E26D0E bg:#4F4D4B"
-#
-#[[battery.display]]
-#threshold = 40 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#E26D0E bg:#4F4D4B"
-#
-#[[battery.display]]
-#threshold = 50 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#EDBC00 bg:#4F4D4B"
-#
-#[[battery.display]]
-#threshold = 60 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#EDBC00 bg:#4F4D4B"
-#
-#[[battery.display]]
-#threshold = 70 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#EDBC00 bg:#4F4D4B"
-#
-#[[battery.display]]
-#threshold = 80 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#1DA65A bg:#4F4D4B"
-#
-#[[battery.display]]
-#threshold = 90 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#1DA65A bg:#4F4D4B"
-#
-#[[battery.display]]
-#threshold = 99 # %
-#charging_symbol = ""
-#discharging_symbol = ""
-#style = "fg:#1DA65A bg:#4F4D4B"
-
-# track runtime of a command
-[cmd_duration]
+[cmd_duration] # track runtime of a command
 # disabled = true
 style = "fg:#EDBC00 bg:#4F4D4B"
 min_time = 1_000
@@ -123,8 +113,7 @@ show_notifications = false
 min_time_to_notify = 45_000
 format = "[ $duration]($style)"
 
-# current directory
-[directory]
+[directory] # current directory
 style = "fg:#D61E1C bg:#4F4D4B"
 read_only_style = "fg:#D61E1C bg:#4F4D4B"
 repo_root_style = "fg:#E26D0E bg:#4F4D4B"
@@ -137,6 +126,7 @@ truncate_to_repo = true # change this if you prefer showing the full path
 format = "([$read_only]($read_only_style))[$path]($style)"
 repo_root_format = "[$before_root_path](fg:#B0B2B4 bg:#4F4D4B)[$read_only]($read_only_style)[\n $repo_root]($repo_root_style)[$path](fg:#B0B2B4 bg:#4F4D4B)"
 
+[directory.substitutions] # Differential coloring for certain directories
 # ANSI escape sequence rituals for 
 # differential coloring of substituted directories.
 # ------Generic  forms------+--Esc-sequences--+
@@ -169,7 +159,6 @@ repo_root_format = "[$before_root_path](fg:#B0B2B4 bg:#4F4D4B)[$read_only]($read
 #   <CSI><48;2;r;g;b><38;2;r;g;b>m
 # for more info see: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797#rgb-colors
 
-[directory.substitutions]
 ### special cases - bg:#4F4D4B
 '~' = "\u001B\u005B48;2;79;77;75;38;2;29;166;90m~\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #                  <~> fg:#1DA65A 
 '/etc' = "\u001B\u005B48;2;79;77;75;38;2;10;117;173m/etc\u001B\u005B38;2;176;178;180;48;2;79;77;75m" #        </etc> fg:#0A75AD
@@ -196,16 +185,15 @@ repo_root_format = "[$before_root_path](fg:#B0B2B4 bg:#4F4D4B)[$read_only]($read
 '/srv' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/srv\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
 '/sys' = "\u001B\u005B38;2;176;178;180;48;2;79;77;75m/sys\u001B\u005B38;2;176;178;180;48;2;79;77;75m"
 
-# Detect if the prompt is running on Android/Termux, if so add an Android symbol infront of the directory.
-[env_var.termux]
+[env_var.termux] # Detect if the prompt is running on Android/Termux, if so add an Android symbol infront of the directory.
+disabled = false
 variable = "ANDROID_ROOT"
 symbol = " "
 style = "fg:#1DA65A bg:#4F4D4B"
 format = "[$symbol]($style)"
-disabled = false
 
-### Standard modules for git
-[git_branch]
+### Modules for git
+[git_branch] # name of the current git branch
 disabled = false
 symbol = " "
 style = "fg:#EDBC00 bg:#4F4D4B"
@@ -213,7 +201,7 @@ style = "fg:#EDBC00 bg:#4F4D4B"
 # truncation_symbol = ""
 format = "[$symbol$branch]($style)"
 
-[git_commit]
+[git_commit] # current commit hash on detached branch
 disabled = false
 tag_disabled = false
 tag_symbol = "#"
@@ -222,8 +210,7 @@ commit_hash_length = 7
 only_detached = true # Don't show Hash when on regular main branch
 format = "([$tag$hash]($style))"
 
-# show additions and deletions since last push
-[git_metrics]
+[git_metrics] # show additions and deletions since last push
 disabled = false
 only_nonzero_diffs = false # disable for testing purposes
 added_style = "fg:#1DA65A bg:#4F4D4B"
@@ -231,7 +218,7 @@ deleted_style = "fg:#D61E1C bg:#4F4D4B"
 format = "([](fg:#EDBC00 bg:#4F4D4B)[$added]($added_style)[⥮](fg:#B0B2B4 bg:#4F4D4B)[$deleted]($deleted_style))"
 
 
-[git_state]
+[git_state] # progress of the current git operation
 disabled = false
 style = "fg:#EDBC00 bg:#4F4D4B"
 rebase = "rebasing"
@@ -243,9 +230,8 @@ am = "am'ing"
 am_or_rebase = "am/rebase"
 format = "[$state(❮$progress_current/$progress_total❯)]($style)"
 
-# Symbolic and plaintext versions for clairity since I am still very new to Git.
-[git_status]
-#disabled = true
+[git_status] # symbolic and plaintext versions for clairity since I am still very new to Git.
+disabled = false
 style = "fg:#EDBC00 bg:#4F4D4B"
 #stashed = " ${count}" # Regular symbol for stashed files
 stashed = "stashed:${count}"
@@ -269,8 +255,7 @@ behind = "behind:${count}"
 diverged = "divergent: ${ahead_count} ${behind_count}"
 format = "([$stashed$staged$modified$renamed$untracked$deleted$conflicted$ahead_behind]($style))"
 
-# system hostname, with indicator if logged in via SSH session.
-[hostname]
+[hostname] # system hostname, with indicator if logged in via SSH session.
 disabled = false
 style = "fg:#F5FBFF bg:#0A75AD"
 ssh_only = false
@@ -278,8 +263,7 @@ ssh_symbol = " "
 #trim_at = "."
 format = "[@$hostname$ssh_symbol]($style)[](fg:#B0B2B4 bg:#4F4D4B)"
 
-# background tasks
-[jobs]
+[jobs] # background tasks
 disabled = false
 symbol = " "
 style = "bold fg:#EDBC00 bg:#0A75AD"
@@ -287,16 +271,29 @@ number_threshold = 1
 symbol_threshold = 1
 format = "[$number$symbol]($style)"
 
-# indicator for nested shells
-[shlvl]
+# [shell] # Shell indicator (WIP) - Remember to add $shell\ to the Top Level Format!!!
+# disabled = false
+# cmd_indicator = ""
+# powershell_indicator = ""
+# bash_indicator = ""
+# elvish_indicator = ""
+# fish_indicator = ""
+# ion_indicator = ""
+# nu_indicator = ""
+# tcsh_indicator = ""
+# xonsh_indicator = ""
+# zsh_indicator = "z"
+# unknown_indicator = "?"
+# style = "fg:#0A75AD"
+
+[shlvl] # indicator for nested shells
 disabled = false
 symbol = ""
 style = "bold fg:#EDBC00 bg:#0A75AD"
 threshold = 2
 format = "[$symbol$shlvl]($style)"
 
-# customized end segments for the prompt based on exit code
-[status]
+[status] # customized end segments for the prompt based on exit code
 disabled = false
 symbol = "[$status](underline fg:#D61E1C bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[](fg:#4F4D4B bg:#D61E1C)[](fg:#D61E1C)"
 success_symbol = "[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A)" # Don't show exit code <0> on success
@@ -313,14 +310,13 @@ format = '[$symbol]($style)'
 #pipestatus_separator = "|"
 #pipestatus_format = '[易$pipestatus](fg:#EDBC00 bg:#4F4D4B)[$common_meaning$signal_name]($style)'
 
-# indicate stored sudo credentials
-[sudo]
+[sudo] # indicate stored sudo credentials
 disabled = false
 style = "fg:#D61E1C bg:#0A75AD"
 symbol = " "
 format = "[$symbol]($style)"
 
-[time]
+[time] # time; HH:MM:SS (local time)
 disabled = false
 style = "fg:#0A0400 bg:#1DA65A"
 use_12hr = false
@@ -328,8 +324,8 @@ time_format = "%H:%M:%S"
 utc_time_offset = "local"
 format = "[❮]($style)[$time](underline $style)[❯]($style)"
 
-[username]
-# disabled = true
+[username] # the currently logged in user
+disabled = false
 show_always = true
 style_root = "bold fg:#D61E1C bg:#0A75AD"
 style_user = "fg:#F5FBFF bg:#0A75AD"
