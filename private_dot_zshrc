@@ -17,6 +17,14 @@ debug_verbosity="off"
 # (WIP) Work in Progress
 # (ACK) acknowledgment
 
+
+### initialize starship prompt, this needs to be done in every nested shell.
+eval "$(starship init zsh)" || \
+echo "Error: failed to initialize starship prompt"# Print error message if starship failed to initialize
+
+
+function main() { # contains everything that only needs to run when setting up a un-nested shell
+
 typeset -a wanted_plugins
 wanted_plugins=( # List plugins you wish to use by repo URL
     "https://github.com/zsh-users/zsh-completions"
@@ -108,20 +116,22 @@ MOTD_EOF
 # Prefixing a \0 (NULL) gets around this by making the whitespace, technically, not leading.
 # while not actually printing a character to the output.
 
-if [[ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]]; then # if this is my Personal PC, use the working copy of the prompt
-    export STARSHIP_CONFIG='/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml'
-elif [[ -e /mnt/c/Users/PC/Desktop/VSCode/git/.dotfiles/dot_config/private_starship.toml ]]; then # same check but for my work laptop
-    export STARSHIP_CONFIG='/mnt/c/Users/PC/Desktop/VSCode/git/.dotfiles/dot_config/private_starship.toml'
-fi
+    [[ -z $ANDROID_ROOT ]] && echo -e "$col_banner" # test that we're not on Android/Termux.
+    [[ -n $STARSHIP_SHELL ]] && echo "🚀 Starship Prompt Initialized" # print confirmation message if starship successfully started
 
-# $PATH needs to be amended at this point to ensure the cargo build of starship is available if installed
-export PATH="$PATH:$HOME/.cargo/bin/" # amend the $PATH variable
-
-# initialize starship prompt
-eval "$(starship init zsh)" || \
-echo "Error: failed to initialize starship prompt" && { # Print error message if starship failed to initialize, otherwise;
-    [[ -z $ANDROID_ROOT && $SHLVL == 1 ]] && echo -e "$col_banner" # test that we're not on Android/Termux or in a subshell.
-    [[ $SHLVL == 1 ]] && echo "🚀 Starship Prompt Initialized" ;} # print confirmation message
+{ # See if we should be using the working tree versions of starship.toml and .zshrc
+local zshrc_unstable; zshrc_unstable=$(true) #!! Ask if you want to use the working tree version of .zshrc
+      if [[ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]]; then # if this is my personal PC, use the working copy of the prompt
+            export STARSHIP_CONFIG="/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml"
+            [[ $zshrc_unstable ]] && cp --preserve=mode,ownership,timestamps -iuv "/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/private_dot_zshrc" "$HOME/.zshrc"
+    elif [[ -e $HOME/git/.dotfiles/dot_config/private_starship.toml ]]; then # same check for my personal laptop
+            export STARSHIP_CONFIG="$HOME/git/.dotfiles/dot_config/private_starship.toml"
+            [[ $zshrc_unstable ]] && cp --preserve=mode,ownership,timestamps -iuv "$HOME/git/.dotfiles/private_dot_zshrc" "$HOME/.zshrc"
+    elif [[ -e /mnt/c/Users/PC/Desktop/VSCode/git/.dotfiles/dot_config/private_starship.toml ]]; then # same check but for my work laptop
+            export STARSHIP_CONFIG="/mnt/c/Users/PC/Desktop/VSCode/git/.dotfiles/dot_config/private_starship.toml"
+            [[ $zshrc_unstable ]] && cp --preserve=mode,ownership,timestamps -iuv "mnt/c/Users/PC/Desktop/VSCode/git/.dotfiles/private_dot_zshrc" "$HOME/.zshrc"
+    fi
+}
 
 if [[ -n $SSH_AUTH_SOCK ]]; then # see if SSH Agent is running
     : # if it is, do nothing
@@ -144,9 +154,11 @@ found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
 
 function updates(){ # Everything relating to Zsh plugin update checking.
 
+[[ $SHLVL == 1 ]] || return 0 # Guard clause to skip updates if in a nested shell.
+
     [[ ! -d $zsh_script_dir || ! -e $zsh_script_dir ]] && mkdir -p "$zsh_script_dir" # if script dir doesn't exist, make it.
     local update_frequency="7d" # interval between update checks. Format: 1w3d4h5m6s (case insensitive); Default: 7d
-    [[ $SHLVL == 1 ]] && echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
+    echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
 
     function parse_frequency(){ # Resolve $update_frequency from human readable form to seconds.
 
@@ -214,8 +226,7 @@ case $debug_verbosity in ## Debug: Missing plugins
     ;;
 esac
 
-
-typeset -a diff
+[[ $SHLVL == 1 ]] && { typeset -a diff # Missing plugin check, with guard clause to not run in nested shells.
 diff=() # (ACK) Based on: https://stackoverflow.com/a/2315459
     for plugins in "${wanted_plugins[@]##*\/}"; do
         skip=''
@@ -226,10 +237,11 @@ diff=() # (ACK) Based on: https://stackoverflow.com/a/2315459
     done
 
 for missing in "${diff[@]}"; do
-    echo "[${col[fg_red]}$missing${col[reset]}] Missing"
+    echo -e "[${col[fg_red]}$missing${col[reset]}] Missing"
 done
 
 unset -v found_plugins diff skip # Unset variables needed for missing script detection
+}
 
 ### History Setup
 export HISTFILE="$HOME/.histfile"
@@ -237,7 +249,7 @@ export HISTSIZE=4000
 export SAVEHIST=10000
 
 ### Environment setup.
-# set custom $LS_COLORS
+export PATH="$PATH:$HOME/.cargo/bin/" # amend the $PATH variable
 export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:' # set custom $LS_COLORS
 
 # setup nvim as default EDITOR and DIFF program.
@@ -256,16 +268,19 @@ alias ls='ls --color=auto' # colorize ls by default
 
 ### Load "plug-in" scripts; explicitly.
 # shellcheck source=/dev/null # Ignore Shellcheck's inability to parse external sources by default
-source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" # Load autosuggestions
+source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" 2> /dev/null # Load autosuggestions
 
-fpath+=("$zsh_script_dir/zsh-completions") # Zsh Completions does not get sourced, it gets appended to $fpath
+fpath+=("$zsh_script_dir/zsh-completions") 2> /dev/null # Zsh Completions does not get sourced, it gets appended to $fpath
 
 # shellcheck source=/dev/null # Ignore Shellcheck's inability to parse external sources by default
-source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" # Syntax highlighting; should be loaded last
+source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" 2> /dev/null # Syntax highlighting; should be loaded last
 
 ### Remaining internal variable clean up
 unset -v "col[@] pal[@] per[@]" # colorscheme array, palette and permutations
-unset -v col_banner zsh_script_dir # color banner, and top directory for Zsh plugin scripts
+unset -v col_banner zsh_script_dir # color banner and top directory for Zsh plugin scripts
+
+
+}; [[ $SHLVL == 1 ]] && main
 
 # [============================Helpful resources============================]
 # [ Hyperpolyglot.org's comparison of *NIX shell syntax                     ]
