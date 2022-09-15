@@ -8,6 +8,15 @@
 # Everything -> all
 debug_verbosity="off"
 
+# Comment styling
+# ** Highlight
+# ?? Informational
+# !! Important
+# ~~ Invalidated
+# (TODO) Todo comments
+# (WIP) Work in Progress
+# (ACK) acknowledgment
+
 typeset -a wanted_plugins
 wanted_plugins=( # List plugins you wish to use by repo URL
     "https://github.com/zsh-users/zsh-completions"
@@ -16,14 +25,14 @@ wanted_plugins=( # List plugins you wish to use by repo URL
 )
 
 ### Color palette array for easier colorization
-typeset -A per 
+typeset -A per
 per=( # Permutations for foreground and background
     [fg_]="38;2;"
     [bg_]="48;2;"
 )
 
 typeset -A pal # Array of base colors for the pallet
-pal=( # name=" r; g ; b "   # Color palette
+pal=( #[name]="r ; g ; b "  # Color palette
        [blue]="10;117;173"  # #0A75AD
         [red]="214;30;28"   # #D61E1C
        [pink]="255;51;184"  # #FF33B8
@@ -77,11 +86,6 @@ case $debug_verbosity in ## Debug: Color Array
     echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}";;
 esac
 
-# WIP - SSH disconnect command keepalive
-# noclose() { # Keep passed task running in background, even after SSH disconnection
-#     (nohup "$@" &>/dev/null &)
-# }
-
 # Color banner
 read -rd '' col_banner << MOTD_EOF
 \0              ${col[fg_blue]}dt
@@ -98,14 +102,16 @@ Vy   A@@@@Q°   v@@0   q)
  uP.y@@@#%      v@@l dv
   ?o\$@@6%        k@8y'
     ##zEosyuyweaIuMQ
-   ´%°             m${col[reset]}\n
+   ´%°             m${col[reset]}
 MOTD_EOF
 # Leading whitespace on the first line of the heredoc is ignored
 # Prefixing a \0 (NULL) gets around this by making the whitespace, technically, not leading.
 # while not actually printing a character to the output.
 
-if [ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]; then # if this is my Personal PC, use the working copy of the prompt.
-    export STARSHIP_CONFIG=/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml
+if [[ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]]; then # if this is my Personal PC, use the working copy of the prompt
+    export STARSHIP_CONFIG='/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml'
+elif [[ -e /mnt/c/Users/PC/Desktop/VSCode/git/.dotfiles/dot_config/private_starship.toml ]]; then # same check but for my work laptop
+    export STARSHIP_CONFIG='/mnt/c/Users/PC/Desktop/VSCode/git/.dotfiles/dot_config/private_starship.toml'
 fi
 
 # $PATH needs to be amended at this point to ensure the cargo build of starship is available if installed
@@ -114,16 +120,14 @@ export PATH="$PATH:$HOME/.cargo/bin/" # amend the $PATH variable
 # initialize starship prompt
 eval "$(starship init zsh)" || \
 echo "Error: failed to initialize starship prompt" && { # Print error message if starship failed to initialize, otherwise;
-    ((${SHLVL:-0} <= 1)) && # if we're in a top level shell,
-    [[ -z $ANDROID_ROOT ]] && # and not on Android/Termux,
-    echo -ne "$col_banner" # print banner,
-        echo "🚀 Starship Prompt Initialized";} # print confirmation message
+    [[ -z $ANDROID_ROOT && $SHLVL == 1 ]] && echo -e "$col_banner" # test that we're not on Android/Termux or in a subshell.
+    [[ $SHLVL == 1 ]] && echo "🚀 Starship Prompt Initialized" ;} # print confirmation message
 
-if [[ -v $SSH_AUTH_SOCK ]]; then # see if SSH Agent is running
+if [[ -n $SSH_AUTH_SOCK ]]; then # see if SSH Agent is running
     : # if it is, do nothing
 else
     eval "$(ssh-agent)" >> /dev/null # startup the SSH Agent; discard confirmation message
-    echo -ne "SSH Agent started\nPID: ${col[fg_dark_grey]}${col[bg_white]}$SSH_AGENT_PID${col[reset]}\n\r"
+    echo -e "SSH Agent started\nPID: ${col[fg_dark_grey]}${col[bg_white]}$SSH_AGENT_PID${col[reset]}"
 fi
 
 case $debug_verbosity in ## Debug: Color Array
@@ -138,13 +142,13 @@ typeset -a found_plugins # list of installed plugins
 # shellcheck disable=SC2207 # We're taking care of this ourselves
 found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
 
-function updates(){ # Yes.
+function updates(){ # Everything relating to Zsh plugin update checking.
 
     [[ ! -d $zsh_script_dir || ! -e $zsh_script_dir ]] && mkdir -p "$zsh_script_dir" # if script dir doesn't exist, make it.
     local update_frequency="7d" # interval between update checks. Format: 1w3d4h5m6s (case insensitive); Default: 7d
-    echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
+    [[ $SHLVL == 1 ]] && echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
 
-    function parse_frequency(){
+    function parse_frequency(){ # Resolve $update_frequency from human readable form to seconds.
 
         local minute="60" # Seconds
         local hour="$((60 * minute))"
@@ -152,12 +156,12 @@ function updates(){ # Yes.
         local week="$((7 * day))"
 
             if [[ $update_frequency =~ ^0$ ]]; then
-            : # If the update frequency is a plain 0, or "always"
+                : # If the update frequency is a plain 0, or "always"
             elif [[ $update_frequency =~ ^[0-9]*[SsMmHhDdWw]$ ]]; then # Fallthrough in case of invalid pattern
                 update_frequency=$(( $(sed -E "s/[Ww]/ \* $week + /;s/[Dd]/ \* $day + /;s/[Hh]/ \* $hour + /;s/[Mm]/ \* $minute + /;s/[Ss]//" <<< $update_frequency) + 0 )) # this fails without an operation of the sed output, so we just do + 0
             else
                 echo "${col[fg_orange]}Error:${col[reset]} Could not resolve value for ${col[fg_orange]}\$update_frequency=${col[reset]}\"$update_frequency\", defaulting to 1 Week"
-                update_frequency=$((7 * 24 * 3600))
+                update_frequency=$((1 * week ))
             fi
 
             case $debug_verbosity in ## Debug: Updates - Always check for updates
@@ -170,7 +174,7 @@ function updates(){ # Yes.
         }; parse_frequency
 
     if (( EPOCHSECONDS - $(date -r "$zsh_script_dir" +%s) >= update_frequency )); then { # The difference of now and the last update has to be greater or equal to the update frequency
-        check_upstream() { # Based on https://stackoverflow.com/a/3278427
+        check_upstream() { # (ACK) Based on https://stackoverflow.com/a/3278427
             UPSTREAM='@{u}'
             LOCAL=$(git rev-parse '@{0}')
             REMOTE=$(git rev-parse "$UPSTREAM")
@@ -181,7 +185,7 @@ function updates(){ # Yes.
             elif [ "$LOCAL" = "$BASE" ]; then
                 echo -e "[${col[fg_orange]}${PWD##*\/}${col[reset]}] New changes available"
                 touch -cm . # Update the modification time of this plugin's folder.
-                ### Prompt user for update. (I'll add this later)
+                ### (todo) Prompt user for update. (I'll add this later)
             fi
         return
         }
@@ -212,7 +216,7 @@ esac
 
 
 typeset -a diff
-diff=() # Based on: https://stackoverflow.com/a/2315459
+diff=() # (ACK) Based on: https://stackoverflow.com/a/2315459
     for plugins in "${wanted_plugins[@]##*\/}"; do
         skip=''
         for found in "${found_plugins[@]##*\/}"; do
@@ -231,8 +235,9 @@ unset -v found_plugins diff skip # Unset variables needed for missing script det
 export HISTFILE="$HOME/.histfile"
 export HISTSIZE=4000
 export SAVEHIST=10000
-bindkey -e
 
+### Environment setup.
+# set custom $LS_COLORS
 export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:' # set custom $LS_COLORS
 
 # setup nvim as default EDITOR and DIFF program.
@@ -240,6 +245,14 @@ export EDITOR="nvim"
 export DIFFPROG="nvim -d"
 
 alias ls='ls --color=auto' # colorize ls by default
+
+# (WIP) - SSH disconnect command keepalive
+# noclose() { # Keep passed task running in background, even after SSH disconnection
+#     (nohup "$@" &>/dev/null &)
+# }
+
+# (WIP)
+# alias raw-input='sed -n l' # make the terminal print the raw input characters to the screen
 
 ### Load "plug-in" scripts; explicitly.
 # shellcheck source=/dev/null # Ignore Shellcheck's inability to parse external sources by default
