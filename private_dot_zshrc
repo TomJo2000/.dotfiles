@@ -23,7 +23,7 @@ eval "$(starship init zsh)" || \
 echo "Error: failed to initialize starship prompt"# Print error message if starship failed to initialize
 
 
-function main() { # contains everything that only needs to run when setting up a un-nested shell
+function main(){ # contains everything that only needs to run when setting up a un-nested shell
 
 typeset -a wanted_plugins
 wanted_plugins=( # List plugins you wish to use by repo URL
@@ -154,8 +154,6 @@ found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
 
 function updates(){ # Everything relating to Zsh plugin update checking.
 
-[[ $SHLVL == 1 ]] || return 0 # Guard clause to skip updates if in a nested shell.
-
     [[ ! -d $zsh_script_dir || ! -e $zsh_script_dir ]] && mkdir -p "$zsh_script_dir" # if script dir doesn't exist, make it.
     local update_frequency="7d" # interval between update checks. Format: 1w3d4h5m6s (case insensitive); Default: 7d
     echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
@@ -226,7 +224,7 @@ case $debug_verbosity in ## Debug: Missing plugins
     ;;
 esac
 
-[[ $SHLVL == 1 ]] && { typeset -a diff # Missing plugin check, with guard clause to not run in nested shells.
+typeset -a diff # Missing plugin check, with guard clause to not run in nested shells.
 diff=() # (ACK) Based on: https://stackoverflow.com/a/2315459
     for plugins in "${wanted_plugins[@]##*\/}"; do
         skip=''
@@ -241,7 +239,7 @@ for missing in "${diff[@]}"; do
 done
 
 unset -v found_plugins diff skip # Unset variables needed for missing script detection
-}
+
 
 ### History Setup
 export HISTFILE="$HOME/.histfile"
