@@ -126,7 +126,7 @@ min_time_to_notify = 45_000
 format = "[ $duration]($style)"
 
 [custom.git_newline] # Add a newline if we are in a git repo.
-disabled = false
+disabled = true
 use_stdin = false
 detect_folders = [".git"]
 when = "[ $(git rev-parse --show-toplevel 2> /dev/null) ]"
