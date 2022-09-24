@@ -1,7 +1,7 @@
 Host *
     # Multiplexing and general efficiency
     ControlMaster auto
-    ControlPath ~/.ssh/mux-%r@%h:%p.socket
+    ControlPath $HOME/.ssh/mux-%r@%h:%p.socket
     ControlPersist 15m
     Compression yes
 
@@ -25,7 +25,7 @@ Host *
 Host GitHub
     User git
     Hostname github.com
-    IdentityFile ~/.ssh/keys/github/rsa-4096_github
+    IdentityFile $HOME/.ssh/keys/github/rsa-4096_github
 
 
 ### Home network
@@ -34,62 +34,62 @@ Host Termux
     User u0_a294
     Hostname 192.168.111.3
     Port 8022
-    IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
+    IdentityFile $HOME/.ssh/keys/personal/rsa-4096_phone
 
 # ssh access to PC in home network
 Host PC-Lan
     User Josh
     Hostname 192.168.111.22
-    IdentityFile ~/.ssh/keys/personal/rsa-4096_pc
+    IdentityFile $HOME/.ssh/keys/personal/rsa-4096_pc
 
 Host PC-WiFi
     User Josh
     Hostname 192.168.111.16
-    IdentityFile ~/.ssh/keys/personal/rsa-4096_pc
+    IdentityFile $HOME/.ssh/keys/personal/rsa-4096_pc
 
 
-# # ssh access to personal Laptop in home network
-# Host Laptop
-#    User tom
-#    Hostname 192.168.111.<I don't remember>
-#    IdentityFile ~/.ssh/keys/personal/rsa-4096_laptop
+# ssh access to personal Laptop in home network
+Host Laptop
+    User tom
+    Hostname 192.168.111.120
+    IdentityFile $HOME/.ssh/keys/personal/rsa-4096_laptop
 
 ### Work cluster
 Host OpenWRT
     User root
     Hostname 192.168.1.1
-    IdentityFile ~/.ssh/keys/work/rsa-4096_router
+    IdentityFile $HOME/.ssh/keys/work/rsa-4096_router
 
 # ssh access for Termux in work network
 Host TermuxWork
     User u0_a294
     Hostname RedmiNote7-Josh.lan
     Port 8022
-    IdentityFile ~/.ssh/keys/personal/rsa-4096_phone
+    IdentityFile $HOME/.ssh/keys/personal/rsa-4096_phone
 
 # Personal Laptop
 Host LaptopWork
     User tom
     Hostname ArchLaptop.lan
-    IdentityFile ~/.ssh/keys/personal/rsa-4096_laptop
+    IdentityFile $HOME/.ssh/keys/personal/rsa-4096_laptop
     
 # Work laptop
 Host Josh-ISE
     User PC
     Hostname Josh-ISE.lan
-    IdentityFile ~/.ssh/keys/work/rsa-4096_ise
+    IdentityFile $HOME/.ssh/keys/work/rsa-4096_ise
 
 Host Deb
     User tom
     Hostname debian-Athlon.lan
-    IdentityFile ~/.ssh/keys/work/rsa-4096_deb
+    IdentityFile $HOME/.ssh/keys/work/rsa-4096_deb
 
 Host Fedora
     User tom
     Hostname Fedora.lan
-    IdentityFile ~/.ssh/keys/work/rsa-4096_fedora
+    IdentityFile $HOME/.ssh/keys/work/rsa-4096_fedora
 
 Host Pi
     User pi
     Hostname AmogOS.lan
-    IdentityFile ~/.ssh/keys/work/rsa-4096_pi
+    IdentityFile $HOME/.ssh/keys/work/rsa-4096_pi
