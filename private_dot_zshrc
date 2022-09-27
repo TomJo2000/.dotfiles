@@ -49,9 +49,9 @@ pal=( #[name]="r ; g ; b "  # Color palette
 )
 
 typeset -A col
-# shellcheck disable=SC2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
-for mut in "${(k)per[@]}"; do # assign the keys of [per] to $mut
-    for color in "${(k)pal[@]}"; do # assign the keys of [pal] to $color
+# shellcheck disable=SC2068,2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
+for mut in ${(k)per[@]}; do # assign the keys of [per] to $mut
+    for color in ${(k)pal[@]}; do # assign the keys of [pal] to $color
         col[$mut$color]="\e[${per[$mut]}${pal[$color]}m" # index names follow the pattern ${col[<fg/bg>_<color>]}
     done
 done
@@ -77,9 +77,9 @@ col+=( # append the following sequences to the `col` array
 case $debug_verbosity in ## Debug: Color Array
     "color"|"all")
     echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
-    # shellcheck disable=SC2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
+    # shellcheck disable=SC2068,2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
     ( # Put this in a subshell to avoid making $value a variable in the parent shell
-        for key in "${(k)col[@]}"; do
+        for key in ${(k)col[@]}; do
             value=${col[$key]}
             echo -ne "$value$key ->${col[reset]}" # apply current escape sequence -> print current key -> reset sequence
             echo -E " $value" # print current escape sequence uninterpreted
