@@ -10,6 +10,17 @@
 # (WIP) Work in Progress
 # (ACK) acknowledgment
 
+typeset -a debug_valid
+debug_valid=(
+"off"
+"color"
+"ssh"
+"updates"
+"installed"
+"missing"
+"all"
+)
+
 ### Change value to enable debug output from this script.
 # Valid values:
 # Disable debug -> off (default)
@@ -298,6 +309,35 @@ source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" 2> /dev/nul
 source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" 2> /dev/null # Syntax highlighting; should be loaded last
 }
 
+function get_new_verbosity(){
+while true; do
+    local user_input=''
+    echo "Please provide a valid setting for verbosity: "
+    read -r user_input
+    if [[ "${debug_valid[*]}" =~ $user_input ]]; then
+        debug_verbosity=$user_input; return
+    else
+        echo -e "\nValid options: \n${debug_valid[*]}"
+    fi
+done
+}
+
+function set_verbosity(){
+    if [[ "$#" -lt 2 && "$1" =~ (-v\s*|--verbose\s*|--debug\s*) ]]; then # if '-v' or '--verbose' was passed without a level
+        get_new_verbosity # run function to take and validate user input for the verbosity
+    elif [[ "$#" -gt 1 && "$1" =~ (-v\s*|--verbose\s*|--debug\s*) ]]; then # provided more than 1 arg was passed, and the first one is '-v' or '--verbose'
+        { [[ -n "$2" && ${2:0:1} != "-" ]] && # check that the following arg is not <NULL>(redundant?) and positional (aka not prefixed with a hyphen - )
+            local IFS="|"
+            case "$2" in # if it matches any of these it is valid
+                "${debug_valid[@]}") debug_verbosity="$2";;
+                *) get_new_verbosity ;; # run function to take and validate user input for the verbosity
+            esac
+        }
+    fi
+return
+}
+[[ "$*" =~ (-v\s*|--verbose\s*|--debug\s*) ]] && set_verbosity "$@" # if `-v` or `--verbose` was passed to the script adjust `$debug_verbosity` accordingly
+
 
 [[ $SHLVL == 1 || $debug_verbosity != 'off' ]] && main # Only run `main()` if we're in a un-nested shell, or debugging.
 
@@ -308,6 +348,7 @@ echo "Error: failed to initialize starship prompt"# Print error message if stars
 
 ### Cleanup of remaining variables.
 unset -v "col[@] pal[@] per[@]" # colorscheme array, palette and permutations
+unset -v "debug_valid[@]" # Debug related variables
 unset -v "debug_verbosity"
 
 # [============================Helpful resources============================]
@@ -322,4 +363,7 @@ unset -v "debug_verbosity"
 # [                                                                         ]
 # [ Shellscript Linter                                                      ]
 # [ https://www.shellcheck.net/                                             ]
+# [                                                                         ]
+# [ Zsh ZLE and bindkey reference                                           ]
+# [ https://stackoverflow.com/a/55235069                                    ]
 # [=========================================================================]
