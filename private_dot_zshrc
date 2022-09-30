@@ -19,6 +19,11 @@ debug_verbosity="off"
 
 function main(){ # contains everything that only needs to run when setting up a un-nested shell
 
+### **=====User settings=====**
+local zsh_script_dir="$HOME/.config/zsh/scripts" # "plugin" script location
+local update_frequency="7d" # ?? interval between update checks. Format: 1w2d3h4m5s (case insensitive); Default: 7d
+### **=======================**
+
 typeset -a wanted_plugins
 wanted_plugins=( # List plugins you wish to use by repo URL
     "https://github.com/zsh-users/zsh-completions"
@@ -140,7 +145,6 @@ case $debug_verbosity in ## Debug: SSH
 esac
 
 ### Update checking
-local zsh_script_dir="$HOME/.config/zsh/scripts" # script location
 typeset -a found_plugins # list of installed plugins
 # shellcheck disable=SC2207 # We're taking care of this ourselves
 found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
@@ -148,7 +152,6 @@ found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
     function updates(){ # Everything relating to Zsh plugin update checking.
 
         [[ ! -d $zsh_script_dir || ! -e $zsh_script_dir ]] && mkdir -p "$zsh_script_dir" # if script dir doesn't exist, make it.
-        local update_frequency="7d" # interval between update checks. Format: 1w3d4h5m6s (case insensitive); Default: 7d
         echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
 
         function parse_frequency(){ # Resolve $update_frequency from human readable form to seconds.
@@ -159,10 +162,12 @@ found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
             local week="$((7 * day))"
 
                 if [[ $update_frequency =~ ^0$ ]]; then
-                    : # If the update frequency is a plain 0, or "always"
-                elif [[ $update_frequency =~ ^[0-9]*[SsMmHhDdWw]$ ]]; then # Fallthrough in case of invalid pattern
+                    : # If the update frequency is a plain 0, no-op.
+                elif [[ $update_frequency =~ ^([0-9]*[SsMmHhDdWw])*$ ]]; then
                     update_frequency=$(( $(sed -E "s/[Ww]/ \* $week + /;s/[Dd]/ \* $day + /;s/[Hh]/ \* $hour + /;s/[Mm]/ \* $minute + /;s/[Ss]//" <<< $update_frequency) + 0 )) # this fails without an operation on the sed output, so we just do + 0
-                else
+                elif [[ $update_frequency =~ ^[0-9]*$ ]]; then
+                    : # If the value is numeric, just use it as is (no-op)
+                else # Fallthrough in case of invalid pattern
                     echo "${col[fg_orange]}Error:${col[reset]} Could not resolve value for ${col[fg_orange]}\$update_frequency=${col[reset]}\"$update_frequency\", defaulting to 1 Week"
                     update_frequency="$((1 * week ))"
                 fi
@@ -214,15 +219,14 @@ case $debug_verbosity in ## Debug: Missing plugins
         "https://127.0.0.1/fake_plugin/zsh-get-real"
         "https://127.0.0.1/fake/zsh-fake-debug-plugins"
         ); ( # Then echo out the lists.
-        echo -e "${col[fg_purple]}Wanted:${col[reset]} ${col[fg_orange]}"
+        echo -e "${col[fg_purple]}Wanted:${col[reset]}"
             for W in "${wanted_plugins[@]}"; do
-                echo -e "$W"
+                echo -e " ${col[fg_orange]}$W${col[reset]}"
             done
-        echo -e "${col[fg_purple]}Found:${col[reset]} ${col[fg_green]}"
+        echo -e "${col[fg_purple]}Found:${col[reset]}"
             for F in "${found_plugins[@]}"; do
-                echo -e "$F"
+                echo -e " ${col[fg_green]}$F${col[reset]}"
             done
-        echo -e "${col[reset]}"
         );;
 esac
 
