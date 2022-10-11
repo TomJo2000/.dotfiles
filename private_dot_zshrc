@@ -92,16 +92,27 @@ wanted_plugins=( # List plugins you wish to use by repo URL
     "https://github.com/zsh-users/zsh-syntax-highlighting"
 )
 
+# ** We can't quote looping over array keys with Zsh's syntax here, otherwise the Tokenization for VSCode's Outliner doesn't comprehend it.
+# shellcheck disable=SC2068,2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
 case $debug_verbosity in ## Debug: Color Array
     "color"|"all")
-    echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
-    # ** We can't quote looping over array keys with Zsh's syntax here, otherwise the Tokenization for VSCode's Outliner doesn't comprehend it.
-    # shellcheck disable=SC2068,2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
+    local max_length # (ACK) Based on: https://stackoverflow.com/a/59991764
+    max_length=$({ paste -d '&' <(printf "%s\n" "${(k)col[@]}") <(printf "%s\n" "${col[@]}") ;} | sed 's/&/\ ->\ /' | wc -L)
+
+    local separator="│"; local i=1; local x=$(( (${COLUMNS:-80} / 2) / max_length )) # Set parameters for line wrap
+
+    echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
         for key in ${(k)col[@]}; do
-            echo -ne "${col[$key]}$key${col[reset]} ->" # apply current escape sequence -> print current key -> reset sequence
-            echo -E " ${col[$key]}" # print current escape sequence uninterpreted
+            local clean_string="$key -> ${col[$key]}" # set $clean_string for justification
+            local formatted_string="${col[$key]}$key${col[reset]} -> ${col[$key]//\\/\\\\} " # set string with formatting; escape sequences escaped on the last part by replacing `\` with `\\` thus escaping the backslash
+                pad=$(( max_length - ${#clean_string} )) # get initial padding amount
+                while (( pad )) ; do # as long as we aren't at the length of the longest individual element,
+                    (( pad-- )); formatted_string="${formatted_string} " # remove one from the padding counter and add a space
+                done
+                echo -ne "$formatted_string" # print the padded string
+                (( i=i%x, i++ )) && echo -n "${separator:-'|'} " || echo # print a column separator after the padded string; break the line whenever it reaches half of the total screen width
         done
-    echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}";;
+    echo -e "\n${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}";;
 esac
 
 # Color banner
