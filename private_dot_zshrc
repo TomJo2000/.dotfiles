@@ -96,15 +96,14 @@ wanted_plugins=( # List plugins you wish to use by repo URL
 # shellcheck disable=SC2068,2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
 case $debug_verbosity in ## Debug: Color Array
     "color"|"all")
-        for key in ${(k)col[@]}; do # Find longest element of the text to be printed
-            local clean_string="$key -> ${col[$key]} " # Strings to be checked with no formatting
-            ((${#clean_string} > max_length)) && local max_length=${#clean_string} # set the string length of this instance of $clean_string as the $max_length if it is longer than the previous longest line.
-        done
+    local max_length # (ACK) Based on: https://stackoverflow.com/a/59991764
+    max_length=$({ paste -d '&' <(printf "%s\n" "${(k)col[@]}") <(printf "%s\n" "${col[@]}") ;} | sed 's/&/\ ->\ /' | wc -L)
+
     local separator="│"; local i=1; local x=$(( (${COLUMNS:-80} / 2) / max_length )) # Set parameters for line wrap
 
     echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
         for key in ${(k)col[@]}; do
-            local clean_string="$key -> ${col[$key]} " # set $clean_string for justification
+            local clean_string="$key -> ${col[$key]}" # set $clean_string for justification
             local formatted_string="${col[$key]}$key${col[reset]} -> ${col[$key]//\\/\\\\} " # set string with formatting; escape sequences escaped on the last part by replacing `\` with `\\` thus escaping the backslash
                 pad=$(( max_length - ${#clean_string} )) # get initial padding amount
                 while (( pad )) ; do # as long as we aren't at the length of the longest individual element,
