@@ -19,17 +19,18 @@ per=( # Permutations for foreground and background
 
 typeset -A pal # Array of base colors for the pallet
 pal=( #[name]="r ; g ; b "  # Color palette
-       [blue]="10;117;173"  # #0A75AD
-        [red]="214;30;28"   # #D61E1C
-       [pink]="255;51;184"  # #FF33B8
-     [purple]="144;16;240"  # #9010F0
-     [orange]="226;109;14"  # #E26D0E
-     [yellow]="237;188;"    # #EDBC00
-      [green]="29;166;90"   # #1DA65A
-      [white]="245;251;255" # #F5FBFF
- [light_grey]="176;178;180" # #B0B2B4
-  [dark_grey]="79;77;75"    # #4F4D4B
-      [black]="10;4;"       # #0A0400
+      [black]="10;4;"       # #0A0400 - 0
+        [red]="214;30;28"   # #D61E1C - 1
+      [green]="29;166;90"   # #1DA65A - 2
+     [yellow]="237;188;"    # #EDBC00 - 3
+       [blue]="10;117;173"  # #0A75AD - 4
+    [magenta]="255;51;184"  # #FF33B8 - 5
+       [cyan]=";206;241"    # #00CEF1 - 6
+ [light_grey]="176;178;180" # #B0B2B4 - 7
+  [dark_grey]="79;77;75"    # #4F4D4B - 8
+     [orange]="226;109;14"  # #E26D0E - 11
+     [purple]="144;16;240"  # #9010F0 - 13
+      [white]="245;251;255" # #F5FBFF - 15
 )
 
 typeset -A col
@@ -98,7 +99,6 @@ case $debug_verbosity in ## Debug: Color Array
     "color"|"all")
     local max_length # (ACK) Based on: https://stackoverflow.com/a/59991764
     max_length=$({ paste -d '&' <(printf "%s\n" "${(k)col[@]}") <(printf "%s\n" "${col[@]}") ;} | sed 's/&/\ ->\ /' | wc -L)
-
     local separator="│"; local i=1; local x=$(( (${COLUMNS:-80} / 2) / max_length )) # Set parameters for line wrap
 
     echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
@@ -119,7 +119,7 @@ esac
 local col_banner
 read -rd '' col_banner << MOTD_EOF
 \0              ${col[fg_blue]}dt
-          I@@w       ${col[fg_pink]}Starship Prompt
+          I@@w       ${col[fg_magenta]}Starship Prompt
          ${col[fg_blue]}r@@@@l                ${col[fg_light_grey]}using
         ${col[fg_blue]}f#@@@@#b    ${col[fg_orange]}<Name TBD> ${col[fg_light_grey]}theme
      ${col[fg_blue]},%gg@@@@@@0}m,   ${col[fg_light_grey]}by ${col[fg_yellow]}@TomIO#2000
