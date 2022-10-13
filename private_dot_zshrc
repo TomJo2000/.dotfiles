@@ -98,7 +98,7 @@ wanted_plugins=( # List plugins you wish to use by repo URL
 case $debug_verbosity in ## Debug: Color Array
     "color"|"all")
     local max_length # (ACK) Based on: https://stackoverflow.com/a/59991764
-    max_length=$({ paste -d '&' <(printf "%s\n" "${(k)col[@]}") <(printf "%s\n" "${col[@]}") ;} | sed 's/&/\ ->\ /' | wc -L)
+    max_length=$({ paste -d '' <(printf "%s -> \n" "${(k)col[@]}") <(printf "%s\n" "${col[@]}") ;} | wc -L)
     local separator="│"; local i=1; local x=$(( (${COLUMNS:-80} / 2) / max_length )) # Set parameters for line wrap
 
     echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
@@ -151,16 +151,14 @@ MOTD_EOF
     fi
 }
 
-if [[ -n $SSH_AUTH_SOCK ]]; then # see if SSH Agent is running
-    : # if it is, do nothing
-else
+if [[ ! -S "$SSH_AUTH_SOCK" ]]; then # see if SSH Agent is running
     eval "$(ssh-agent)" >> /dev/null # startup the SSH Agent; discard confirmation message
     echo -e "SSH Agent started\nPID: ${col[fg_dark_grey]}${col[bg_white]}$SSH_AGENT_PID${col[reset]}"
 fi
 
 case $debug_verbosity in ## Debug: SSH
     "ssh"|"all")
-    echo -e "$(ss -pl | grep -oP ".*\/ssh-.{12}\/agent\.[0-9]+" | wc -l) SSH agents running" || echo "Could not determine SSH Debug information"
+    echo -e "$( eval ls -d1 "${SSH_AUTH_SOCK//\/ssh*//ssh*}" | wc -l ) SSH agents running" || echo "Could not determine SSH Debug information"
     ;;
 esac
 
