@@ -10,38 +10,6 @@
 # (WIP) Work in Progress
 # (ACK) acknowledgment
 
-typeset -a debug_valid
-debug_valid=(
-"off"
-"color"
-"ssh"
-"updates"
-"installed"
-"missing"
-"all"
-)
-
-### Change value to enable debug output from this script.
-# Valid values:
-# Disable debug -> off (default)
-# Section specific -> color; updates; installed; missing; ssh;
-# Everything -> all
-debug_verbosity="off"
-
-function main(){ # contains everything that only needs to run when setting up a un-nested shell
-
-### **=====User settings=====**
-local zsh_script_dir="$HOME/.config/zsh/scripts" # "plugin" script location
-local update_frequency="7d" # ?? interval between update checks. Format: 1w2d3h4m5s (case insensitive); Default: 7d
-### **=======================**
-
-typeset -a wanted_plugins
-wanted_plugins=( # List plugins you wish to use by repo URL
-    "https://github.com/zsh-users/zsh-completions"
-    "https://github.com/zsh-users/zsh-autosuggestions"
-    "https://github.com/zsh-users/zsh-syntax-highlighting"
-)
-
 ### Color palette array for easier colorization
 typeset -A per
 per=( # Permutations for foreground and background
@@ -51,17 +19,18 @@ per=( # Permutations for foreground and background
 
 typeset -A pal # Array of base colors for the pallet
 pal=( #[name]="r ; g ; b "  # Color palette
-       [blue]="10;117;173"  # #0A75AD
-        [red]="214;30;28"   # #D61E1C
-       [pink]="255;51;184"  # #FF33B8
-     [purple]="144;16;240"  # #9010F0
-     [orange]="226;109;14"  # #E26D0E
-     [yellow]="237;188;"    # #EDBC00
-      [green]="29;166;90"   # #1DA65A
-      [white]="245;251;255" # #F5FBFF
- [light_grey]="176;178;180" # #B0B2B4
-  [dark_grey]="79;77;75"    # #4F4D4B
-      [black]="10;4;"       # #0A0400
+      [black]="10;4;"       # #0A0400 - 0
+        [red]="214;30;28"   # #D61E1C - 1
+      [green]="29;166;90"   # #1DA65A - 2
+     [yellow]="237;188;"    # #EDBC00 - 3
+       [blue]="10;117;173"  # #0A75AD - 4
+    [magenta]="255;51;184"  # #FF33B8 - 5
+       [cyan]=";206;241"    # #00CEF1 - 6
+ [light_grey]="176;178;180" # #B0B2B4 - 7
+  [dark_grey]="79;77;75"    # #4F4D4B - 8
+     [orange]="226;109;14"  # #E26D0E - 11
+     [purple]="144;16;240"  # #9010F0 - 13
+      [white]="245;251;255" # #F5FBFF - 15
 )
 
 typeset -A col
@@ -91,26 +60,66 @@ col+=( # append the following sequences to the `col` array
  [no_strike]="\e[29m"
 )
 
+typeset -a debug_valid
+debug_valid=(
+"off"
+"args"
+"color"
+"installed"
+"missing"
+"ssh"
+"updates"
+"all"
+)
+
+### Change value to enable debug output from this script.
+# Valid values:
+# Disable debug -> off (default)
+# Section specific -> color; updates; installed; missing; ssh;
+# Everything -> all
+debug_verbosity="off"
+
+function main(){ # contains everything that only needs to run when setting up a un-nested shell
+
+### **=====User settings=====**
+local zsh_script_dir="$HOME/.config/zsh/scripts" # "plugin" script location
+local update_frequency="7d" # ?? interval between update checks. Format: 1w2d3h4m5s (case insensitive); Default: 7d
+### **=======================**
+
+typeset -a wanted_plugins
+wanted_plugins=( # List plugins you wish to use by repo URL
+    "https://github.com/zsh-users/zsh-completions"
+    "https://github.com/zsh-users/zsh-autosuggestions"
+    "https://github.com/zsh-users/zsh-syntax-highlighting"
+)
+
+# ** We can't quote looping over array keys with Zsh's syntax here, otherwise the Tokenization for VSCode's Outliner doesn't comprehend it.
+# shellcheck disable=SC2068,2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
 case $debug_verbosity in ## Debug: Color Array
     "color"|"all")
-    echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
-    # ** We can't quote looping over array keys with Zsh's syntax here, otherwise the Tokenization for VSCode's Outliner doesn't comprehend it.
-    # shellcheck disable=SC2068,2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
-    ( # Put this in a subshell to avoid making $value a variable in the parent shell
+    local max_length # (ACK) Based on: https://stackoverflow.com/a/59991764
+    max_length=$({ paste -d '' <(printf "%s -> \n" "${(k)col[@]}") <(printf "%s\n" "${col[@]}") ;} | wc -L)
+    local separator="│"; local i=1; local x=$(( (${COLUMNS:-80} / 2) / max_length )) # Set parameters for line wrap
+
+    echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
         for key in ${(k)col[@]}; do
-            value="${col[$key]}"
-            echo -ne "$value$key ->${col[reset]}" # apply current escape sequence -> print current key -> reset sequence
-            echo -E " $value" # print current escape sequence uninterpreted
+            local clean_string="$key -> ${col[$key]}" # set $clean_string for justification
+            local formatted_string="${col[$key]}$key${col[reset]} -> ${col[$key]//\\/\\\\} " # set string with formatting; escape sequences escaped on the last part by replacing `\` with `\\` thus escaping the backslash
+                pad=$(( max_length - ${#clean_string} )) # get initial padding amount
+                while (( pad )) ; do # as long as we aren't at the length of the longest individual element,
+                    (( pad-- )); formatted_string="${formatted_string} " # remove one from the padding counter and add a space
+                done
+                echo -ne "$formatted_string" # print the padded string
+                (( i=i%x, i++ )) && echo -n "${separator:-'|'} " || echo # print a column separator after the padded string; break the line whenever it reaches half of the total screen width
         done
-    )
-    echo "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}";;
+    echo -e "\n${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}";;
 esac
 
 # Color banner
 local col_banner
 read -rd '' col_banner << MOTD_EOF
 \0              ${col[fg_blue]}dt
-          I@@w       ${col[fg_pink]}Starship Prompt
+          I@@w       ${col[fg_magenta]}Starship Prompt
          ${col[fg_blue]}r@@@@l                ${col[fg_light_grey]}using
         ${col[fg_blue]}f#@@@@#b    ${col[fg_orange]}<Name TBD> ${col[fg_light_grey]}theme
      ${col[fg_blue]},%gg@@@@@@0}m,   ${col[fg_light_grey]}by ${col[fg_yellow]}@TomIO#2000
@@ -142,16 +151,14 @@ MOTD_EOF
     fi
 }
 
-if [[ -n $SSH_AUTH_SOCK ]]; then # see if SSH Agent is running
-    : # if it is, do nothing
-else
+if [[ ! -S "$SSH_AUTH_SOCK" ]]; then # see if SSH Agent is running
     eval "$(ssh-agent)" >> /dev/null # startup the SSH Agent; discard confirmation message
     echo -e "SSH Agent started\nPID: ${col[fg_dark_grey]}${col[bg_white]}$SSH_AGENT_PID${col[reset]}"
 fi
 
 case $debug_verbosity in ## Debug: SSH
     "ssh"|"all")
-    echo -e "$(ss -pl | grep -oP ".*\/ssh-.{12}\/agent\.[0-9]+" | wc -l) SSH agents running" || echo "Could not determine SSH Debug information"
+    echo -e "$( eval ls -d1 "${SSH_AUTH_SOCK//\/ssh*//ssh*}" | wc -l ) SSH agents running" || echo "Could not determine SSH Debug information"
     ;;
 esac
 
@@ -241,21 +248,21 @@ case $debug_verbosity in ## Debug: Missing plugins
         );;
 esac
 
-typeset -a diff # Missing plugin check, with guard clause to not run in nested shells.
-diff=() # (ACK) Based on: https://stackoverflow.com/a/2315459
+typeset -a p_diff # Missing plugin check, with guard clause to not run in nested shells.
+local p_diff=() # (ACK) Based on: https://stackoverflow.com/a/2315459
     for plugins in "${wanted_plugins[@]##*\/}"; do
-        skip=''
+        local skip=''
         for found in "${found_plugins[@]##*\/}"; do
             [[ "$plugins" == "$found" ]] && { skip=1; break; }
         done
-        [[ -n $skip ]] || diff+=("$plugins")
+        [[ -n $skip ]] || p_diff+=("$plugins")
     done
 
-for missing in "${diff[@]}"; do
+for missing in "${p_diff[@]}"; do
     echo -e "[${col[fg_red]}$missing${col[reset]}] Missing"
 done
 
-unset -v found_plugins diff skip # Unset variables needed for missing script detection
+unset -v "found_plugins[@]" "p_diff[@]" "skip" # Unset variables needed for missing script detection
 
 
 ### Completions
@@ -272,9 +279,9 @@ export HISTSIZE=4000
 export SAVEHIST=10000
 
 ### Environment setup.
-export PATH="$PATH:$HOME/.cargo/bin/" # amend the $PATH variable
 export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:' # set custom $LS_COLORS
 
+[[ "$PATH" =~ (^|:)$HOME/.cargo/bin($|:) ]] || export PATH="$PATH:$HOME/.cargo/bin" # Check if the desired variable is in $PATH, otherwise amend it to $PATH
 
 # shellcheck disable=SC2155
 { ### less pager stylization
@@ -309,36 +316,71 @@ source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" 2> /dev/nul
 source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" 2> /dev/null # Syntax highlighting; should be loaded last
 }
 
-function get_new_verbosity(){
-while true; do
-    local user_input=''
-    echo "Please provide a valid setting for verbosity: "
-    read -r user_input
-    if [[ "${debug_valid[*]}" =~ $user_input ]]; then
-        debug_verbosity=$user_input; return
-    else
-        echo -e "\nValid options: \n${debug_valid[*]}"
-    fi
-done
-}
+function parse_args(){ # (ACK) Based on: https://stackoverflow.com/a/14203146
 
-function set_verbosity(){
-    if [[ "$#" -lt 2 && "$1" =~ (-v\s*|--verbose\s*|--debug\s*) ]]; then # if '-v' or '--verbose' was passed without a level
-        get_new_verbosity # run function to take and validate user input for the verbosity
-    elif [[ "$#" -gt 1 && "$1" =~ (-v\s*|--verbose\s*|--debug\s*) ]]; then # provided more than 1 arg was passed, and the first one is '-v' or '--verbose'
-        { [[ -n "$2" && ${2:0:1} != "-" ]] && # check that the following arg is not <NULL>(redundant?) and positional (aka not prefixed with a hyphen - )
-            local IFS="|"
-            case "$2" in # if it matches any of these it is valid
-                "${debug_valid[@]}") debug_verbosity="$2";;
-                *) get_new_verbosity ;; # run function to take and validate user input for the verbosity
-            esac
-        }
-    fi
+    function get_new_verbosity(){
+    while true; do
+        local user_input='' # reset input
+        echo -ne "Valid options: "
+            for element in "${debug_valid[@]}"; do
+                echo -ne "${col[bold]}${col[inv]}$element${col[reset]} "
+            done
+            echo -ne "\nPlease provide a valid setting for verbosity: "
+        read -r user_input
+        if [[ "${debug_valid[*]}" =~ (^|[[:space:]])$user_input($|[[:space:]]) ]]; then # the \s RegEx shorthand for whitespace does not work in test expressions, need to fallback to [[:space:]]
+            debug_verbosity=$user_input; return
+        fi
+    done
+    }
+
+local name="TomIO's .zshrc"
+local version="${col[uline]}${col[fg_yellow]}N/A${col[reset]}"
+local license="${col[fg_green]}AGPLv3${col[reset]}"
+
+local POSARGS=''
+    while (( "$#" )); do
+        case "$1" in
+        '-v'|'--verbose')
+            echo -ne "Found ${col[uline]}${col[ital]}'$1'${col[reset]} with option: ${col[uline]}${col[ital]}'${2:-<none>}'${col[reset]} "
+            if [[ -n "$2" && ${2:0:1} != "-" && ${debug_valid[*]} =~ (^|[[:space:]])$2($|[[:space:]]) ]]; then
+                    debug_verbosity="$2"
+                    shift 2
+            else
+                echo -e "which is invalid."
+                get_new_verbosity
+                shift
+            fi
+            echo
+        ;;
+        '-h'|'-?'|'--help')
+            echo -e "I haven't written a --help output yet"
+            break
+        ;;
+        '-V'|'--version')
+            echo -e "$name v$version | License: $license"
+            break
+        ;;
+        '--')
+            shift
+            POSARGS="$POSARGS $*"
+            [[ $debug_verbosity == 'args' ]] && echo -e "Found ${col[uline]}${col[ital]}'--'${col[reset]}, stopping parsing.\nLeftover args: $*"
+            break
+        ;;
+        --*=|--*|-*) # unknown flags
+            echo "Unknown flag $1, ignoring"
+            shift
+        ;;
+        *) # keep the order of positional arguments
+            POSARGS="$POSARGS $1"
+            shift
+        ;;
+        esac
+    done
+    eval set -- "$POSARGS"
 return
 }
-[[ "$*" =~ (-v\s*|--verbose\s*|--debug\s*) ]] && set_verbosity "$@" # if `-v` or `--verbose` was passed to the script adjust `$debug_verbosity` accordingly
 
-
+(( $# >= 1 )) && parse_args "$@" # if args were passed, parse them
 [[ $SHLVL == 1 || $debug_verbosity != 'off' ]] && main # Only run `main()` if we're in a un-nested shell, or debugging.
 
 
@@ -346,10 +388,10 @@ return
 eval "$(starship init zsh)" || \
 echo "Error: failed to initialize starship prompt"# Print error message if starship failed to initialize
 
-### Cleanup of remaining variables.
-unset -v "col[@] pal[@] per[@]" # colorscheme array, palette and permutations
-unset -v "debug_valid[@]" # Debug related variables
-unset -v "debug_verbosity"
+### Cleanup of remaining variables and functions.
+unset -v "pal[@]" "per[@]" # palette and permutations array
+unset -v "debug_valid[@]" "debug_verbosity" # debug related variables
+unset -f "main" "parse_args" # unset functions
 
 # [============================Helpful resources============================]
 # [ Hyperpolyglot.org's comparison of *NIX shell syntax                     ]

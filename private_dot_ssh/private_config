@@ -76,7 +76,7 @@ Host LaptopWork
 # Work laptop
 Host Josh-ISE
     User PC
-    Hostname Josh-ISE.lan
+    Hostname nb-bbw-PF2B2F3Q.lan
     IdentityFile ${HOME}/.ssh/keys/work/rsa-4096_ise
 
 Host Deb
