@@ -1,16 +1,4 @@
 ###<Name TBD> theme by @TomIO#2000
-# Color palette
-# #0A75AD - User/Hostname bg
-# #D61E1C - Error/Attention
-# #FF33B8 - /tmp directory and Termux Prefix
-# #9010F0 - Not Executable/Continuation Prompt
-# #E26D0E - Abort/Interrupt
-# #EDBC00 - Informational
-# #1DA65A - Success/Time
-# #F5FBFF - Text color general
-# #B0B2B4 - Text light
-# #4F4D4B - bg dark
-# #0A0400 - Text inverse
 
 # Comment styling
 # ** Highlight
@@ -46,10 +34,26 @@ format = """\
 #?? A continuation prompt is trigged if you enter an incomplete statement on the command line.
 #?? Only supported in Bash, Zsh and PowerShell.
 continuation_prompt = """\
-[>>>](fg:#9010F0)
+[>>>](fg:col_purple)
 """
 
 add_newline = false # disable multiline prompt
+
+palette = "24Bit" # !! This feature depends on `starship` >= v1.11.0
+
+[palettes.24Bit] #Color palette
+     col_black="#0A0400" # -- Text inverse
+       col_red="#D61E1C" # -- Error/Attention
+     col_green="#1DA65A" # -- Success/Time
+    col_yellow="#EDBC00" # -- Informational
+      col_blue="#0A75AD" # -- User/Hostname bg
+   col_magenta="#FF33B8" # -- /tmp directory and Termux Prefix
+      col_cyan="#00CEF1" # ~~ Currently unused
+col_light_grey="#B0B2B4" # -- Text light
+ col_dark_grey="#4F4D4B" # -- bg dark
+    col_orange="#E26D0E" # -- Abort/Interrupt
+    col_purple="#9010F0" # -- Continuation Prompt
+     col_white="#F5FBFF" # -- Text color general
 
 # [battery] # Battery Charge state (This breaks the Termux version of starship)
 # charging_symbol = ""
@@ -60,65 +64,65 @@ add_newline = false # disable multiline prompt
 # threshold = 10 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#D61E1C bg:#4F4D4B"
+# style = "fg:col_red bg:col_dark_grey"
 # 
 # [[battery.display]]
 # threshold = 20 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#D61E1C bg:#4F4D4B"
+# style = "fg:col_red bg:col_dark_grey"
 # 
 # [[battery.display]]
 # threshold = 30 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#E26D0E bg:#4F4D4B"
+# style = "fg:col_orange bg:col_dark_grey"
 # 
 # [[battery.display]]
 # threshold = 40 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#E26D0E bg:#4F4D4B"
+# style = "fg:col_orange bg:col_dark_grey"
 # 
 # [[battery.display]]
 # threshold = 50 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#EDBC00 bg:#4F4D4B"
+# style = "fg:col_yellow bg:col_dark_grey"
 # 
 # [[battery.display]]
 # threshold = 60 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#EDBC00 bg:#4F4D4B"
+# style = "fg:col_yellow bg:col_dark_grey"
 # 
 # [[battery.display]]
 # threshold = 70 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#EDBC00 bg:#4F4D4B"
+# style = "fg:col_yellow bg:col_dark_grey"
 # 
 # [[battery.display]]
 # threshold = 80 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#1DA65A bg:#4F4D4B"
+# style = "fg:col_green bg:col_dark_grey"
 # 
 # [[battery.display]]
 # threshold = 90 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#1DA65A bg:#4F4D4B"
+# style = "fg:col_green bg:col_dark_grey"
 # 
 # [[battery.display]]
 # threshold = 99 # %
 # charging_symbol = ""
 # discharging_symbol = ""
-# style = "fg:#1DA65A bg:#4F4D4B"
+# style = "fg:col_green bg:col_dark_grey"
 
 [cmd_duration] # track runtime of a command
 disabled = false
-style = "fg:#EDBC00 bg:#4F4D4B"
+style = "fg:col_yellow bg:col_dark_grey"
 min_time = 1_000
 show_milliseconds = true
 show_notifications = false
@@ -131,15 +135,15 @@ use_stdin = false
 detect_folders = [".git"]
 when = "[ $(git rev-parse --show-toplevel 2> /dev/null) ]"
 description = "Adds a newline if a .git folder is found in the current working directory"
-style = "fg:#E26D0E bg:#1DA65A"
+style = "fg:col_orange bg:col_green"
 symbol = "\n "
 format = "[$symbol]($style)"
 
 
 [directory] # current directory
-style = "fg:#D61E1C bg:#4F4D4B"
-read_only_style = "fg:#D61E1C bg:#4F4D4B"
-repo_root_style = "fg:#E26D0E bg:#4F4D4B"
+style = "fg:col_red bg:col_dark_grey"
+read_only_style = "fg:col_red bg:col_dark_grey"
+repo_root_style = "fg:col_orange bg:col_dark_grey"
 truncation_length = 255 # maximum path depth before truncation
 read_only = ""
 truncation_symbol = " "
@@ -147,7 +151,7 @@ use_os_path_sep = true # '/' for Linux/MacOS or other UNIX based systems; '\' fo
 use_logical_path = false
 truncate_to_repo = true # change this if you prefer showing the full path
 format = "([$read_only]($read_only_style))[$path]($style)"
-repo_root_format = "[$before_root_path](fg:#B0B2B4 bg:#4F4D4B)[$read_only]($read_only_style)[\n  $repo_root]($repo_root_style)[$path](fg:#B0B2B4 bg:#4F4D4B)"
+repo_root_format = "[$before_root_path](fg:col_light_grey bg:col_dark_grey)[$read_only]($read_only_style)[\n  $repo_root]($repo_root_style)[$path](fg:col_light_grey bg:col_dark_grey)"
 
 [directory.substitutions] # Differential coloring for certain directories
 # ANSI escape sequence rituals for 
@@ -179,15 +183,15 @@ repo_root_format = "[$before_root_path](fg:#B0B2B4 bg:#4F4D4B)[$read_only]($read
 # ?? for more info see: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797#rgb-colors
 
 ### special cases - bg:#4F4D4B (inherited from [directory] module, <style> key)
-"~" = "\u001B\u005B38;2;29;166;90m~\u001B\u005B38;2;176;178;180m"          #      <~> fg:#1DA65A
-"/dev" = "\u001B\u005B38;2;226;109;14m/dev\u001B\u005B38;2;176;178;180m"   #   </dev> fg:#E26D0E
-"/etc" = "\u001B\u005B38;2;10;117;173m/etc\u001B\u005B38;2;176;178;180m"   #   </etc> fg:#0A75AD
-"/tmp" = "\u001B\u005B38;2;255;51;184m/tmp\u001B\u005B38;2;176;178;180m"   #   </tmp> fg:#FF33B8
-"/var" = "\u001B\u005B38;2;237;188;5m/var\u001B\u005B38;2;176;178;180m"    #   </var> fg:#EDBC00
-"/root" = "\u001B\u005B38;2;214;30;28m/root\u001B\u005B38;2;176;178;180m"  #  </root> fg:#D61E1C
-"/mnt" = "\u001B\u005B38;2;10;117;173m/mnt\u001B\u005B38;2;176;178;180m"   #   </mnt> fg:#0A75AD
-"/usr" = "\u001B\u005B38;2;226;109;14m/usr\u001B\u005B38;2;176;178;180m"   #   </usr> fg:#E26D0E
-"/home" = "\u001B\u005B38;2;29;166;90m/home\u001B\u005B38;2;176;178;180m"  #  </home> fg:#1DA65A
+"~" = "\u001B\u005B38;2;29;166;90m~\u001B\u005B38;2;176;178;180m"         # <~> fg:#1DA65A
+"/dev" = "\u001B\u005B38;2;226;109;14m/dev\u001B\u005B38;2;176;178;180m"  # </dev> fg:#E26D0E
+"/etc" = "\u001B\u005B38;2;10;117;173m/etc\u001B\u005B38;2;176;178;180m"  # </etc> fg:#0A75AD
+"/tmp" = "\u001B\u005B38;2;255;51;184m/tmp\u001B\u005B38;2;176;178;180m"  # </tmp> fg:#FF33B8
+"/var" = "\u001B\u005B38;2;237;188;5m/var\u001B\u005B38;2;176;178;180m"   # </var> fg:#EDBC00
+"/root" = "\u001B\u005B38;2;214;30;28m/root\u001B\u005B38;2;176;178;180m" # </root> fg:#D61E1C
+"/mnt" = "\u001B\u005B38;2;10;117;173m/mnt\u001B\u005B38;2;176;178;180m"  # </mnt> fg:#0A75AD
+"/usr" = "\u001B\u005B38;2;226;109;14m/usr\u001B\u005B38;2;176;178;180m"  # </usr> fg:#E26D0E
+"/home" = "\u001B\u005B38;2;29;166;90m/home\u001B\u005B38;2;176;178;180m" # </home> fg:#1DA65A
 "/data/data/com.termux/files" = "\u001B\u005B38;2;255;51;184mTermux\u001B\u005B38;2;176;178;180m" # fg:#FF33B8
 ### general case - fg:#B0B2B4 bg:#4F4D4B (inherited from [directory] module, <style> key)
 "/bin" = "\u001B\u005B38;2;176;178;180m/bin"
@@ -208,14 +212,14 @@ repo_root_format = "[$before_root_path](fg:#B0B2B4 bg:#4F4D4B)[$read_only]($read
 disabled = false
 variable = "ANDROID_ROOT"
 symbol = " "
-style = "fg:#1DA65A bg:#4F4D4B"
+style = "fg:col_green bg:col_dark_grey"
 format = "[$symbol]($style)"
 
 ### Modules for git
 [git_branch] # name of the current git branch
 disabled = false
 symbol = " "
-style = "fg:#EDBC00 bg:#4F4D4B"
+style = "fg:col_yellow bg:col_dark_grey"
 # truncation_length = 4
 # truncation_symbol = ""
 format = "[$symbol$branch]($style)"
@@ -224,7 +228,7 @@ format = "[$symbol$branch]($style)"
 disabled = false
 tag_disabled = false
 tag_symbol = "#"
-style = "fg:#EDBC00 bg:#4F4D4B"
+style = "fg:col_yellow bg:col_dark_grey"
 commit_hash_length = 7
 only_detached = true # Don't show Hash when on regular main branch
 format = "([$tag$hash]($style))"
@@ -232,14 +236,14 @@ format = "([$tag$hash]($style))"
 [git_metrics] # show additions and deletions since last push
 disabled = false
 only_nonzero_diffs = true # set false for testing purposes
-added_style = "fg:#1DA65A bg:#4F4D4B"
-deleted_style = "fg:#D61E1C bg:#4F4D4B"
-format = "([](fg:#EDBC00 bg:#4F4D4B)[$added]($added_style)[⥮](fg:#B0B2B4 bg:#4F4D4B)[$deleted]($deleted_style))"
+added_style = "fg:col_green bg:col_dark_grey"
+deleted_style = "fg:col_red bg:col_dark_grey"
+format = "([](fg:col_yellow bg:col_dark_grey)[$added]($added_style)[⥮](fg:col_light_grey bg:col_dark_grey)[$deleted]($deleted_style))"
 
 
 [git_state] # progress of the current git operation
 disabled = false
-style = "fg:#EDBC00 bg:#4F4D4B"
+style = "fg:col_yellow bg:col_dark_grey"
 rebase = "rebasing"
 merge = "merging"
 revert = "reverting"
@@ -251,7 +255,7 @@ format = "[$state(❮$progress_current/$progress_total❯)]($style)"
 
 [git_status] # symbolic and plaintext versions for clairity (if preferred).
 disabled = false
-style = "fg:#EDBC00 bg:#4F4D4B"
+style = "fg:col_yellow bg:col_dark_grey"
 stashed = "${count}" # Regular symbol for stashed files
 # stashed = "stashed:${count}"
 staged = "${count}" # Regular symbol for staged files
@@ -276,16 +280,16 @@ format = "([$stashed$staged$modified$renamed$untracked$deleted$conflicted$ahe
 
 [hostname] # system hostname, with indicator if logged in via SSH session.
 disabled = false
-style = "fg:#F5FBFF bg:#0A75AD"
+style = "fg:col_white bg:col_blue"
 #trim_at = "."
 ssh_only = false
 ssh_symbol = " "
-format = "[@$hostname$ssh_symbol]($style)[](fg:#B0B2B4 bg:#4F4D4B)"
+format = "[@$hostname$ssh_symbol]($style)[](fg:col_light_grey bg:col_dark_grey)"
 
 [jobs] # background tasks
 disabled = false
 symbol = " "
-style = "bold fg:#EDBC00 bg:#0A75AD"
+style = "bold fg:col_yellow bg:col_blue"
 number_threshold = 1
 symbol_threshold = 1
 format = "[$number$symbol]($style)"
@@ -303,41 +307,41 @@ format = "[$number$symbol]($style)"
 # xonsh_indicator = ""
 # zsh_indicator = "z"
 # unknown_indicator = "?"
-# style = "fg:#0A75AD"
+# style = "fg:col_blue"
 
 [shlvl] # indicator for nested shells
 disabled = false
 symbol = ""
-style = "bold fg:#EDBC00 bg:#0A75AD"
+style = "bold fg:col_yellow bg:col_blue"
 threshold = 2
 format = "[$symbol$shlvl]($style)"
 
 [status] # customized end segments for the prompt based on exit code
 disabled = false
-symbol = "[$status](underline fg:#D61E1C bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[](fg:#4F4D4B bg:#D61E1C)[](fg:#D61E1C)"
-success_symbol = "[](fg:#4F4D4B bg:#1DA65A)[](fg:#1DA65A)" # Don't show exit code <0> on success
-not_executable_symbol = "[$status](underline fg:#E26D0E bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)"
-not_found_symbol = "[$status](underline fg:#EDBC00 bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[?](fg:#EDBC00 bg:#4F4D4B)[](bg:#EDBC00 fg:#4F4D4B)[](fg:#EDBC00)"
-sigint_symbol = "[$status](underline fg:#E26D0E bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[ ](fg:#E26D0E bg:#4F4D4B)[](bg:#E26D0E fg:#4F4D4B)[](fg:#E26D0E)"
-signal_symbol = "[$status](underline fg:#0A75AD bg:#4F4D4B)[](bold fg:#B0B2B4 bg:#4F4D4B)[](fg:#0A75AD bg:#4F4D4B)[](bg:#0A75AD fg:#4F4D4B)[](fg:#0A75AD)"
-style = "bold fg:#B0B2B4 bg:#4F4D4B"
+symbol = "[$status](underline fg:col_red bg:col_dark_grey)[](bold fg:col_light_grey bg:col_dark_grey)[](fg:col_dark_grey bg:col_red)[](fg:col_red)"
+success_symbol = "[](fg:col_dark_grey bg:col_green)[](fg:col_green)" # Don't show exit code <0> on success
+not_executable_symbol = "[$status](underline fg:col_orange bg:col_dark_grey)[](bold fg:col_light_grey bg:col_dark_grey)[ ](fg:col_orange bg:col_dark_grey)[](bg:col_orange fg:col_dark_grey)[](fg:col_orange)"
+not_found_symbol = "[$status](underline fg:col_yellow bg:col_dark_grey)[](bold fg:col_light_grey bg:col_dark_grey)[?](fg:col_yellow bg:col_dark_grey)[](bg:col_yellow fg:col_dark_grey)[](fg:col_yellow)"
+sigint_symbol = "[$status](underline fg:col_orange bg:col_dark_grey)[](bold fg:col_light_grey bg:col_dark_grey)[ ](fg:col_orange bg:col_dark_grey)[](bg:col_orange fg:col_dark_grey)[](fg:col_orange)"
+signal_symbol = "[$status](underline fg:col_blue bg:col_dark_grey)[](bold fg:col_light_grey bg:col_dark_grey)[](fg:col_blue bg:col_dark_grey)[](bg:col_blue fg:col_dark_grey)[](fg:col_blue)"
+style = "bold fg:col_light_grey bg:col_dark_grey"
 map_symbol = true
 recognize_signal_code = true
 format = '[$symbol]($style)'
 ### Pipe Status handling - not currently implemented, it'd be very janky with this setup. Might add it if I get a good idea how to handle the formatting properly
 #pipestatus = true
 #pipestatus_separator = "|"
-#pipestatus_format = "[易$pipestatus](fg:#EDBC00 bg:#4F4D4B)[$common_meaning$signal_name]($style)"
+#pipestatus_format = "[易$pipestatus](fg:col_yellow bg:col_dark_grey)[$common_meaning$signal_name]($style)"
 
 [sudo] # indicate stored sudo credentials
 disabled = false
-style = "fg:#D61E1C bg:#0A75AD"
+style = "fg:col_red bg:col_blue"
 symbol = " "
 format = "[$symbol]($style)"
 
 [time] # time; HH:MM:SS (local time)
 disabled = false
-style = "fg:#0A0400 bg:#1DA65A"
+style = "fg:col_black bg:col_green"
 use_12hr = false
 time_format = "%H:%M:%S"
 utc_time_offset = "local"
@@ -346,7 +350,7 @@ format = "[❮]($style)[$time](underline $style)[❯]($style)"
 [username] # the currently logged in user
 disabled = false
 show_always = true
-style_root = "bold fg:#D61E1C bg:#0A75AD"
-style_user = "fg:#F5FBFF bg:#0A75AD"
+style_root = "bold fg:col_red bg:col_blue"
+style_user = "fg:col_white bg:col_blue"
 format = "[$user]($style)"
-#EOF.
+#EOF
