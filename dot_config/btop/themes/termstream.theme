@@ -1,0 +1,79 @@
+# Theme: TermStream
+# By: TomIO
+# I'm treating this file as Shellscript for markup purposes
+# shellcheck shell=bash disable=SC2034,SC2154
+
+
+### General settings
+theme[title]="#F5FBFF" # color for box headers
+theme[main_fg]="#B0B2B4" # main text color
+theme[main_bg]="" # main background color, empty is equivalent to transparent/default terminal background color
+theme[hi_fg]="#E26D0E" # Highlight color for keyboard shortcuts
+theme[meter_bg]="#4F4D4B" # Background color of the percentage meters
+theme[graph_text]="#00CEF1" # annotation color; uptime, network graph scaling and process runtime
+
+# Box borders
+theme[cpu_box]="#0A75AD" # border for CPU box
+theme[mem_box]="#0A75AD" # border for Memory/DiskIO box
+theme[net_box]="#0A75AD" # border for Network traffic box
+theme[proc_box]="#0A75AD" # border for Processes box
+theme[div_line]="#0A75AD" # box divider line and small boxes line color
+
+
+### Process box settings
+theme[selected_fg]="#F5FBFF" # text color for selected process
+theme[selected_bg]="#4F4D4B" # background color for selected process
+theme[inactive_fg]="#0A0400" # shading on process box when not selected
+theme[proc_misc]="#00CEF1" # Misc colors for processes box including mini cpu graphs, details memory graph and details status text
+
+# Gradient for threads, mem and cpu usage
+theme[process_start]="#1DA65A"
+theme[process_mid]="#EDBC00"
+theme[process_end]="#E26D0E"
+
+
+### Memory/Swap/DiskIO box settings
+# Mem/Disk free meter
+theme[free_end]="#1DA65A"
+theme[free_mid]="#EDBC00"
+theme[free_start]="#D61E1C"
+
+# Mem/Disk cached meter
+theme[cached_start]="#1DA65A"
+theme[cached_mid]="#EDBC00"
+theme[cached_end]="#D61E1C"
+
+# Mem/Disk available meter
+theme[available_start]="#D61E1C"
+theme[available_mid]="#EDBC00"
+theme[available_end]="#1DA65A"
+
+# Mem/Disk used meter
+theme[used_start]="#1DA65A"
+theme[used_mid]="#EDBC00"
+theme[used_end]="#E26D0E"
+
+
+
+### Networking box settings
+# Upload graph colors
+theme[upload_start]="#9010F0"
+theme[upload_mid]="#FF33B8"
+theme[upload_end]="#E26D0E"
+
+# Download graph colors
+theme[download_start]="#9010F0"
+theme[download_mid]="#0A75AD"
+theme[download_end]="#00CEF1"
+
+
+### CPU box settings
+# CPU graph colors
+theme[cpu_start]="#1DA65A"
+theme[cpu_mid]="#EDBC00"
+theme[cpu_end]="#D61E1C"
+
+# Temperature graph colors
+theme[temp_start]="#1DA65A"
+theme[temp_mid]="#EDBC00"
+theme[temp_end]="#D61E1C"
