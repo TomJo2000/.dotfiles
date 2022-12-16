@@ -4,11 +4,13 @@
 # Comment styling
 # ** Highlight
 # ?? Informational
+# <> annotations for whole code blocks, i.e purpose of a function, bracegroup, loop, etc.
 # !! Important
 # ~~ Invalidated
 # (TODO) Todo comments
 # (WIP) Work in Progress
 # (ACK) acknowledgment
+# (RegEx) additional explanations for RegEx
 
 ### Color palette array for easier colorization
 typeset -A per
