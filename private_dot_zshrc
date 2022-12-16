@@ -12,6 +12,29 @@
 # (ACK) acknowledgment
 # (RegEx) additional explanations for RegEx
 
+zmodload zsh/datetime # ** $EPOCHREALTIME is provided by zsh/datetime, thus it has to be loaded before the first use of that variable.
+declare -gA timing; timing[all]="$EPOCHREALTIME"
+### **=====User settings=====**
+zsh_script_dir="$HOME/.config/zsh/scripts" # "plugin" script location
+update_frequency="7d" # ?? interval between update checks. Format: 1w2d3h4m5s (case insensitive); Default: 7d
+### **=======================**
+
+function setup(){ # <> General setup that has to run regardless of shell level
+
+timing[plugin_list]="$EPOCHREALTIME"
+declare -gA plugins=( # ?? List plugins you wish to use by repo URL
+                 [col_gen]="$zsh_script_dir/col_gen/col_gen.sh" # local
+                 [percode]="$zsh_script_dir/percode/percode.sh" # local
+            [shared_agent]="$zsh_script_dir/shared_agent/shared_agent.sh" # local
+               [shell_pad]="$zsh_script_dir/shell_pad/shell_pad.zsh" # local
+                  [typeof]="$zsh_script_dir/typeof/typeof.sh" # local
+     [zsh-autosuggestions]="https://github.com/zsh-users/zsh-autosuggestions"
+         [zsh-completions]="https://github.com/zsh-users/zsh-completions"
+ [zsh-syntax-highlighting]="https://github.com/zsh-users/zsh-syntax-highlighting"
+)
+timing[plugin_list]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[plugin_list]) * 1000 ))" "ms │  ┌─ List expected plugins - setup:$LINENO")
+
+timing[color]="$EPOCHREALTIME"
 ### Color palette array for easier colorization
 declare -A per; per=( # Permutations for foreground and background
     [fg_]="38;2;"
@@ -90,8 +113,9 @@ col+=( # ** append the following sequences to the `col[]` array
     [strike]="\e[9m"  # strikethrough
  [no_strike]="\e[29m"
 )
+timing[color]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[color]) * 1000 ))" "ms │  ├─ Color Palette Generation - setup:$LINENO")
 
-typeset -a debug_valid
+timing[debug]="$EPOCHREALTIME"
 declare -ga debug_valid=( # valid values for $debug_verbosity, set with the `-v|--verbose <value>` flag.
 "all"
 "args"
@@ -105,12 +129,8 @@ declare -ga debug_valid=( # valid values for $debug_verbosity, set with the `-v|
 )
 debug_verbosity=''
 
-### Change value to enable debug output from this script.
-# Valid values:
-# Disable debug -> off (default)
-# Section specific -> color; updates; installed; missing; ssh;
-# Everything -> all
-debug_verbosity="off"
+timing[debug]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[debug]) * 1000 ))" "ms │  ├─ Define valid debug values - setup:$LINENO")
+}; setup; timing[setup]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[all]) * 1000 ))" "ms ├─ setup() - L:$LINENO")
 
 function main(){ # contains everything that only needs to run when setting up a un-nested shell
 
@@ -122,7 +142,9 @@ function main(){ # contains everything that only needs to run when setting up a 
         echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
 }
 
-# Color banner
+
+timing[printouts]="$EPOCHREALTIME"
+# Color banner 
 local col_banner
 printf -v col_banner "%b%-$(( COLUMNS / 30 ))b" \
     "" "" \
@@ -178,7 +200,9 @@ typeset -a found_plugins # list of installed plugins
 # shellcheck disable=SC2207 # We're taking care of this ourselves
 found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
 
-    function updates(){ # Everything relating to Zsh plugin update checking.
+timing[printouts]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[printouts]) * 1000 ))" "ms │  ┌─ Printouts - main:$LINENO")
+
+    function updates(){ # <> Everything relating to update checking.
 
         [[ ! -d $zsh_script_dir || ! -e $zsh_script_dir ]] && mkdir -p "$zsh_script_dir" # if script dir doesn't exist, make it.
         echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
@@ -235,10 +259,9 @@ found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
             done
         touch -cm "$zsh_script_dir" # Update the script directories modification time.
         }
-        fi
-    }; updates # Run the updates function, since we're done defining it.
+    }; timing[updates]="$EPOCHREALTIME"; updates; timing[updates]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[updates]) * 1000 ))" "ms │  ├─ Update checking - main:$LINENO") # Run the updates function, since we're done defining it.
 
-
+    timing[plugins]="$EPOCHREALTIME"
 ### Evaluate missing plugins
 [[ $debug_verbosity =~ ^("missing"|"all")$ ]] && { ## Debug: Missing plugins # (RegEx) Only define this if $debug_verbosity is 'missing' or 'all'
     debug_plugins=( # Add a couple fake missing plug-ins for debugging
@@ -276,6 +299,8 @@ local p_diff=() # (ACK) Based on: https://stackoverflow.com/a/2315459
 
 
 unset -v "found_plugins[@]" "p_diff[@]" "skip" # Unset variables needed for missing script detection
+timing[plugins]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[plugins]) * 1000 ))" "ms │  ├─ Plugin checking - main:$LINENO")
+
 
 
 ### Completions
@@ -404,9 +429,11 @@ local posargs=''
     eval set -- "$posargs" # restore positional arguments
 return
 }
+[[ "$#" ]] && timing[args]="$EPOCHREALTIME"; parse_args "$@" # if args were passed, parse them
+timing[args]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[args]) * 1000 ))" "ms ├─ parse_args() - L:$LINENO")
 
-(( $# >= 1 )) && parse_args "$@" # if args were passed, parse them
-[[ $SHLVL == 1 || $debug_verbosity != 'off' ]] && main # Only run `main()` if we're in a un-nested shell, or debugging.
+[[ ( "$SHLVL" == 1 ) || ! $debug_verbosity =~ ^(off|)$ ]] && timing[main]="$EPOCHREALTIME"; main # Only run `main()` if we're in a un-nested shell, or debugging.
+timing[main]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[main]) * 1000 ))" "ms └─ main() - L:$LINENO")
 
 
 ### initialize starship prompt, this needs to be done in every nested shell.
@@ -417,6 +444,20 @@ echo "Error: failed to initialize starship prompt"# Print error message if stars
 unset -f "setup" "main" "parse_args" # unset functions
 unset -v "plugins[@]" "debug_valid[@]" "debug_verbosity" # debug related variables
 
+# <> Timing printout
+printf '%b' \
+"${timing[plugin_list]}\n" \
+"${timing[color]}\n" \
+"${timing[debug]}\n" \
+"${timing[setup]}\n" \
+"${timing[args]:=Args\:   not run}\n" \
+"${timing[printouts]}\n" \
+"${timing[updates]}\n" \
+"${timing[plugins]}\n" \
+"${timing[main]:=main()\: not run}\n"
+
+printf '%8.2f%s\n' "$(( (EPOCHREALTIME - timing[all]) * 1000 ))" "ms - Total time"
+unset -v "timing[@]"
 
 # [============================Helpful resources============================]
 # [ Hyperpolyglot.org's comparison of *NIX shell syntax                     ]
