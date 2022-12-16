@@ -374,7 +374,7 @@ function parse_args(){ # (ACK) Based on: https://stackoverflow.com/a/14203146
 # shellcheck disable=SC2068,SC2296 # ?? Shellcheck doesn't understand Zsh's method for looping over associative array keys.
 { # <> Version and dependency information
 local name="TomIO's .zshrc"
-local version="${col[uline]}${col[fg_yellow]}N/A${col[reset]}"
+local version="${col[uline]}${col[fg_yellow]}v1.1.0${col[reset]}"
 local license="${col[fg_green]}AGPLv3${col[reset]}"
 local dependencies; printf -v dependencies '%b' \
     "${col[orange]}${col[uline]}Dependencies:${col[reset]}\n" \
