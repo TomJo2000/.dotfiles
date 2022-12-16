@@ -92,16 +92,18 @@ col+=( # ** append the following sequences to the `col[]` array
 )
 
 typeset -a debug_valid
-debug_valid=(
-"off"
+declare -ga debug_valid=( # valid values for $debug_verbosity, set with the `-v|--verbose <value>` flag.
+"all"
 "args"
+"banner"
 "color"
 "installed"
 "missing"
+"off"
 "ssh"
 "updates"
-"all"
 )
+debug_verbosity=''
 
 ### Change value to enable debug output from this script.
 # Valid values:
@@ -112,39 +114,13 @@ debug_verbosity="off"
 
 function main(){ # contains everything that only needs to run when setting up a un-nested shell
 
-### **=====User settings=====**
-local zsh_script_dir="$HOME/.config/zsh/scripts" # "plugin" script location
-local update_frequency="7d" # ?? interval between update checks. Format: 1w2d3h4m5s (case insensitive); Default: 7d
-### **=======================**
-
-typeset -a wanted_plugins
-wanted_plugins=( # List plugins you wish to use by repo URL
-    "https://github.com/zsh-users/zsh-completions"
-    "https://github.com/zsh-users/zsh-autosuggestions"
-    "https://github.com/zsh-users/zsh-syntax-highlighting"
-)
-
-# ** We can't quote looping over array keys with Zsh's syntax here, otherwise the Tokenization for VSCode's Outliner doesn't comprehend it.
-# shellcheck disable=SC2068,2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
-case $debug_verbosity in ## Debug: Color Array
-    "color"|"all")
-    local max_length # (ACK) Based on: https://stackoverflow.com/a/59991764
-    max_length=$({ paste -d '' <(printf "%s -> \n" "${(k)col[@]}") <(printf "%s\n" "${col[@]}") ;} | wc -L)
-    local separator="│"; local i=1; local x=$(( (${COLUMNS:-80} / 2) / max_length )) # Set parameters for line wrap
-
-    echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
-        for key in ${(k)col[@]}; do
-            local clean_string="$key -> ${col[$key]}" # set $clean_string for justification
-            local formatted_string="${col[$key]}$key${col[reset]} -> ${col[$key]//\\/\\\\} " # set string with formatting; escape sequences escaped on the last part by replacing `\` with `\\` thus escaping the backslash
-                pad=$(( max_length - ${#clean_string} )) # get initial padding amount
-                while (( pad )) ; do # as long as we aren't at the length of the longest individual element,
-                    (( pad-- )); formatted_string="${formatted_string} " # remove one from the padding counter and add a space
-                done
-                echo -ne "$formatted_string" # print the padded string
-                (( i=i%x, i++ )) && echo -n "${separator:-'|'} " || echo # print a column separator after the padded string; break the line whenever it reaches half of the total screen width
-        done
-    echo -e "\n${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}";;
-esac
+[[ $debug_verbosity =~ ^(color|all)$ ]] && { ## Debug: Color # (RegEx) Only define this if $debug_verbosity is 'color' or 'all'
+        echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
+            # (WIP) Redoing color debugging
+            # shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
+            source "$zsh_script_dir/shell-pad/shell-pad.zsh" "${col[@]}" || echo "under construction"
+        echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
+}
 
 # Color banner
 local col_banner
@@ -166,6 +142,14 @@ printf -v col_banner "%b%-$(( COLUMNS / 30 ))b" \
     "    ##zEosyuyweaIuMQ" "\n"\
     "   ´%°             m${col[reset]}"
 
+[[ ! $debug_verbosity =~ ^(banner|all|)$ ]] && { ## Debug banner: # (RegEx) Only redefine the banner if $debug_verbosity isn't 'banner', 'all' or unset
+    printf -v col_banner "%b${col[reset]}" \
+      "${col[fg_green]}${col[bg_dark_grey]}D" "${col[fg_yellow]}   ${col[uline]}__${col[no_uline]}" \
+    "\n${col[fg_green]}${col[bg_dark_grey]}e" "${col[fg_yellow]} <(${col[reset]}o ${col[fg_yellow]})${col[uline]}___${col[no_uline]}" \
+    "\n${col[fg_green]}${col[bg_dark_grey]}b" "${col[fg_yellow]}  ( .${col[uline]}_${col[no_uline]}> /" \
+    "\n${col[fg_green]}${col[bg_dark_grey]}u" "${col[fg_yellow]}   \`${col[uline]}___${col[no_uline]}/" \
+    "\n${col[fg_green]}${col[bg_dark_grey]}g${col[reset]}"; }
+
 
     [[ -z $ANDROID_ROOT ]] && echo -e "$col_banner" # test that we're not on Android/Termux.
     [[ -n $STARSHIP_SHELL ]] && echo "🚀 Starship Prompt Initialized" # print confirmation message if starship successfully started
@@ -185,11 +169,9 @@ if [[ ! -S "$SSH_AUTH_SOCK" ]]; then # see if SSH Agent is running
     echo -e "SSH Agent started\nPID: ${col[fg_dark_grey]}${col[bg_white]}$SSH_AGENT_PID${col[reset]}"
 fi
 
-case $debug_verbosity in ## Debug: SSH
-    "ssh"|"all")
+[[ $debug_verbosity =~ ^(ssh|all)$ ]] && { ## Debug: SSH # (RegEx) Only define this if $debug_verbosity is 'ssh' or 'all'
     echo -e "$( eval ls -d1 "${SSH_AUTH_SOCK//\/ssh*//ssh*}" | wc -l ) SSH agents running" || echo "Could not determine SSH Debug information"
-    ;;
-esac
+}
 
 ### Update checking
 typeset -a found_plugins # list of installed plugins
@@ -201,7 +183,8 @@ found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
         [[ ! -d $zsh_script_dir || ! -e $zsh_script_dir ]] && mkdir -p "$zsh_script_dir" # if script dir doesn't exist, make it.
         echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
 
-        function parse_frequency(){ # Resolve $update_frequency from human readable form to seconds.
+        function parse_frequency(){ # <> Resolve $update_frequency from human readable form to seconds.
+            [[ $debug_verbosity =~ ^(updates|all)$ ]] && return # If we are debugging updates, this is irrelevant.
 
             local minute="60" # Seconds
             local hour="$((60 * minute))"
@@ -228,8 +211,9 @@ found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
             return
             }; parse_frequency
 
-        if (( EPOCHSECONDS - $(date -r "$zsh_script_dir" +%s) >= update_frequency )); then { # The difference of now and the last update has to be greater or equal to the update frequency
+        [[ $debug_verbosity =~ ^(updates|all)$ || $(( EPOCHSECONDS - $(date -r "$zsh_script_dir" +%s) )) -ge "$update_frequency" ]] && { # <> This only runs if the update_frequency has passed or we're debugging this
             check_upstream() { # (ACK) Based on https://stackoverflow.com/a/3278427
+
                 local UPSTREAM; UPSTREAM='@{u}'
                 local LOCAL   ; LOCAL=$(git rev-parse '@{0}')
                 local REMOTE  ; REMOTE=$(git rev-parse "$UPSTREAM")
@@ -256,40 +240,40 @@ found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
 
 
 ### Evaluate missing plugins
-case $debug_verbosity in ## Debug: Missing plugins
-    "missing"|"updates"|"all")
-        echo "${col[fg_purple]}DEBUG:${col[reset]} Adding some fake plugins for missing detection"
-        wanted_plugins+=( # Add a couple fake missing plug-ins for debugging
+[[ $debug_verbosity =~ ^("missing"|"all")$ ]] && { ## Debug: Missing plugins # (RegEx) Only define this if $debug_verbosity is 'missing' or 'all'
+    debug_plugins=( # Add a couple fake missing plug-ins for debugging
         "https://127.0.0.1/fake_plugin/zsh-fake-plugin"
         "https://127.0.0.1/fake_plugin/zsh-not-a-real-plugin"
         "https://127.0.0.1/fake_plugin/zsh-also-not-a-real-plugin"
         "https://127.0.0.1/fake_plugin/zsh-get-real"
         "https://127.0.0.1/fake/zsh-fake-debug-plugins"
-        ); ( # Then echo out the lists.
-        echo -e "${col[fg_purple]}Wanted:${col[reset]}"
-            for W in "${wanted_plugins[@]}"; do
-                echo -e " ${col[fg_orange]}$W${col[reset]}"
-            done
-        echo -e "${col[fg_purple]}Found:${col[reset]}"
-            for F in "${found_plugins[@]}"; do
-                echo -e " ${col[fg_green]}$F${col[reset]}"
-            done
-        );;
-esac
+        "/home/tom/.config/zsh/scripts/local-fake"
+        "/home/tom/.config/zsh/scripts/another-local-fake"
+    ) # Then print out the lists.
+    printf "%b${col[reset]}\n" \
+    "${col[fg_purple]}DEBUG:${col[reset]} Adding some fake plugins for missing detection" \
+    "${col[fg_purple]}Wanted:" \
+    "${plugins[@]/#/${col[fg_orange]}}" \
+    "${debug_plugins[@]/#/${col[blink]}${col[fg_orange]}}" \
+    "${col[fg_purple]}Found:" \
+    "${found_plugins[@]/#/${col[fg_green]}}"
+}
 
-typeset -a p_diff # Missing plugin check, with guard clause to not run in nested shells.
+declare -a p_diff # Array of missing plugins
 local p_diff=() # (ACK) Based on: https://stackoverflow.com/a/2315459
-    for plugins in "${wanted_plugins[@]##*\/}"; do
+    # shellcheck disable=SC2068,SC2296 # ?? Shellcheck doesn't understand Zsh's method for looping over associative array keys.
+    for wanted in ${(k)plugins[@]##*\/}; do
         local skip=''
         for found in "${found_plugins[@]##*\/}"; do
-            [[ "$plugins" == "$found" ]] && { skip=1; break; }
+            [[ "$wanted" == "$found" ]] && { skip=1; break; }
         done
-        [[ -n $skip ]] || p_diff+=("$plugins")
+        [[ -n $skip ]] || p_diff+=("$wanted")
     done
 
-for missing in "${p_diff[@]}"; do
-    echo -e "[${col[fg_red]}$missing${col[reset]}] Missing"
-done
+[[ $debug_verbosity =~ ^("missing"|"all")$ ]] && printf "%b" "${p_diff[@]}" ## Debug: Missing plugins # (RegEx) Only define this if $debug_verbosity is 'missing' or 'all'
+
+# [[ -n ${p_diff[*]} ]] && printf "${col[fg_red]}%b${col[reset]} Missing:\n" "${p_diff[@]}" # (WIP)
+
 
 unset -v "found_plugins[@]" "p_diff[@]" "skip" # Unset variables needed for missing script detection
 
@@ -350,11 +334,7 @@ function parse_args(){ # (ACK) Based on: https://stackoverflow.com/a/14203146
     function get_new_verbosity(){
     while true; do
         local user_input='' # reset input
-        echo -ne "Valid options: "
-            for element in "${debug_valid[@]}"; do
-                echo -ne "${col[bold]}${col[inv]}$element${col[reset]} "
-            done
-            echo -ne "\nPlease provide a valid setting for verbosity: "
+        printf "%b${col[reset]} " "Valid options:" "${debug_valid[@]/#/${col[bold]}${col[inv]}}" "\n${col[fg_green]}Please provide a valid setting for verbosity:"
         read -r user_input
         if [[ "${debug_valid[*]}" =~ (^|[[:space:]])$user_input($|[[:space:]]) ]]; then # the \s RegEx shorthand for whitespace does not work in test expressions, need to fallback to [[:space:]]
             debug_verbosity=$user_input; return
@@ -362,37 +342,53 @@ function parse_args(){ # (ACK) Based on: https://stackoverflow.com/a/14203146
     done
     }
 
+# shellcheck disable=SC2068,SC2296 # ?? Shellcheck doesn't understand Zsh's method for looping over associative array keys.
+{ # <> Version and dependency information
 local name="TomIO's .zshrc"
 local version="${col[uline]}${col[fg_yellow]}N/A${col[reset]}"
 local license="${col[fg_green]}AGPLv3${col[reset]}"
+local dependencies; printf -v dependencies '%b' \
+    "${col[orange]}${col[uline]}Dependencies:${col[reset]}\n" \
+    " - Shell" "Zsh${col[reset]} (MIT License)\n" \
+    " - Utils: " "${col[dim]}GNU${col[no_dim]} Coreutils${col[reset]} (GPLv3+)\n" \
+    " - Update Checking/Version Control: " "Git${col[reset]}\n" \
+    " - Remote Access: " "OpenSSH\n" \
+    "Plugins: " \
+    "$( paste -d '' <(printf "%s -> \n" ${(k)plugins[@]}) <(printf "%s\n" "${plugins[@]}") )" "\n" \
+    "\n"
+}
 
-local POSARGS=''
+local posargs=''
     while (( "$#" )); do
         case "$1" in
         '-v'|'--verbose')
-            echo -ne "Found ${col[uline]}${col[ital]}'$1'${col[reset]} with option: ${col[uline]}${col[ital]}'${2:-<none>}'${col[reset]} "
+            echo -ne "Found ${col[uline]}${col[ital]}${col[fg_cyan]}'$1'${col[reset]} with option: ${col[uline]}${col[ital]}${col[fg_cyan]}'${2:-<none>}'${col[reset]} "
             if [[ -n "$2" && ${2:0:1} != "-" && ${debug_valid[*]} =~ (^|[[:space:]])$2($|[[:space:]]) ]]; then
-                    debug_verbosity="$2"
-                    shift 2
+                debug_verbosity="$2"
+                shift "2"
             else
                 echo -e "which is invalid."
                 get_new_verbosity
-                shift
+                shift "$(( ( ${#2} != 0 ) + 1 ))"
             fi
             echo
         ;;
         '-h'|'-?'|'--help')
+            debug_verbosity='off' # ?? This will make main() print the debug banner, which is more compact
             echo -e "I haven't written a --help output yet"
             break
         ;;
         '-V'|'--version')
-            echo -e "$name v$version | License: $license"
+            debug_verbosity='off' # ?? This will make main() print the debug banner, which is more compact
+            printf '%b' \
+            "$name $version | License: $license\n" \
+            "$dependencies"
             break
         ;;
         '--')
-            shift
-            POSARGS="$POSARGS $*"
-            [[ $debug_verbosity == 'args' ]] && echo -e "Found ${col[uline]}${col[ital]}'--'${col[reset]}, stopping parsing.\nLeftover args: $*"
+            shift # shift -- off the stack
+            posargs="$posargs $*" # add remaining args to $posargs
+            [[ $debug_verbosity =~ ^(args|all)$ ]] && echo -e "Found ${col[uline]}${col[ital]}'--'${col[reset]}, stopping parsing.\nLeftover args: $*"
             break
         ;;
         --*=|--*|-*) # unknown flags
@@ -400,12 +396,12 @@ local POSARGS=''
             shift
         ;;
         *) # keep the order of positional arguments
-            POSARGS="$POSARGS $1"
+            posargs="$posargs $1"
             shift
         ;;
         esac
     done
-    eval set -- "$POSARGS"
+    eval set -- "$posargs" # restore positional arguments
 return
 }
 
@@ -418,9 +414,9 @@ eval "$(starship init zsh)" || \
 echo "Error: failed to initialize starship prompt"# Print error message if starship failed to initialize
 
 ### Cleanup of remaining variables and functions.
-unset -v "pal[@]" "per[@]" # palette and permutations array
-unset -v "debug_valid[@]" "debug_verbosity" # debug related variables
-unset -f "main" "parse_args" # unset functions
+unset -f "setup" "main" "parse_args" # unset functions
+unset -v "plugins[@]" "debug_valid[@]" "debug_verbosity" # debug related variables
+
 
 # [============================Helpful resources============================]
 # [ Hyperpolyglot.org's comparison of *NIX shell syntax                     ]
