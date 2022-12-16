@@ -119,26 +119,24 @@ esac
 
 # Color banner
 local col_banner
-read -rd '' col_banner << MOTD_EOF
-\0              ${col[fg_blue]}dt
-          I@@w       ${col[fg_magenta]}Starship Prompt
-         ${col[fg_blue]}r@@@@l                ${col[fg_light_grey]}using
-        ${col[fg_blue]}f#@@@@#b    ${col[fg_orange]}<Name TBD> ${col[fg_light_grey]}theme
-     ${col[fg_blue]},%gg@@@@@@0}m,   ${col[fg_light_grey]}by ${col[fg_yellow]}@TomIO#2000
-   ${col[fg_blue]}yPwZ/@@@@@@@@µ&oPa
- ;O0´  Q@@@@@@@@$  \`r6.
-(Q°   .@@@@@@@@@@;   \`0,
-Gj    G@@@@@@@@@@Q    kD
-Q    ,@@@@@@%^}@@@;   ;g
-Vy   A@@@@Q°   v@@0   q)
- uP.y@@@#%      v@@l dv
-  ?o\$@@6%        k@8y'
-    ##zEosyuyweaIuMQ
-   ´%°             m${col[reset]}
-MOTD_EOF
-# Leading whitespace on the first line of the heredoc is ignored
-# Prefixing a \0 (NULL) gets around this by making the whitespace, technically, not leading.
-# while not actually printing a character to the output.
+printf -v col_banner "%b%-$(( COLUMNS / 30 ))b" \
+    "" "" \
+    "          ${col[fg_blue]}dt" "\n"\
+    "          I@@w       ${col[fg_magenta]}Starship Prompt" "\n"\
+    "         ${col[fg_blue]}r@@@@l                ${col[fg_light_grey]}using" "\n"\
+    "        ${col[fg_blue]}f#@@@@#b    ${col[fg_orange]}<Name TBD> ${col[fg_light_grey]}theme" "\n"\
+    "     ${col[fg_blue]},%gg@@@@@@0}m,   ${col[fg_light_grey]}by ${col[fg_yellow]}@TomIO#2000" "\n"\
+    "   ${col[fg_blue]}yPwZ/@@@@@@@@µ&oPa" "\n"\
+    " ;O0´  Q@@@@@@@@\$  \`r6." "\n"\
+    "(Q°   .@@@@@@@@@@;   \`0," "\n"\
+    "Gj    G@@@@@@@@@@Q    kD" "\n"\
+    "Q    ,@@@@@@%^}@@@;   ;g" "\n"\
+    "Vy   A@@@@Q°   v@@0   q)" "\n"\
+    " uP.y@@@#%      v@@l dv" "\n"\
+    "  ?o\$@@6%        k@8y'" "\n"\
+    "    ##zEosyuyweaIuMQ" "\n"\
+    "   ´%°             m${col[reset]}"
+
 
     [[ -z $ANDROID_ROOT ]] && echo -e "$col_banner" # test that we're not on Android/Termux.
     [[ -n $STARSHIP_SHELL ]] && echo "🚀 Starship Prompt Initialized" # print confirmation message if starship successfully started
