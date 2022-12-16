@@ -13,37 +13,66 @@
 # (RegEx) additional explanations for RegEx
 
 ### Color palette array for easier colorization
-typeset -A per
-per=( # Permutations for foreground and background
+declare -A per; per=( # Permutations for foreground and background
     [fg_]="38;2;"
     [bg_]="48;2;"
 )
 
-typeset -A pal # Array of base colors for the pallet
-pal=( #[name]="r ; g ; b "  # Color palette
-      [black]="10;4;"       # #0A0400 - 0
-        [red]="214;30;28"   # #D61E1C - 1
-      [green]="29;166;90"   # #1DA65A - 2
-     [yellow]="237;188;"    # #EDBC00 - 3
-       [blue]="10;117;173"  # #0A75AD - 4
-    [magenta]="255;51;184"  # #FF33B8 - 5
-       [cyan]=";206;241"    # #00CEF1 - 6
- [light_grey]="176;178;180" # #B0B2B4 - 7
-  [dark_grey]="79;77;75"    # #4F4D4B - 8
-     [orange]="226;109;14"  # #E26D0E - 11
-     [purple]="144;16;240"  # #9010F0 - 13
-      [white]="245;251;255" # #F5FBFF - 15
+# <> We need a sorted, associative array for the palette.
+declare -A pal; local pal=( # [name]="r ; g ; b " # ** Associative arrays are unsorted
+       [black]="10;4;"       # #0A0400
+         [red]="214;30;28"   # #D61E1C
+       [green]="29;166;90"   # #1DA65A
+      [yellow]="237;188;"    # #EDBC00
+        [blue]="10;117;173"  # #0A75AD
+     [magenta]="255;51;184"  # #FF33B8
+        [cyan]=";206;241"    # #00CEF1
+  [light_grey]="176;178;180" # #B0B2B4
+   [dark_grey]="79;77;75"    # #4F4D4B
+   [light_red]="224;60;49"   # #E03C31
+ [light_green]="105;180;32"  # #64B141
+      [orange]="226;109;14"  # #E26D0E
+   [dark_blue]="41;82;178"   # #2952B2
+      [purple]="144;16;240"  # #9010F0
+        [zomp]="57;167;173"  # #39A78E
+       [white]="245;251;255" # #F5FBFF
 )
 
-typeset -A col
-# ** We can't quote looping over array keys with Zsh's syntax here, otherwise the Tokenization for VSCode's Outliner doesn't comprehend it.
-# shellcheck disable=SC2068,2296 # Shellcheck doesn't understand Zsh's method for looping over associative array keys.
-for mut in ${(k)per[@]}; do # assign the keys of [per] to $mut
-    for color in ${(k)pal[@]}; do # assign the keys of [pal] to $color
+declare -a pal_order; local pal_order=( # ** order of `pal[]`, regular arrays are sorted
+"black"       # 0
+"red"         # 1
+"green"       # 2
+"yellow"      # 3
+"blue"        # 4
+"magenta"     # 5
+"cyan"        # 6
+"light_grey"  # 7
+"dark_grey"   # 8
+"light_red"   # 9
+"light_green" # 10
+"orange"      # 11
+"dark_blue"   # 12
+"purple"      # 13
+"zomp"        # 14
+"white"       # 15
+)
+
+# <> Use col_gen expand `pal[]` to 256 Colors
+: "${pal_order[@]}" # (WIP) Still being worked on
+# shellcheck source=/dev/null # ?? Shellcheck doesn't parse external sources by default
+# source "${plugins[col_gen]}" # ** exports function `col_gen()`
+# col_gen "${pal_order[@]}" "${pal[@]}"
+
+declare -gA col
+# shellcheck disable=SC2068,SC2296 # ?? Shellcheck doesn't understand Zsh's method for looping over associative array keys.
+# <> These two for loops dynamically build the `col[]` array from the permutations of `per[]` and `pal[]`
+for mut in ${(k)per[@]}; do # assign the keys of `per[]` to $mut
+    for color in ${(k)pal[@]}; do # assign the keys of `pal[]` to $color
         col[$mut$color]="\e[${per[$mut]}${pal[$color]}m" # index names follow the pattern ${col[<fg/bg>_<color>]}
     done
 done
-col+=( # append the following sequences to the `col` array
+
+col+=( # ** append the following sequences to the `col[]` array
      [reset]="\e[0m"  # reset all escape sequences
   [fg_reset]="\e[39m" # reset foreground only
   [bg_reset]="\e[49m" # reset background only
