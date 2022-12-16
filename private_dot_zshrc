@@ -324,6 +324,14 @@ export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;
         done
     }; path_amend
 
+### less pager stylization
+    LESS_TERMCAP_mb=$(echo -e "${col[fg_red]}")               ; export LESS_TERMCAP_mb # #D61E1C
+    LESS_TERMCAP_md=$(echo -e "${col[fg_blue]}")              ; export LESS_TERMCAP_md # #0A75AD
+    LESS_TERMCAP_me=$(echo -e "${col[reset]}")                ; export LESS_TERMCAP_me
+    LESS_TERMCAP_se=$(echo -e "${col[reset]}")                ; export LESS_TERMCAP_se
+    LESS_TERMCAP_so=$(echo -e "${col[fg_yellow]}")            ; export LESS_TERMCAP_so # #EDBC00
+    LESS_TERMCAP_ue=$(echo -e "${col[reset]}")                ; export LESS_TERMCAP_ue
+    LESS_TERMCAP_us=$(echo -e "${col[uline]}${col[fg_green]}"); export LESS_TERMCAP_us # #1DA65A
 
 # setup nvim as default EDITOR and DIFF program.
 export EDITOR="nvim"
