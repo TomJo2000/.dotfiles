@@ -295,6 +295,9 @@ local p_diff=() # (ACK) Based on: https://stackoverflow.com/a/2315459
 unset -v "found_plugins[@]" "p_diff[@]" "skip" # Unset variables needed for missing script detection
 timing[plugins]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[plugins]) * 1000 ))" "ms │  ├─ Plugin checking - main:$LINENO")
 
+### Shell Options
+setopt AUTO_CD # cd can be omitted when typing in a valid file path
+setopt CDABLE_VARS # expand variable for changing directories
 
 
 ### Completions
@@ -328,12 +331,15 @@ export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;
 export EDITOR="nvim"
 export DIFFPROG="nvim -d"
 
-alias ls='ls --color=auto' # colorize ls by default
+alias ls='LC_COLLATE=C ls --color=auto' # colorize ls by default
 
 # (WIP) - SSH disconnect command keepalive
 # noclose() { # Keep passed task running in background, even after SSH disconnection
 #     (nohup "$@" &>/dev/null &)
 # }
+
+# (WIP)
+# ssh-keygen -t rsa -b 4096 -f /mnt/c/Users/PC/Desktop/SSH/rsa-4096_github -C "$(whoami)@$(uname -n)-$(date -I)"
 
 # (WIP)
 # alias raw-input='sed -n l' # make the terminal print the raw input characters to the screen
