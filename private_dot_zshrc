@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-# shellcheck shell=bash # Shellcheck doesn't officially support Zsh linting, Bash is a close enough analog in most cases.
+# shellcheck shell=bash # ?? Shellcheck doesn't officially support Zsh linting, Bash is a close enough analog in most cases.
 
 # Comment styling
 # ** Highlight
@@ -132,7 +132,7 @@ debug_verbosity=''
 timing[debug]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[debug]) * 1000 ))" "ms │  ├─ Define valid debug values - setup:$LINENO")
 }; setup; timing[setup]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[all]) * 1000 ))" "ms ├─ setup() - L:$LINENO")
 
-function main(){ # contains everything that only needs to run when setting up a un-nested shell
+function main(){ # <> contains everything that only needs to run when setting up a un-nested shell
 
 [[ $debug_verbosity =~ ^(color|all)$ ]] && { ## Debug: Color # (RegEx) Only define this if $debug_verbosity is 'color' or 'all'
         echo -e "${col[fg_purple]}[${col[reset]}=====${col[fg_purple]}DEBUG${col[reset]}=====${col[fg_purple]}]${col[reset]}"
@@ -174,10 +174,10 @@ printf -v col_banner "%b%-$(( COLUMNS / 30 ))b" \
 
 
     [[ -z $ANDROID_ROOT ]] && echo -e "$col_banner" # test that we're not on Android/Termux.
-    [[ -n $STARSHIP_SHELL ]] && echo "🚀 Starship Prompt Initialized" # print confirmation message if starship successfully started
+    [[ -n $STARSHIP_SHELL ]] && echo -e "🚀 Starship Prompt Initialized" # print confirmation message if starship successfully started
 
-{ # See if we should be using the working tree versions of starship.toml and .zshrc
-      if [[ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]]; then # if this is my personal PC, use the working copy of the prompt
+{ # <> See if we should be using the working tree versions of starship.toml
+    if   [[ -e /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml ]]; then # if this is my personal PC, use the working copy of the prompt
             export STARSHIP_CONFIG="/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/dot_config/private_starship.toml"
     elif [[ -e $HOME/git/.dotfiles/dot_config/private_starship.toml ]]; then # same check for my personal laptop
             export STARSHIP_CONFIG="$HOME/git/.dotfiles/dot_config/private_starship.toml"
@@ -186,9 +186,9 @@ printf -v col_banner "%b%-$(( COLUMNS / 30 ))b" \
     fi
 }
 
-if [[ ! -S "$SSH_AUTH_SOCK" ]]; then # see if SSH Agent is running
-    eval "$(ssh-agent)" >> /dev/null # startup the SSH Agent; discard confirmation message
-    echo -e "SSH Agent started\nPID: ${col[fg_dark_grey]}${col[bg_white]}$SSH_AGENT_PID${col[reset]}"
+if [[ ! -S "$SSH_AUTH_SOCK" ]]; then # <> see if SSH Agent is running
+    eval "$(ssh-agent)" > /dev/null # startup the SSH Agent; discard confirmation message
+    echo -e "SSH Agent started\nPID: ${col[inv]}$SSH_AGENT_PID${col[reset]}"
 fi
 
 [[ $debug_verbosity =~ ^(ssh|all)$ ]] && { ## Debug: SSH # (RegEx) Only define this if $debug_verbosity is 'ssh' or 'all'
@@ -196,16 +196,15 @@ fi
 }
 
 ### Update checking
-typeset -a found_plugins # list of installed plugins
-# shellcheck disable=SC2207 # We're taking care of this ourselves
-found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d))
+# shellcheck disable=SC2207 # ?? We're taking care of this ourselves
+declare -a found_plugins=($(find "$zsh_script_dir" -mindepth 1 -maxdepth 1 -type d)) # list of installed plugins
 
 timing[printouts]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[printouts]) * 1000 ))" "ms │  ┌─ Printouts - main:$LINENO")
 
     function updates(){ # <> Everything relating to update checking.
 
         [[ ! -d $zsh_script_dir || ! -e $zsh_script_dir ]] && mkdir -p "$zsh_script_dir" # if script dir doesn't exist, make it.
-        echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown" )${col[reset]}"
+        echo -e "Last checked for updates at: ${col[fg_blue]}$(date -r "$zsh_script_dir" +"%x %X" || echo "Unknown")${col[reset]}"
 
         function parse_frequency(){ # <> Resolve $update_frequency from human readable form to seconds.
             [[ $debug_verbosity =~ ^(updates|all)$ ]] && return # If we are debugging updates, this is irrelevant.
@@ -262,7 +261,7 @@ timing[printouts]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[printouts]) * 
     }; timing[updates]="$EPOCHREALTIME"; updates; timing[updates]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[updates]) * 1000 ))" "ms │  ├─ Update checking - main:$LINENO") # Run the updates function, since we're done defining it.
 
     timing[plugins]="$EPOCHREALTIME"
-### Evaluate missing plugins
+    ### Evaluate missing plugins
 [[ $debug_verbosity =~ ^("missing"|"all")$ ]] && { ## Debug: Missing plugins # (RegEx) Only define this if $debug_verbosity is 'missing' or 'all'
     debug_plugins=( # Add a couple fake missing plug-ins for debugging
         "https://127.0.0.1/fake_plugin/zsh-fake-plugin"
@@ -306,9 +305,7 @@ timing[plugins]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[plugins]) * 1000
 ### Completions
 
 # zstyle ':completion:*:man:*' menu yes select # (WIP)
-
-fpath+=("$zsh_script_dir/zsh-completions") 2> /dev/null # Zsh Completions does not get sourced, it gets appended to $fpath
-
+fpath+=("$zsh_script_dir/zsh-completions") # Zsh Completions does not get sourced, it gets appended to $fpath
 
 
 ### History Setup
@@ -347,10 +344,10 @@ alias ls='ls --color=auto' # colorize ls by default
 # alias raw-input='sed -n l' # make the terminal print the raw input characters to the screen
 
 ### Load "plug-in" scripts; explicitly.
-# shellcheck source=/dev/null # Ignore Shellcheck's inability to parse external sources by default
+# shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
 source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" 2> /dev/null # Load autosuggestions
 
-# shellcheck source=/dev/null # Ignore Shellcheck's inability to parse external sources by default
+# shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
 source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" 2> /dev/null # Syntax highlighting; should be loaded last
 }
 
