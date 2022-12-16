@@ -214,25 +214,20 @@ timing[printouts]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[printouts]) * 
             local day="$((24 * hour))"
             local week="$((7 * day))"
 
-                if [[ $update_frequency =~ ^0$ ]]; then
-                    : # If the update frequency is a plain 0, no-op.
-                elif [[ $update_frequency =~ ^([0-9]*[SsMmHhDdWw])*$ ]]; then
-                    update_frequency=$(( $(sed -E "s/[Ww]/ \* $week + /;s/[Dd]/ \* $day + /;s/[Hh]/ \* $hour + /;s/[Mm]/ \* $minute + /;s/[Ss]//" <<< $update_frequency) + 0 )) # this fails without an operation on the sed output, so we just do + 0
-                elif [[ $update_frequency =~ ^[0-9]*$ ]]; then
-                    : # If the value is numeric, just use it as is (no-op)
-                else # Fallthrough in case of invalid pattern
-                    echo "${col[fg_orange]}Error:${col[reset]} Could not resolve value for ${col[fg_orange]}\$update_frequency=${col[reset]}\"$update_frequency\", defaulting to 1 Week"
-                    update_frequency="$((1 * week ))"
-                fi
-
-                case $debug_verbosity in ## Debug: Updates - Always check for updates
-                    "installed"|"updates"|"all")
-                        update_frequency="0"
-                        echo "${col[fg_purple]}DEBUG:${col[reset]} setting update frequency to $update_frequency days"
-                    ;;
-                esac
-            return
-            }; parse_frequency
+            if [[ $update_frequency =~ ^[0-9]+$ ]]; then # If the value is numeric, just use it as is (no-op)
+                : # If the update frequency is a integer, take it as is.
+            elif [[ $update_frequency =~ ^([0-9]+[SsMmHhDdWw])+$ ]]; then
+                update_frequency=$(( $(sed -E "s/[Ww]/ \* $week + /;s/[Dd]/ \* $day + /;s/[Hh]/ \* $hour + /;s/[Mm]/ \* $minute + /;s/[Ss]//" <<< $update_frequency) + 0 )) # replace each letter with its corresponding conversion constant, then sum them up; this fails without an operation on the sed output, so we just do + 0
+            else # Fallthrough in case of invalid pattern
+                printf '%b' \
+                "${col[fg_red]}Error:${col[reset]} " \
+                "Could not resolve value for " \
+                "${col[fg_orange]}${col[uline]}\$update_frequency=${col[reset]}\"${update_frequency:-<unset>}\" " \
+                "defaulting to 1 Week\n"
+                update_frequency="$((1 * week ))"
+            fi
+        return
+        }; parse_frequency
 
         [[ $debug_verbosity =~ ^(updates|all)$ || $(( EPOCHSECONDS - $(date -r "$zsh_script_dir" +%s) )) -ge "$update_frequency" ]] && { # <> This only runs if the update_frequency has passed or we're debugging this
             check_upstream() { # (ACK) Based on https://stackoverflow.com/a/3278427
@@ -253,10 +248,10 @@ timing[printouts]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[printouts]) * 
             }
 
             for index in "${found_plugins[@]}"; do # loop over the array of plugins
-                ( cd "$index" && check_upstream # Do update checking in a subshell to avoid having to cd back inside of the parent shell
-                ) || echo "An error occurred while checking: $index"; continue
+                [[ ${plugins[${index##*\/}]:0:1} == '/' ]] && { printf '%b' "[${col[fg_green]}${index##*\/}${col[reset]}] Local Plugin\n"; continue; }
+                ( cd "$index" && check_upstream ) # Do update checking in a subshell to avoid having to cd back inside of the parent shell
             done
-        touch -cm "$zsh_script_dir" # Update the script directories modification time.
+            touch -cm "$zsh_script_dir" # Update the script directories modification time.
         }
     }; timing[updates]="$EPOCHREALTIME"; updates; timing[updates]=$(printf '%8.2f%s' "$(( (EPOCHREALTIME - timing[updates]) * 1000 ))" "ms │  ├─ Update checking - main:$LINENO") # Run the updates function, since we're done defining it.
 
