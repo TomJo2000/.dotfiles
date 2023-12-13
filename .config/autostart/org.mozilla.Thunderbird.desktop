@@ -1,0 +1,21 @@
+[Desktop Action ComposeMessage]
+Exec=thunderbird -compose
+Name=Write new message
+
+[Desktop Action OpenAddressBook]
+Exec=thunderbird -addressbook
+Name=Open address book
+
+[Desktop Entry]
+Actions=ComposeMessage;OpenAddressBook;
+Categories=Network;Email;
+Comment=Send and receive mail with Thunderbird
+Exec=thunderbird %u
+GenericName=Mail Client
+Icon=org.mozilla.Thunderbird
+MimeType=message/rfc822;x-scheme-handler/mailto;text/calendar;text/vcard;text/x-vcard;x-scheme-handler/webcal;x-scheme-handler/webcals;x-scheme-handler/mid;
+Name=Thunderbird
+StartupNotify=true
+StartupWMClass=thunderbird
+Terminal=false
+Type=Application
