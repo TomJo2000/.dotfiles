@@ -513,9 +513,8 @@ export MANROFFOPT="-P -c" # ** color output doesn't seem to work without this an
         "$( printf '%b' "${less_prompt[@]}" )" # (Long) prompt # ?? | ❮.zshrc❯[423-456/627]┆69%
     )
     export LESS="${less_opts[*]}"
-    export VISUAL='code'
-    export LESSEDIT='%E -rg %g:?lt+%lt.%t' # implicit LESSEDIT format is: '%E ?lm+%lm. %g'
-    export LESSOPEN="|-${XDG_CONFIG_HOME}/less/lessopen.sh %s"
+    # export LESSEDIT='%E -rg %g:?lt+%lt.%t' # implicit LESSEDIT format is: '%E ?lm+%lm. %g'
+    # export LESSOPEN="|-${XDG_CONFIG_HOME}/less/lessopen.sh %s"
 
 (( timing[pager] += EPOCHREALTIME ))
 

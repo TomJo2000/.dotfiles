@@ -1,5 +1,5 @@
 {
-    
+
     "workbench.preferredLightColorTheme": "Default Dark+",
     "workbench.colorTheme": "Dark+ Material",
     "editor.fontLigatures": true,
@@ -58,6 +58,7 @@
         "autoload",
         "basenc",
         "bindkey",
+        "borderless",
         "bracegroup",
         "bruh",
         "btop",
@@ -92,6 +93,7 @@
         "Greyscale",
         "Hasklig",
         "herestring",
+        "hexeditor",
         "HISTFILE",
         "Hostbased",
         "howto",
@@ -318,7 +320,6 @@
     "files.eol": "\n", // Use <LF> line endings
     "svg.preview.mode": "svg",
     "editor.minimap.maxColumn": 5000,
-    "diffEditor.ignoreTrimWhitespace": false,
     "editor.unicodeHighlight.includeComments": false,
     "editor.unicodeHighlight.includeStrings": false,
     "errorLens.fontStyleItalic": true,
@@ -448,4 +449,6 @@
     },
     "security.workspace.trust.untrustedFiles": "open",
     "redhat.telemetry.enabled": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "diffEditor.experimental.showMoves": true,
 }
