@@ -787,7 +787,7 @@ function parse_args() { # (ACK) Based on: https://stackoverflow.com/a/14203146
 
 { # <> Version and dependency information
 local name; name="TomIO's .zshrc"
-local version; version="${col[uline]}${col[fg_zomp]}v1.2.0${col[reset]}"
+local version; version="${col[uline]}${col[fg_zomp]}v2.0.0${col[reset]}"
 local license; license="${col[fg_green]}AGPLv3${col[reset]}"
 local dependencies; printf -v dependencies '%b' \
     "${col[orange]}${col[uline]}Dependencies:${col[reset]}\n" \
