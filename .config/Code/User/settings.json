@@ -1,0 +1,451 @@
+{
+    
+    "workbench.preferredLightColorTheme": "Default Dark+",
+    "workbench.colorTheme": "Dark+ Material",
+    "editor.fontLigatures": true,
+    "editor.fontFamily": "Hasklug Nerd Font Mono, 'Hasklig NF', monospace",
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.guides.bracketPairs": "active",
+    "editor.renderWhitespace": "boundary",
+    "editor.minimap.renderCharacters": false,
+    "editor.minimap.size": "fill",
+    "editor.stickyScroll.maxLineCount": 1,
+    "editor.stickyScroll.enabled": true,
+    "editor.maxTokenizationLineLength": 65536,
+    "diffEditor.wordWrap": "off",
+    "git.autofetch": true,
+    "git.autofetchPeriod": 1800,
+    "git.suggestSmartCommit": false,
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "remote.SSH.configFile": "C:\\Users\\Josh\\Desktop\\stuff\\VScode\\git\\.dotfiles\\private_dot_ssh\\private_config",
+    "discord.largeImageIdling": "</idle>",
+    "discord.detailsIdling": "github.com/TomJo2000/.dotfiles",
+    "discord.lowerDetailsEditing": "Line: {current_line}:{current_column}/{total_lines} {file_size}",
+    "discord.idleTimeout": 150,
+    "discord.lowerDetailsIdling": "</idle>",
+    "discord.smallImage": "VS Code",
+    "[markdown]": {
+        "editor.wordWrap": "off"
+    },
+    "markdown.preview.breaks": true,
+    "evenBetterToml.schema.links": true,
+    "evenBetterToml.schema.catalogs": [
+        "https://taplo.tamasfe.dev/schema_index.json",
+        "https://www.schemastore.org/api/json/catalog.json",
+        "https://starship.rs/config-schema.json"
+    ],
+    "gitblame.statusBarMessageNoCommit": "Future me",
+    "gitblame.pluralWebPathSubstrings": [
+        "bitbucket",
+        "atlassian"
+    ],
+    "cSpell.enableFiletypes": [
+        "editorconfig",
+        "ini",
+        "lua",
+        "shellscript",
+        "ssh-config",
+        "ssh_config"
+    ],
+    "cSpell.userWords": [
+        "Amog",
+        "Amogus",
+        "archlinux",
+        "Athlon",
+        "autocd",
+        "autodirectory",
+        "autofetch",
+        "autoload",
+        "basenc",
+        "bindkey",
+        "bracegroup",
+        "bruh",
+        "btop",
+        "CDABLE",
+        "chavishmcmann",
+        "cksum",
+        "codepoint",
+        "codepoints",
+        "commandseparator",
+        "compat",
+        "compinit",
+        "coreutils",
+        "cpio",
+        "Cryo",
+        "datetime",
+        "deinterlace",
+        "deinterlacing",
+        "delims",
+        "demux",
+        "DIFFPROG",
+        "dotfiles",
+        "dups",
+        "EINS",
+        "emacsclient",
+        "EPOCHREALTIME",
+        "EPOCHSECONDS",
+        "flac",
+        "fpath",
+        "fullscreen",
+        "gitblame",
+        "globbing",
+        "Greyscale",
+        "Hasklig",
+        "herestring",
+        "HISTFILE",
+        "Hostbased",
+        "howto",
+        "hwdec",
+        "Hyperpolyglot",
+        "keepalive",
+        "keyframes",
+        "keygen",
+        "keylist",
+        "KPENTER",
+        "lerp",
+        "lerping",
+        "LESSCHARSET",
+        "LESSCLOSE",
+        "LESSEDIT",
+        "LESSHISTFILE",
+        "lesshst",
+        "LESSOPEN",
+        "Linebreaks",
+        "lstart",
+        "luma",
+        "lzma",
+        "MANPAGER",
+        "maxdepth",
+        "MBTN",
+        "mindepth",
+        "mjpeg",
+        "mjpg",
+        "mkfifo",
+        "mkssh",
+        "mktemp",
+        "multibyte",
+        "nbsp",
+        "neofetch",
+        "nohup",
+        "nvim",
+        "ontop",
+        "outbuf",
+        "Outliner",
+        "panscan",
+        "pathseparator",
+        "PAUSEONLY",
+        "PCRE",
+        "percode",
+        "PGDWN",
+        "pgrep",
+        "PGUP",
+        "pids",
+        "PLAYONLY",
+        "PLAYPAUSE",
+        "POSARGS",
+        "powerline",
+        "precmd",
+        "precommand",
+        "procs",
+        "pulseaudio",
+        "Redmi",
+        "rmvb",
+        "rootdir",
+        "rpmnew",
+        "rpmorig",
+        "rpmsave",
+        "RRGGBB",
+        "ruid",
+        "ruser",
+        "SAVEHIST",
+        "sdcard",
+        "setopt",
+        "shellcheck",
+        "SHLVL",
+        "shuf",
+        "strikethrough",
+        "subshell",
+        "svgz",
+        "synker",
+        "synktab",
+        "Termstream",
+        "Termux",
+        "TIMEFORMAT",
+        "TMPDIR",
+        "tmpfs",
+        "touchpad",
+        "truecolor",
+        "typeof",
+        "tzst",
+        "uline",
+        "unfunction",
+        "unsetting",
+        "unviable",
+        "vsfilter",
+        "webm",
+        "webp",
+        "WIP",
+        "wslpath",
+        "xdev",
+        "xspf",
+        "zmodload",
+        "zomp",
+        "zshoptions",
+        "zshzle",
+        "zstyle"
+    ],
+    "cSpell.ignoreWords": [
+        "Araps",
+        "CLASSPATH",
+        "Dlim",
+        "Efnrtv",
+        "Eosyuywea",
+        "FFFD",
+        "FFFFD",
+        "Hasklug",
+        "MANROFFOPT",
+        "RETVAL",
+        "ilhan",
+        "isabled",
+        "lways",
+        "noclose",
+        "pacmd",
+        "pkill",
+        "zcompdump"
+    ],
+    "better-comments.tags": [
+        { // ** Highlight
+            "tag": "**",
+            "color": "#0AA342",
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "strikethrough": false
+        },
+        { // ?? Informational
+            "tag": "??",
+            "color": "#0759B6",
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "strikethrough": false
+        },
+        { // >< Ancillary
+            "tag": "><",
+            "color": "#0C8167",
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": true,
+            "underline": false,
+            "strikethrough": false
+        },
+        { // !! Important
+            "tag": "!!",
+            "color": "#DF0D0B",
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "strikethrough": false
+        },
+        { // ~~ Invalidated
+            "tag": "~~",
+            "color": "#4F4D4B",
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": true,
+            "underline": false,
+            "strikethrough": true
+        },
+        { // <> Top Level blocks
+            "tag": "<>",
+            "color": "#0759B6",
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": true,
+            "underline": false,
+            "strikethrough": false
+        },
+        { // |> nested blocks
+            "tag": "|>",
+            "color": "#B84FE0",
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "strikethrough": false
+        },
+        { // (TODO) Todo comments
+            "tag": "(TODO)",
+            "color": "#EDBA04",
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": true,
+            "underline": false,
+            "strikethrough": false
+        },
+        { // (WIP) Work in Progress comments
+            "tag": "(WIP)",
+            "color": "#F36D11",
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": true,
+            "underline": false,
+            "strikethrough": false
+        },
+        { // (ACK) Code contribution acknowledgements
+            "tag": "(ACK)",
+            "color": "#B7208F",
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "strikethrough": false
+        },
+        { // (RegEx) additional explanations for Regular Expressions
+            "tag": "(RegEx)",
+            "color": "#06C2F7",
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false,
+            "underline": true,
+            "strikethrough": false
+        },
+    ],
+    "telemetry.telemetryLevel": "error",
+    "files.eol": "\n", // Use <LF> line endings
+    "svg.preview.mode": "svg",
+    "editor.minimap.maxColumn": 5000,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.unicodeHighlight.includeComments": false,
+    "editor.unicodeHighlight.includeStrings": false,
+    "errorLens.fontStyleItalic": true,
+    "errorLens.removeLinebreaks": false,
+    "errorLens.messageBackgroundMode": "message",
+    "errorLens.messageTemplate": "$source•$message",
+    "errorLens.margin": "3ch",
+    "errorLens.borderRadius": "6px",
+    "errorLens.light": {},
+    "errorLens.excludeBySource": [
+        "[\"bash-language-server\"]"
+    ],
+    "errorLens.gutterIconsEnabled": true,
+    "errorLens.gutterIconSet": "borderless",
+    "errorLens.enabledDiagnosticLevels": [
+        "error",
+        "warning",
+        "info",
+        "hint"
+    ],
+    "hexeditor.columnWidth": 32,
+    "hexeditor.showDecodedText": true,
+    "hexeditor.defaultEndianness": "little",
+    "hexeditor.inspectorType": "aside",
+    "security.allowedUNCHosts": [
+        "wsl$",
+        "wsl.localhost"
+    ],
+    "editor.largeFileOptimizations": false,
+    "search.showLineNumbers": true,
+    "terminal.external.linuxExec": "foot",
+    "editor.tokenColorCustomizations": {
+        "[Dark+ Material]": {
+            //"functions": "#EDBA04",
+            // "strings": "#EB939B",
+            // "variables": "#0AA342",
+            "numbers": "#4EAF26",
+            "keywords": "#B84FE0",
+            "textMateRules": [
+                {
+                    "scope": "meta.shebang",
+                    "settings": {
+                        "foreground": "#F36D11",
+                        "fontStyle": "italic"
+                    }
+                },
+                {
+                    "scope": "punctuation.definition.variable",
+                    "settings": {
+                        "foreground": "#81D4FA",
+                    }
+                },
+                {
+                    "scope": "punctuation.section.bracket",
+                    "settings": {
+                        "foreground": "#81D4FA",
+                    }
+                },
+                {
+                    "scope": "meta.parameter-expansion",
+                    "settings": {
+                        "foreground": "#06C2F7",
+                    }
+                },
+                {
+                    "scope": "support.function.builtin",
+                    "settings": {
+                        "foreground": "#EDBA04"
+                    }
+                },
+                {
+                    "scope": "string.other.math",
+                    "settings": {
+                        "foreground": "#FBF6FD"
+                    }
+                },
+                {
+                    "scope": "punctuation.definition.string",
+                    "settings": {
+                        "foreground": "#FBF6FD"
+                    }
+                },
+                {
+                    "scope": "punctuation.definition.evaluation.arithmetic",
+                    "settings": {
+                        "foreground": "#EB939B"
+                    }
+                },
+                {
+                    "scope": "keyword.operator", // < << <<<
+                    "settings": {
+                        "foreground": "#FBF6FD"
+                    }
+                },
+                {
+                    "scope": "keyword.operator.glob", // [[ -n ]]
+                    "settings": {
+                        "foreground": "#0759B6"
+                    }
+                },
+                {
+                    "scope": "keyword.operator.logical", // [[ -n ]]
+                    "settings": {
+                        "foreground": "#06C2F7"
+                    }
+                },
+                {
+                    "scope": "constant.character.escape", // \n
+                    "settings": {
+                        "foreground": "#4F4D4B"
+                    }
+                },
+                {
+                    "scope": "constant.other.option", // -agx
+                    "settings": {
+                        "foreground": "#06C2F7"
+                    }
+                },
+                {
+                    "scope": "string.quoted", // -agx
+                    "settings": {
+                        "foreground": "#B0B2B4"
+                    }
+                },
+            ]
+        }
+    },
+    "security.workspace.trust.untrustedFiles": "open",
+    "redhat.telemetry.enabled": false,
+}
