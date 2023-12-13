@@ -1,0 +1,13 @@
+# exclude everything by default
+exclude /***
+
+# Only search these directories when packing from the home directory
+include /*
+include /.ssh/config
+include /.config/***
+include /.local/share/fonts/***
+include /documentation/***
+
+
+# vim: set filetype=conf
+
