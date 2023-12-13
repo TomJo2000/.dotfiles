@@ -1,0 +1,14 @@
+# (User) Service Unit for KeePassXC
+[Unit]
+Description=KeePassXC with automatic restart
+After=graphical.target
+
+[Service]
+WorkingDirectory=%h
+ExecStart=keepassxc -platform xcb
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+
