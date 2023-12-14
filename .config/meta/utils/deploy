@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+: "${DOT_FILES:="${HOME}/git/.dotfiles"}"
+
+err() {
+    printf '\e[31m%s\e[m\n' "$@"
+}
+
+if ! command -v 'rsync' &> /dev/null; then
+    err "Rsync doesn't seem to be installed" \
+        "Can not proceed."
+fi
+
+deploy() {
+local -a require=()
+
+# shellcheck source=/dev/null
+while read -r ini_line; do
+    echo ":$ini_line:"
+    (( ${#ini_line} )) || continue # ignore blank lines
+    (( ${ini_line/%[[:blank:]]*\#*/} )) || continue
+    (( ${ini_line/%[[:blank:]]*\;*/} )) || continue
+done < "$1"
+
+
+return
+}
+
+
+for deploy_script in "$DOT_FILES/.config/meta/utils/deploy.d"/*; do
+    printf '\e[32m%s\e[m\n' "Deploying: ${deploy_script}"
+    deploy "$deploy_script"
+
+done
+

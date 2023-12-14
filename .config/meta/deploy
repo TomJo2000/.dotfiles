@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+: "${DOT_FILES:="${HOME}/git/.dotfiles"}"
+
+for deploy_script in "${DOT_FILES}/.config/meta/deploy.d"*; do
+    printf '\e[32m%s\e[m\n' "Deploying: ${deploy_script}"
+    : "$deploy_script"
+done
