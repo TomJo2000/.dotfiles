@@ -788,7 +788,11 @@ function parse_args() { # (ACK) Based on: https://stackoverflow.com/a/14203146
 { # <> Version and dependency information
 local name; name="TomIO's .zshrc"
 local version; version="${col[uline]}${col[fg_zomp]}v2.0.0${col[reset]}"
-local license; license="${col[fg_green]}AGPLv3${col[reset]}"
+local license; license="${col[fg_green]}MIT${col[reset]}"
+local commit
+: "$(<"${DOT_FILES}/.git/HEAD")"
+: "$(<"${DOT_FILES}/.git/${_}")"
+commit="${col[fg_zomp]}${_::7}${col[reset]}"
 local dependencies; printf -v dependencies '%b' \
     "${col[orange]}${col[uline]}Dependencies:${col[reset]}\n" \
     "${col[fg_light_green]}Zsh${col[reset]}" " - Shell (MIT License) \n" \
@@ -838,7 +842,7 @@ local -a posargs=()
         ('-V'|'--version') # |> print version information
             debug_verbosity+=('off') # ?? This will make main() print the debug banner, which is more compact
             printf '%b\n' \
-            "$name $version | License: $license" \
+            "$name $version $commit | License: $license" \
             "$dependencies"
             break
         ;;
