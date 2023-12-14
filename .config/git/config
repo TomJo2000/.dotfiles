@@ -1,6 +1,8 @@
+# This is Git's per-user configuration file.
 [user]
-	email = joshua.kahn@drehpunkt.com
-	name = Joshua Kahn
+        email = tomjo00@web.de
+        name = TomIO
+
 [diff]
 	tool = nvimdiff
 [merge]
@@ -12,3 +14,5 @@
   tool = nvim
 [mergetool] # automatically launch merge tool without displaying a prompt
   prompt = false
+[init]
+        defaultBranch = main
