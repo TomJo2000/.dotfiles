@@ -49,8 +49,8 @@ require('lazy').setup({
     dependencies = {
       { -- symbol navigation
         'SmiteshP/nvim-navbuddy',
+        opts = { lsp = { auto_attach = true } },
         dependencies = { 'SmiteshP/nvim-navic', 'MunifTanjim/nui.nvim' },
-        opts = { lsp = { auto_attach = true } }
       },
       -- Automatically install LSPs to stdpath for neovim
       'williamboman/mason.nvim',
@@ -61,6 +61,8 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
   },
+  -- Linter support
+  'mfussenegger/nvim-lint',
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -666,9 +668,7 @@ local servers = {
       }
     }
   },
-  bashls = {
-
-  },
+  bashls = {},
 }
 
 -- Setup neovim lua configuration

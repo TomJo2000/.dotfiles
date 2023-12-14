@@ -1,97 +1,123 @@
-<h6>
-  <! --   COLOR SCHEME
-  Last Commit: #1DA65A
-  Repo Size:   #0A75AD
-  Discord:     #5865F2
-  License:     #663366
-  Total Lines: #E26D0E
-  Commits:     #F5FBFF
-  Badge bg:    #4F4D4B
-  --> </h6>
+<!-- ToC: *omit* --> <h1 align="center">TomIO's dotfile repository</h1>
+<h3 align="center">
+  --Repo stats--
+<br>
+  <img alt="AGPL 3.0 License" src="https://img.shields.io/github/license/TomJo2000/.dotfiles?color=%23663366&label=License%3A&style=for-the-badge">
+  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TomJo2000/.dotfiles?color=%230A75AD&logo=Github&style=for-the-badge">
+<br>
+  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/TomJo2000/.dotfiles?color=E26D0E">
+  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/TomJo2000/.dotfiles?color=F5FBFF&label=Commits%3A&logo=GitHub">
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TomJo2000/.dotfiles?color=%231DA65A&logo=github">
+</h3>
 
-  <h1>TomIO's dotfile repository <!-- omit in toc --></h1>
-    <h3 align="center">
-      --Repo stats--<br>
-      <img alt="AGPL 3.0 License" src="https://img.shields.io/github/license/TomJo2000/.dotfiles?color=%23663366&label=License%3A&style=for-the-badge">
-      <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TomJo2000/.dotfiles?color=%230A75AD&logo=Github&style=for-the-badge">
-  <br>
-      <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/TomJo2000/.dotfiles?color=E26D0E">
-      <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/TomJo2000/.dotfiles?color=F5FBFF&label=Commits%3A&logo=GitHub">
-      <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TomJo2000/.dotfiles?color=%231DA65A&logo=github">
-    </h3>
+<details open>
+  <summary>Table of contents:</summary>
 
-<details>
-<summary>Table of contents: <i><b>*(WIP)*</i></b></summary>
+<details open><summary><a href='./.config'>.config/</summary>
 
-- 🚧Undergoing🚧
-  - 🚧complete rewrite🚧
+- [starship.toml](./.config/starship.toml)
+- [.config/neofetch/config.conf](./.config/neofetch/config.conf)
+- [.config/tmux/tmux.conf](./.config/tmux/tmux.conf)
+- [.config/Code/User/settings.json](./.config/Code/User/settings.json)
+- [.config/foot/foot.ini](./.config/foot/foot.ini)
+
+<details open><summary><a href='./.config/autostart'>autostart/</summary>
+
+- [.config/autostart/org.gajim.Gajim.desktop](./.config/autostart/org.gajim.Gajim.desktop)
+- [.config/autostart/org.mozilla.Thunderbird.desktop](./.config/autostart/org.mozilla.Thunderbird.desktop)
+
+</details>
+
+- [.config/btop/themes/termstream.theme](./.config/btop/themes/termstream.theme)
+
+<details open><summary><a href='./.config/meta'>meta/</summary>
+
+- [rsync_ignore](./.config/meta/rsync_ignore)
+- [backup_dotfiles.sh](./.config/meta/backup_dotfiles.sh)
+- [rsync_include](./.config/meta/rsync_include)
+
+</details>
+
+- [git/gitconfig](./.config/git/gitconfig)
+
+<details><summary><a href='./.config/nvim'>nvim/</summary>
+
+<ul><details><summary><a href='./.config/nvim/lua/kickstart/plugins'>lua/kickstart/plugins/</summary>
+
+- [debug.lua](./.config/nvim/lua/kickstart/plugins/debug.lua)
+- [autoformat.lua](./.config/nvim/lua/kickstart/plugins/autoformat.lua)
+- [custom/](./.config/nvim/lua/custom)
+  - [plugins](./.config/nvim/lua/custom/plugins)
+    - [init.lua](./.config/nvim/lua/custom/plugins/init.lua)
+
+</details>
+
+- [README.md](./.config/nvim/README.md)
+- [doc](./.config/nvim/doc)
+  - [tags](./.config/nvim/doc/tags)
+  - [kickstart.txt](./.config/nvim/doc/kickstart.txt)
+- [.stylua.toml](./.config/nvim/.stylua.toml)
+- [lazy-lock.json](./.config/nvim/lazy-lock.json)
+- [LICENSE.md](./.config/nvim/LICENSE.md)
+- [init.lua](./.config/nvim/init.lua)
+
+</details>
+
+
+- [.local/share/](./.local/share)
+  - [applications](./.local/share/applications)
+    - [systemd/user/KeePassXC.service](./.local/share/systemd/user/KeePassXC.service)
+  - [fonts](./.local/share/fonts)
+
+- [README.md](./README.md)
+- [.editorconfig](./.editorconfig)
+- [.ssh](./.ssh)
+- [.ssh/config](./.ssh/config)
+- [documentation](./documentation)
+- [documentation/hostname.png](./documentation/hostname.png)
+- [documentation/git_commit.png](./documentation/git_commit.png)
+- [documentation/time.png](./documentation/time.png)
+- [documentation/env_var_termux.png](./documentation/env_var_termux.png)
+- [documentation/username.png](./documentation/username.png)
+- [documentation/directory.png](./documentation/directory.png)
+- [documentation/git_branch.png](./documentation/git_branch.png)
+- [documentation/prompt_demo.gif](./documentation/prompt_demo.gif)
+- [documentation/dir_lock.png](./documentation/dir_lock.png)
+- [documentation/sudo.png](./documentation/sudo.png)
+- [documentation/status.png](./documentation/status.png)
+- [documentation/jobs.png](./documentation/jobs.png)
+- [documentation/git_metrics.png](./documentation/git_metrics.png)
+- [documentation/cmd_duration.png](./documentation/cmd_duration.png)
+- [documentation/dir_sub.png](./documentation/dir_sub.png)
+- [documentation/git_state.png](./documentation/git_state.png)
+- [documentation/shlvl.png](./documentation/shlvl.png)
+- [lscu.py](./lscu.py)
+- [LICENSE](./LICENSE)
+- [.zlogout](./.zlogout)
+- [.zshrc](./.zshrc)
 
 </details>
 
 ---
 
 ## Starship Prompt theme
-<img alt="Starship Discord" src="https://img.shields.io/discord/567163873606500352?color=%235865F2&label=Starship%20Discord&logo=Discord">
+
+![Starship Discord](https://img.shields.io/discord/567163873606500352?color=%235865F2&label=Starship%20Discord&logo=Discord)
 
 ### [starship.toml](dot_config/private_starship.toml)
 
 Main configuration file for [Starship Prompt](https://starship.rs/)
 
->File renamed due to `chezmoi`.<br>
->Rename to `starship.toml`, and place in `~/.config` to use.
-
 <details>
 <summary>Demo GIF</summary>
-    <img src="documentation/prompt_demo.gif" alt="Demo GIF showing some theme" width="80%" align="center" id="demo-gif"/>
+
+![Demo GIF showing some theme](documentation/prompt_demo.gif)
+
 </details>
 
 <h1><em></em></h1> <!-- thin separator -->
 
-<!-- starship.toml ToC -->
-<details open> <!-- L1 -->
-<summary>Overview:</summary>
-  <ul> 
-    <li><a href="#demo-gif">Demo GIF</a></li>
-    <li><a href="#summary">Full Prompt</a></li>
-      <details open><!-- L2 -->
-      <summary>Modules</summary>
-        <ul style="line-height:1.2"><samp>
-          <li><a href="#time">time</a></li>
-          <li><a href="#shlvl">shlvl</a></li>
-          <li><a href="#jobs">jobs</a></li>
-          <li><a href="#sudo">sudo</a></li>
-          <li><a href="#username">username</a></li>
-          <li><a href="#hostname">hostname</a></li>
-          <li><a href="#shell">shell</a></li>
-          <li><details><summary><a href="#env_var">env_var</a></summary><!-- DL2.1 -->
-            <ul>
-              <li><a href="#env_var-termux">termux</a></li>
-            </ul></details><!-- End of DL2.1 -->
-          <li><details><summary><a href="#directory">directory</a></summary><!-- DL2.2 -->
-            <ul>
-              <li><a href="#dir_sub">directory substitutions</a></li>
-            </ul></details><!-- End of DL2.2 -->
-          <li><a href="#git_metrics">git_metrics</a></li>
-          <li><a href="#git_branch">git_branch</a></li>
-          <li><a href="#git_commit">git_commit</a></li>
-          <li><a href="#git_status">git_status</a></li>
-          <li><a href="#git_state">git_state</a></li>
-          <li><a href="#cmd_duration">cmd_duration</a></li>
-          <li><details><summary><a href="#status">status</a></summary><!-- DL2.2 --> 
-            <ul>
-              <li><a href="#status-success">success</a></li>
-              <li><a href="#status-fail">failure</a></li>
-              <li><a href="#status-not-found">not found</a></li>
-              <li><a href="#status-interrupt">sig_int</a></li>
-              <li><a href="#status-signal">signal</a></li>
-              <li><a href="#status-not-executable">not executable</a></li>
-            </ul></details><!-- End of DL2.3 -->
-        </ul></samp>
-      </details><!-- End of L2 -->
-  </ul>
-</details><!-- End of L1 -->
 
-<br>
 <h1><em></em></h1> <!-- thin separator -->
 
 <h2>
