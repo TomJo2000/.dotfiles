@@ -790,15 +790,16 @@ local name; name="TomIO's .zshrc"
 local version; version="${col[uline]}${col[fg_zomp]}v2.0.0${col[reset]}"
 local license; license="${col[fg_green]}MIT${col[reset]}"
 local commit
-: "$(<"${DOT_FILES}/.git/HEAD")"
-: "$(<"${DOT_FILES}/.git/${_}")"
-commit="${col[fg_zomp]}${_::7}${col[reset]}"
-local dependencies; printf -v dependencies '%b' \
-    "${col[orange]}${col[uline]}Dependencies:${col[reset]}\n" \
-    "${col[fg_light_green]}Zsh${col[reset]}" " - Shell (MIT License) \n" \
-    "${col[fg_dark_blue]}${col[dim]}GNU${col[no_dim]} Coreutils${col[reset]}" " - Utils (GPLv3+)\n" \
-    "${col[fg_orange]}Git${col[reset]}" " - Update Checking/Version Control (GPLv2)\n" \
-    "${col[fg_yellow]}OpenSSH${col[reset]}" " - Remote Access (BSD License)\n"
+    : $(<"${DOT_FILES}/.git/HEAD") # last field of the HEAD
+    : $(<"${DOT_FILES}/.git/${_}") # actual SHA of the HEAD
+    commit="${col[fg_green]}${col[dim]}#${_::7}${col[reset]}" # short hash (first 7 chars only)
+local -a dependencies; dependencies=(
+    "${col[orange]}${col[uline]}Dependencies:${col[reset]}"
+    "${col[fg_light_green]}Zsh${col[reset]} - Shell (MIT License)"
+    "${col[fg_blue]}GNU Coreutils${col[reset]} - Utils (GPLv3+)"
+    "${col[fg_orange]}Git${col[reset]} - Update Checking/Version Control (GPLv2)"
+    "${col[fg_yellow]}OpenSSH${col[reset]} - Remote Access (BSD License)"
+    )
 }
 
 local -a posargs=()
@@ -842,8 +843,8 @@ local -a posargs=()
         ('-V'|'--version') # |> print version information
             debug_verbosity+=('off') # ?? This will make main() print the debug banner, which is more compact
             printf '%b\n' \
-            "$name $version $commit | License: $license" \
-            "$dependencies"
+            "${name} ${version}${commit} | License: ${license}" \
+            "${dependencies[@]}"
             break
         ;;
         ('--') # |> end of args
