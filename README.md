@@ -1,13 +1,14 @@
 <!-- ToC: *omit* --> <h1 align="center">TomIO's dotfile repository</h1>
 <h3 align="center">
-  --Repo stats--
+  --Repo stats--<br>
+
+  ![MIT License](https://img.shields.io/github/license/TomJo2000/.dotfiles?color=B7208F&label=License%3A&style=for-the-badge)
+  ![GitHub repo size](https://img.shields.io/github/repo-size/TomJo2000/.dotfiles?color=0759B6&logo=Github&style=for-the-badge)
 <br>
-  <img alt="AGPL 3.0 License" src="https://img.shields.io/github/license/TomJo2000/.dotfiles?color=%23663366&label=License%3A&style=for-the-badge">
-  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TomJo2000/.dotfiles?color=%230A75AD&logo=Github&style=for-the-badge">
-<br>
-  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/TomJo2000/.dotfiles?color=E26D0E">
-  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/TomJo2000/.dotfiles?color=F5FBFF&label=Commits%3A&logo=GitHub">
-  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TomJo2000/.dotfiles?color=%231DA65A&logo=github">
+
+  ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/TomJo2000/.dotfiles?color=0C8167&style=flat-square)
+  ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/TomJo2000/.dotfiles?color=FBF6FD&label=Commits%3A&logo=GitHub)
+  ![GitHub last commit](https://img.shields.io/github/last-commit/TomJo2000/.dotfiles?color=4EAF26&logo=github)
 </h3>
 
 <details open>

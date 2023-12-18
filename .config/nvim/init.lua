@@ -275,6 +275,9 @@ require('lazy').setup({
       window  = { show_integration_count = true }
     },
   },
+  { -- more ergonomic window rearrangement
+    'sindrets/winshift.nvim', opts = { keymaps = { disable_defaults = true } },
+  },
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -366,7 +369,7 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
--- [[ Basic Keymaps ]]
+-- [[ Moving lines ]]
 
 vim.keymap.set('n', '<M-Down>', 'ddp', { desc = 'Swap line down' })
 vim.keymap.set('n', '<M-Up>', 'ddkP', { desc = 'Swap line up' })
@@ -375,7 +378,18 @@ vim.keymap.set('n', '<M-C-Up>', 'yyP', { desc = 'Copy line above' })
 vim.keymap.set('v', '<M-Down>', 'yjp', { desc = 'Copy selection below' })
 vim.keymap.set('v', '<M-Up>', 'y^i<cr><Esc>kp', { desc = 'Copy selection above' })
 
-vim.keymap.set('n', '<C-s>', ':w<cr>', { desc = 'Save' })
+vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
+
+-- [[ Moving windows more better ]]
+vim.keymap.set('n', '<C-w><C-w>', '<Cmd>WinShift swap<CR>', { desc = 'Swap [w]indow' })
+vim.keymap.set('n', '<C-w><C-Left>', '<Cmd>WinShift left<CR>', { desc = 'Swap window <Left>' })
+vim.keymap.set('n', '<C-w><C-Right>', '<Cmd>WinShift right<CR>', { desc = 'Swap window <Right>' })
+vim.keymap.set('n', '<C-w><C-Up>', '<Cmd>WinShift up<CR>', { desc = 'Swap window <Up>' })
+vim.keymap.set('n', '<C-w><C-Down>', '<Cmd>WinShift down<CR>', { desc = 'Swap window <Down>' })
+vim.keymap.set('n', '<C-S-w><C-S-Left>', '<Cmd>WinShift far_left<CR>', { desc = 'Swap window far <LEFT>' })
+vim.keymap.set('n', '<C-S-w><C-S-Right>', '<Cmd>WinShift far_right<CR>', { desc = 'Swap window far <RIGHT>' })
+vim.keymap.set('n', '<C-S-w><C-S-Up>', '<Cmd>WinShift far_up<CR>', { desc = 'Swap window far <UP>' })
+vim.keymap.set('n', '<C-S-w><C-S-Down>', '<Cmd>WinShift far_down<CR>', { desc = 'Swap window far <DOWN>' })
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`

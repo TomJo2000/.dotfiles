@@ -792,7 +792,7 @@ local license; license="${col[fg_green]}MIT${col[reset]}"
 local commit
     : $(<"${DOT_FILES}/.git/HEAD") # last field of the HEAD
     : $(<"${DOT_FILES}/.git/${_}") # actual SHA of the HEAD
-    commit="${col[fg_green]}${col[dim]}#${_::7}${col[reset]}" # short hash (first 7 chars only)
+commit="${col[fg_green]}${col[dim]}#${_::7}${col[reset]}"
 local -a dependencies; dependencies=(
     "${col[orange]}${col[uline]}Dependencies:${col[reset]}"
     "${col[fg_light_green]}Zsh${col[reset]} - Shell (MIT License)"
