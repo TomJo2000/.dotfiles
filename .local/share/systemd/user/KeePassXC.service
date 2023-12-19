@@ -4,11 +4,12 @@ Description=KeePassXC with automatic restart
 After=graphical.target
 
 [Service]
+Type=exec
 WorkingDirectory=%h
-ExecStart=keepassxc -platform xcb
+ExecStart=/usr/bin/keepassxc -platform xcb
 Restart=on-failure
 RestartSec=5s
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 
