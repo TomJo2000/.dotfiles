@@ -21,7 +21,7 @@ function setup() { # <> General setup that has to run regardless of shell level
 
 ### **=====General Compatibility======**
 setopt BASH_RE_MATCH        # Make the =~ operator behave like in Bash, see `man zshoptions`
-setopt RE_MATCH_PCRE        # make [[ "val" =~ ^pattern$ ]] use PCRE instead of ERE
+setopt RE_MATCH_PCRE        # Make [[ "val" =~ ^pattern$ ]] use PCRE instead of ERE
 setopt INTERACTIVE_COMMENTS # Allow comments in interactive shells
 # >< can cause issues with some plugins, disable before loading problematic plugins then reenable
 setopt KSH_ARRAYS           # Make Arrays 0-indexed like god intended
@@ -101,7 +101,7 @@ local hex="${1#\#}"
     [[ "$hex" =~ ^[0-9A-Fa-f]{6}$ ]] || {
         printf 'Invalid hex: \e[31m%s\e[m\n' "$hex"
         return 1
-    } >&2
+    } >&2 # redirect this bracegroups output to stderr
     printf "%d;%d;%d\n" "$(( 0x${hex:0:2} ))" "$(( 0x${hex:2:2} ))" "$(( 0x${hex:4:2} ))"
 return
 }
@@ -878,13 +878,20 @@ parse_args "$@" # parse args
 
 
 ### initialize starship prompt, this needs to be done in every nested shell.
-eval "$(starship init zsh)" || {
-printf '%s\n' "Error: failed to initialize starship prompt" # Print error message if starship failed to initialize
-}
+# Sourcing a proc substitution is what `starship init zsh` does anyway,
+# this way we just don't have to eval it.
+if source <(/usr/bin/starship init zsh --print-full-init); then
+    function prompt_marker() {
+        printf '\e]133;A\e\\'
+    }
+    precmd_functions+=('prompt_marker')
+else
+    printf '%s\n' "Error: failed to initialize starship prompt" # Print error message if starship failed to initialize
+fi
 
 ### Cleanup of remaining variables and functions.
 unset -f "setup" "main" "parse_args" # unset functions
-unset -v "plugins[@]" "debug_valid[@]" # debug related variables
+unset -v "plugins" "debug_valid" # debug related variables
 
 # <> Timing printout
 timing[self]="-$EPOCHREALTIME" # Of course we also wanna time the time the timing calculations take.
