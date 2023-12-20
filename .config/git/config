@@ -5,6 +5,7 @@
 
 [diff]
 	tool = nvimdiff
+	algorithm = minimal
 [merge]
 	tool = nvimdiff
 
