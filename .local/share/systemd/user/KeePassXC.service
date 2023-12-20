@@ -6,8 +6,8 @@ After=graphical.target
 [Service]
 Type=exec
 WorkingDirectory=%h
-ExecStart=/usr/bin/keepassxc -platform xcb
-Restart=on-failure
+ExecStart=/usr/bin/env keepassxc -platform xcb
+Restart=always
 RestartSec=5s
 
 [Install]
