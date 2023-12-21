@@ -2,6 +2,13 @@
 TomIO's neovim config.
 Based on Kickstarter.nvim
 --]]
+---@see forked_at
+---|#ee9790b (Nov 24 2023)
+---| https://github.com/nvim-lua/kickstart.nvim/tree/ee9790b381416781063d0de6653b303f10ed89b0
+
+---@see tracking_to
+---|#76c5b1e upstream commit (Dec 8 2023)
+---| https://github.com/nvim-lua/kickstart.nvim/tree/76c5b1ec57f40d17ac787feb018817a802e24bb6
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -10,7 +17,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- [[ Install `lazy.nvim` plugin manager ]]
--- https://github.com/folke/lazy.nvim
+---@see Lazy.nvim https://github.com/folke/lazy.nvim
 -- `:help lazy.nvim.txt` for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -26,17 +33,17 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure plugins ]]
--- NOTE: Here is where you install your plugins.
--- You can configure plugins using the `config` key.
---
--- You can also configure plugins after the setup call,
--- as they will be available in your neovim runtime.
 require('lazy').setup({
-  -- NOTE: First, some plugins that don't require any configuration
 
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
+
+  { -- proper merge editor
+    --- @see documentation at https://github.com/sindrets/diffview.nvim
+    'sindrets/diffview.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+  },
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
@@ -49,8 +56,8 @@ require('lazy').setup({
     dependencies = {
       { -- symbol navigation
         'SmiteshP/nvim-navbuddy',
-        opts = { lsp = { auto_attach = true } },
         dependencies = { 'SmiteshP/nvim-navic', 'MunifTanjim/nui.nvim' },
+        opts = { lsp = { auto_attach = true } }
       },
       -- Automatically install LSPs to stdpath for neovim
       'williamboman/mason.nvim',
@@ -61,8 +68,6 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
   },
-  -- Linter support
-  'mfussenegger/nvim-lint',
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -71,15 +76,15 @@ require('lazy').setup({
       'saadparwaiz1/cmp_luasnip',
       -- Adds LSP completion capabilities
       'hrsh7th/cmp-nvim-lsp',
+      -- File path completion
+      'hrsh7th/cmp-path',
       -- Adds a number of user-friendly snippets
       'rafamadriz/friendly-snippets',
     },
   },
 
-  { -- Useful plugin to show you pending keybinds.
-    'folke/which-key.nvim',
-    opts = {}
-  },
+  -- Useful plugin to show you pending keybinds.
+  { 'folke/which-key.nvim',      opts = {} },
 
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -124,14 +129,15 @@ require('lazy').setup({
   { -- Theme inspired by Atom
     'navarasu/onedark.nvim',
     priority = 1000,
-    opts = {                           -- Main options --
+    -- Main options --
+    opts = {
       style                = 'darker', -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
       transparent          = false,    -- Show/hide background
       term_colors          = true,     -- Change terminal color as per the selected theme style
       ending_tildes        = true,     -- Show the end-of-buffer tildes. By default they are hidden
       cmp_itemkind_reverse = false,    -- reverse item kind highlights in cmp menu
 
-      -- Change code style --
+      -- Change code style ---
       code_style           = {
         comments  = 'italic', -- Options are italic, bold, underline, none
         keywords  = 'bold',   -- You can configure multiple style with comma separated
@@ -140,16 +146,9 @@ require('lazy').setup({
         variables = 'none'
       },
 
-      -- Plugins Config --
-      diagnostics          = {
-        darker = true,    -- darker colors for diagnostic
-        undercurl = true, -- use undercurl instead of underline for diagnostics
-        background = true --use background color for virtual text
-      },
-
       -- Custom Highlights --
       highlights           = {}, -- Override highlight groups
-      -- Override default colors --
+      -- Override default colors
       colors               = {
         black       = "#181a1f",
         bg0         = "#282c34",
@@ -179,6 +178,11 @@ require('lazy').setup({
         diff_text   = "#2c5372",
       },
 
+      diagnostics          = { -- Plugins Config --
+        darker     = true,     -- darker colors for diagnostic
+        undercurl  = true,     -- use undercurl instead of underline for diagnostics
+        background = true,     -- use background color for virtual text
+      },
     },
     config = function(_, opts)
       require('onedark').setup(opts)
@@ -245,7 +249,7 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
-  { -- Markdown preview in the browser synced to nvim
+  { -- Markdown preview in he browser synced to nvim
     'iamcco/markdown-preview.nvim',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
     ft = { 'markdown' },
@@ -268,18 +272,9 @@ require('lazy').setup({
   -- #800000 #800080 #8000ff #808000 #808080 #8080ff #80ff00 #80ff80 #80ffff
   -- #ff0000 #ff0080 #ff00ff #ff8000 #ff8080 #ff80ff #ffff00 #ffff80 #ffffff
 
-  { -- Code minimap
-    'echasnovski/mini.map',
-    opts = {
-      symbols = { scroll_line = '⦿', scroll_view = '┃' },
-      window  = { show_integration_count = true }
-    },
-  },
-  { 'sindrets/winshift.nvim',
-    opts = {
-      keymaps = { disable_defaults = true }
-    },
-  },
+  -- Code minimap
+  { 'echasnovski/mini.map', opts = {} },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -371,7 +366,7 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
--- [[ Moving lines ]]
+-- [[ Basic Keymaps ]]
 
 vim.keymap.set('n', '<M-Down>', 'ddp', { desc = 'Swap line down' })
 vim.keymap.set('n', '<M-Up>', 'ddkP', { desc = 'Swap line up' })
@@ -380,18 +375,7 @@ vim.keymap.set('n', '<M-C-Up>', 'yyP', { desc = 'Copy line above' })
 vim.keymap.set('v', '<M-Down>', 'yjp', { desc = 'Copy selection below' })
 vim.keymap.set('v', '<M-Up>', 'y^i<cr><Esc>kp', { desc = 'Copy selection above' })
 
-vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
-
--- [[ Moving windows more better ]]
-vim.keymap.set('n', '<C-w><C-w>'        ,'<Cmd>WinShift swap<CR>'     , { desc = 'Swap [w]indow' })
-vim.keymap.set('n', '<C-w><C-Left>'     ,'<Cmd>WinShift left<CR>'     , { desc = 'Swap window <Left>' })
-vim.keymap.set('n', '<C-w><C-Right>'    ,'<Cmd>WinShift right<CR>'    , { desc = 'Swap window <Right>' })
-vim.keymap.set('n', '<C-w><C-Up>'       ,'<Cmd>WinShift up<CR>'       , { desc = 'Swap window <Up>' })
-vim.keymap.set('n', '<C-w><C-Down>'     ,'<Cmd>WinShift down<CR>'     , { desc = 'Swap window <Down>' })
-vim.keymap.set('n', '<C-S-w><C-S-Left>' ,'<Cmd>WinShift far_left<CR>' , { desc = 'Swap window far <LEFT>' })
-vim.keymap.set('n', '<C-S-w><C-S-Right>','<Cmd>WinShift far_right<CR>', { desc = 'Swap window far <RIGHT>' })
-vim.keymap.set('n', '<C-S-w><C-S-Up>'   ,'<Cmd>WinShift far_up<CR>'   , { desc = 'Swap window far <UP>' })
-vim.keymap.set('n', '<C-S-w><C-S-Down>' ,'<Cmd>WinShift far_down<CR>' , { desc = 'Swap window far <DOWN>' })
+vim.keymap.set('n', '<C-s>', ':w<cr>', { desc = 'Save' })
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -661,6 +645,8 @@ local servers = {
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
   lua_ls = {
+    -- Lua = {
+    -- },
     Lua = {
       runtime = {
         -- Tell the language server which version of Lua you're using
@@ -684,7 +670,6 @@ local servers = {
       }
     }
   },
-  bashls = {},
 }
 
 -- Setup neovim lua configuration
@@ -762,6 +747,7 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+    { name = 'path' },
   },
 }
 
