@@ -56,8 +56,8 @@ require('lazy').setup({
     dependencies = {
       { -- symbol navigation
         'SmiteshP/nvim-navbuddy',
+        opts = { lsp = { auto_attach = true } },
         dependencies = { 'SmiteshP/nvim-navic', 'MunifTanjim/nui.nvim' },
-        opts = { lsp = { auto_attach = true } }
       },
       -- Automatically install LSPs to stdpath for neovim
       'williamboman/mason.nvim',
@@ -68,6 +68,8 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
   },
+  -- Linter support
+  'mfussenegger/nvim-lint',
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -137,7 +139,7 @@ require('lazy').setup({
       ending_tildes        = true,     -- Show the end-of-buffer tildes. By default they are hidden
       cmp_itemkind_reverse = false,    -- reverse item kind highlights in cmp menu
 
-      -- Change code style ---
+      -- Change code style --
       code_style           = {
         comments  = 'italic', -- Options are italic, bold, underline, none
         keywords  = 'bold',   -- You can configure multiple style with comma separated
@@ -145,10 +147,15 @@ require('lazy').setup({
         strings   = 'none',
         variables = 'none'
       },
-
+      -- Plugins Config --
+      diagnostics          = {
+        darker     = true, -- darker colors for diagnostic
+        undercurl  = true, -- use undercurl instead of underline for diagnostics
+        background = true, -- use background color for virtual text
+      },
       -- Custom Highlights --
       highlights           = {}, -- Override highlight groups
-      -- Override default colors
+      -- Override default colors --
       colors               = {
         black       = "#181a1f",
         bg0         = "#282c34",
@@ -176,12 +183,6 @@ require('lazy').setup({
         diff_delete = "#382b2c",
         diff_change = "#1c3448",
         diff_text   = "#2c5372",
-      },
-
-      diagnostics          = { -- Plugins Config --
-        darker     = true,     -- darker colors for diagnostic
-        undercurl  = true,     -- use undercurl instead of underline for diagnostics
-        background = true,     -- use background color for virtual text
       },
     },
     config = function(_, opts)
@@ -249,7 +250,7 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
-  { -- Markdown preview in he browser synced to nvim
+  { -- Markdown preview in the browser synced to nvim
     'iamcco/markdown-preview.nvim',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
     ft = { 'markdown' },
@@ -272,9 +273,19 @@ require('lazy').setup({
   -- #800000 #800080 #8000ff #808000 #808080 #8080ff #80ff00 #80ff80 #80ffff
   -- #ff0000 #ff0080 #ff00ff #ff8000 #ff8080 #ff80ff #ffff00 #ffff80 #ffffff
 
-  -- Code minimap
-  { 'echasnovski/mini.map', opts = {} },
-
+  { -- Code minimap
+    'echasnovski/mini.map',
+    opts = {
+      symbols = { scroll_line = '⦿', scroll_view = '┃' },
+      window  = { show_integration_count = true }
+    },
+  },
+  { -- ergonomic window movements
+    'sindrets/winshift.nvim',
+    opts = {
+      keymaps = { disable_defaults = true }
+    },
+  },
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -366,7 +377,7 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
--- [[ Basic Keymaps ]]
+-- [[ Moving lines ]]
 
 vim.keymap.set('n', '<M-Down>', 'ddp', { desc = 'Swap line down' })
 vim.keymap.set('n', '<M-Up>', 'ddkP', { desc = 'Swap line up' })
@@ -375,7 +386,18 @@ vim.keymap.set('n', '<M-C-Up>', 'yyP', { desc = 'Copy line above' })
 vim.keymap.set('v', '<M-Down>', 'yjp', { desc = 'Copy selection below' })
 vim.keymap.set('v', '<M-Up>', 'y^i<cr><Esc>kp', { desc = 'Copy selection above' })
 
-vim.keymap.set('n', '<C-s>', ':w<cr>', { desc = 'Save' })
+vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
+
+-- [[ Moving windows more better ]]
+vim.keymap.set('n', '<C-w><C-w>'        ,'<Cmd>WinShift swap<CR>'     , { desc = 'Swap [w]indow' })
+vim.keymap.set('n', '<C-w><C-Left>'     ,'<Cmd>WinShift left<CR>'     , { desc = 'Swap window <Left>' })
+vim.keymap.set('n', '<C-w><C-Right>'    ,'<Cmd>WinShift right<CR>'    , { desc = 'Swap window <Right>' })
+vim.keymap.set('n', '<C-w><C-Up>'       ,'<Cmd>WinShift up<CR>'       , { desc = 'Swap window <Up>' })
+vim.keymap.set('n', '<C-w><C-Down>'     ,'<Cmd>WinShift down<CR>'     , { desc = 'Swap window <Down>' })
+vim.keymap.set('n', '<C-S-w><C-S-Left>' ,'<Cmd>WinShift far_left<CR>' , { desc = 'Swap window far <LEFT>' })
+vim.keymap.set('n', '<C-S-w><C-S-Right>','<Cmd>WinShift far_right<CR>', { desc = 'Swap window far <RIGHT>' })
+vim.keymap.set('n', '<C-S-w><C-S-Up>'   ,'<Cmd>WinShift far_up<CR>'   , { desc = 'Swap window far <UP>' })
+vim.keymap.set('n', '<C-S-w><C-S-Down>' ,'<Cmd>WinShift far_down<CR>' , { desc = 'Swap window far <DOWN>' })
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -645,8 +667,6 @@ local servers = {
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
   lua_ls = {
-    -- Lua = {
-    -- },
     Lua = {
       runtime = {
         -- Tell the language server which version of Lua you're using
@@ -670,6 +690,7 @@ local servers = {
       }
     }
   },
+  bashls = {},
 }
 
 -- Setup neovim lua configuration
