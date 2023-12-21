@@ -1,0 +1,23 @@
+# Requires SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket" to be set in environment
+[Unit]
+ConditionEnvironment=!SSH_AGENT_PID
+Description=OpenSSH key agent
+Documentation=man:ssh-agent(1) man:ssh-add(1) man:ssh(1)
+
+[Service]
+# %t is the runtime directory, for user services this is $XDG_RUNTIME_DIR
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+# We're managing `ssh-agent` with systemd, so no need to fork (-D)
+# We want to always attach to our socket (-a)
+ExecStart=/usr/bin/env ssh-agent -D -a $SSH_AUTH_SOCK
+# Pass on $SSH_AGENT_PID and $SSH_AUTH_SOCK
+PassEnvironment=SSH_AGENT_PID SSH_AUTH_SOCK
+# Ignore exit code 2, its a normal exit for `ssh-agent`
+SuccessExitStatus=2
+Type=exec
+Restart=always
+RestartSec=5s
+
+
+[Install]
+WantedBy=default.target
