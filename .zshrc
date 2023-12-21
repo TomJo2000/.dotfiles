@@ -200,10 +200,13 @@ printf -v col_banner '%b' \
     (( timing[printouts_banner] = timing[printouts] + EPOCHREALTIME ))
 
 timing[ssh_agent]="-$EPOCHREALTIME"
-if [[ ! -S "$SSH_AUTH_SOCK" ]]; then # <> see if SSH Agent is running
-    eval "$(ssh-agent)" > /dev/null # startup the SSH Agent; discard confirmation message
-    printf '%b\n' "SSH Agent started\nPID: ${col[inv]}$SSH_AGENT_PID${col[reset]}"
+if (( ${#XDG_RUNTIME_DIR} )); then
+    SSH_AGENT_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+    SSH_AGENT_PID="$(systemctl show --property MainPID --user ssh-agent.service)" # probably async this
+else
+    : # (TODO) handle that
 fi
+printf '%b\n' "Connected to SSH Agent.\nPID: ${col[inv]}$SSH_AGENT_PID${col[reset]}"
 
 [[ "${debug_verbosity[*]}" =~ (^| )(ssh|all)( |$) ]] && { # >< Debug: SSH
     echo "yes"
