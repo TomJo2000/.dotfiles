@@ -1,6 +1,7 @@
 # (User) Service Unit for KeePassXC
 [Unit]
 Description=KeePassXC with automatic restart
+Documentation=man:keepassxc-cli(1) man:keepassxc(1)
 After=graphical.target
 
 [Service]
