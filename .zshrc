@@ -764,10 +764,13 @@ timing[f-sy-h]="-$EPOCHREALTIME"
 setopt KSH_ARRAYS # Make Arrays start at index 0 # !! breaks unpatched zsh-autosuggestions and z-sy-h
 
 ### Resolve async/awaits
+timing[async]="-$EPOCHREALTIME"
+
 SSH_AGENT_PID="$(</dev/fd/${async_fd})" # await / consume
 exec {async_fd}>&- # fd_free
 printf '%b\n' "Connected to SSH Agent.\nPID: ${col[inv]}$SSH_AGENT_PID${col[reset]}"
 
+(( timing[async] += EPOCHREALTIME ))
 (( timing[source] += EPOCHREALTIME ))
 }
 
@@ -924,6 +927,7 @@ declare -a timing_order=( # ** Order of timing nodes
     'completions'
     'suggestions'
     'f-sy-h'
+    'async'
 )
 
 nbsp="\xC2\xA0" # non-breaking space
@@ -949,7 +953,8 @@ declare -A timing_line=( # ** helper assoc with the same keys as ${timing[@]} co
            [source]="${col[fg_dark_blue]}${nbsp}└╴${col[reset]}Sourcing Plugins"
       [completions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Completions"
       [suggestions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}History based autosuggestions"
-           [f-sy-h]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}└╴${col[reset]}Setting up syntax highlighting"
+           [f-sy-h]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Setting up syntax highlighting"
+            [async]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}└╴${col[reset]}Resolving async/awaits"
 )
 
 [[ "${debug_verbosity[*]}" =~ (^| )(timings|all)( |$) ]] && { # >< DEBUG: timings
