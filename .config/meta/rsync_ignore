@@ -1,5 +1,6 @@
 # Do not put these in the repo, nor delete them
 exclude /.git/***
+exclude /.config/meta/***
 exclude /.ssh/keys/***
 exclude /.ssh/private/***
 exclude /.ssh/known_hosts*
