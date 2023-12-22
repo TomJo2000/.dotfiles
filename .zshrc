@@ -200,18 +200,18 @@ printf -v col_banner '%b' \
     (( timing[printouts_banner] = timing[printouts] + EPOCHREALTIME ))
 
 timing[ssh_agent]="-$EPOCHREALTIME"
-if (( ${#XDG_RUNTIME_DIR} )); then
-    SSH_AGENT_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
-    SSH_AGENT_PID="$(systemctl show --property MainPID --user ssh-agent.service)" # probably async this
-else
-    : # (TODO) handle that
-fi
-printf '%b\n' "Connected to SSH Agent.\nPID: ${col[inv]}$SSH_AGENT_PID${col[reset]}"
+    SSH_AGENT_SOCK="${XDG_RUNTIME_DIR:=/run/user/${UID}/ssh-agent.socket}"
+    local async_fd
+    exec {async_fd}<> <( # async / fd_alloc
+        systemctl show --property MainPID --user ssh-agent.service
+    )
 
 [[ "${debug_verbosity[*]}" =~ (^| )(ssh|all)( |$) ]] && { # >< Debug: SSH
     echo "yes"
 }
+printf '%b\n' "Connected to SSH Agent.\nPID: ${col[inv]}$SSH_AGENT_PID${col[reset]}"
 (( timing[ssh_agent] += EPOCHREALTIME ))
+
 
 ### Update checking
 # <> list of installed plugins
@@ -763,6 +763,11 @@ timing[f-sy-h]="-$EPOCHREALTIME"
 
 # only set KSH_ARRAYS after loading plugins to avoid jank
 setopt KSH_ARRAYS # Make Arrays start at index 0 # !! breaks unpatched zsh-autosuggestions and z-sy-h
+
+### Resolve async/awaits
+: "$(</dev/fd/${async_fd})" # await / consume
+SSH_AGENT_PID="${_##*=}"
+exec {async_fd}>&- # fd_free
 
 (( timing[source] += EPOCHREALTIME ))
 }
