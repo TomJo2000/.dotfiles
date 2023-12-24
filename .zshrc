@@ -148,16 +148,16 @@ col+=( # ** append the following sequences to the `col[]` array
 function main() { # <> contains everything that only needs to run when setting up a un-nested shell
 
 timing[main]="-$EPOCHREALTIME"
-# |> See if we should be using the working tree versions of starship.toml
-if   [[ -e "/mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/.config/starship.toml" ]]; then # if this is my personal PC, use the working copy of the prompt
+[[ -e '/mnt/c/Users/Josh/Desktop' ]] && { # |> If we are in WSL add a env var for quicker access to the Windows Desktop location
     export WSL_DESKTOP='/mnt/c/Users/Josh/Desktop'
-    export DOT_FILES="${WSL_DESKTOP}/stuff/VScode/git/.dotfiles"
-    export STARSHIP_CONFIG="${DOT_FILES}/.config/starship.toml"
-    alias mpv=mpv.exe
-elif [[ -e "$HOME/git/.dotfiles/.config/starship.toml" ]]; then # same check for my personal laptop
+    alias mpv=mpv.exe # alias the Windows version of MPV to `mpv`
+}
+
+[[ -e "$HOME/git/.dotfiles/.config/starship.toml" ]] && { # |> check if we have a DOT_FILES repo in the usual spot
     export DOT_FILES="$HOME/git/.dotfiles"
     export STARSHIP_CONFIG="${DOT_FILES}/.config/starship.toml"
-fi
+}
+
 (( timing[env_specifics] = timing[main] + EPOCHREALTIME ))
 
 timing[printouts]="-$EPOCHREALTIME"
