@@ -27,6 +27,8 @@ setopt INTERACTIVE_COMMENTS # Allow comments in interactive shells
 setopt KSH_ARRAYS           # Make Arrays 0-indexed like god intended
 ### **================================**
 
+declare -gA promises=()
+
 timing[list_plugins]="-$EPOCHREALTIME"
 ### **=========User Specifics=========**
 export zsh_script_dir="${HOME}/.local/share/zsh/scripts" # "plugin" script location
@@ -146,8 +148,30 @@ col+=( # ** append the following sequences to the `col[]` array
 (( timing[setup] = timing[all] + EPOCHREALTIME ))
 
 function main() { # <> contains everything that only needs to run when setting up a un-nested shell
-
 timing[main]="-$EPOCHREALTIME"
+
+### XDG base-directories
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+: "${XDG_RUNTIME_DIR:=/run/user/${UID}}"
+export XDG_RUNTIME_DIR
+
+### SSH Agent
+SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+local async_fd
+exec {async_fd}<> <( # async / fd_alloc
+    systemctl show --property MainPID --value --user ssh-agent.service
+)
+
+[[ "${debug_verbosity[*]}" =~ (^| )(ssh|all)( |$) ]] && { # >< Debug: SSH
+    echo "yes"
+}
+(( timing[ssh_agent] = timing[main] + EPOCHREALTIME ))
+
+
+timing[env_specifics]="-$EPOCHREALTIME"
 [[ -e '/mnt/c/Users/Josh/Desktop' ]] && { # |> If we are in WSL add a env var for quicker access to the Windows Desktop location
     export WSL_DESKTOP='/mnt/c/Users/Josh/Desktop'
     alias mpv=mpv.exe # alias the Windows version of MPV to `mpv`
@@ -157,11 +181,9 @@ timing[main]="-$EPOCHREALTIME"
     export DOT_FILES="$HOME/git/.dotfiles"
     export STARSHIP_CONFIG="${DOT_FILES}/.config/starship.toml"
 }
-
-(( timing[env_specifics] = timing[main] + EPOCHREALTIME ))
+(( timing[env_specifics] += EPOCHREALTIME ))
 
 timing[printouts]="-$EPOCHREALTIME"
-
 local col_banner # Color banner
 printf -v col_banner '%b' \
     "\r           ${col[fg_blue]}dt" \
@@ -199,17 +221,6 @@ printf -v col_banner '%b' \
     [[ -n "$STARSHIP_SHELL" ]] && printf '%b\n' '🚀 Starship Prompt Initialized' # print confirmation message if starship successfully started
     (( timing[printouts_banner] = timing[printouts] + EPOCHREALTIME ))
 
-timing[ssh_agent]="-$EPOCHREALTIME"
-    local async_fd
-    exec {async_fd}<> <( # async / fd_alloc
-        systemctl show --property MainPID --value --user ssh-agent.service
-    )
-
-[[ "${debug_verbosity[*]}" =~ (^| )(ssh|all)( |$) ]] && { # >< Debug: SSH
-    echo "yes"
-}
-SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:=/run/user/${UID}}/ssh-agent.socket"
-(( timing[ssh_agent] += EPOCHREALTIME ))
 
 
 ### Update checking
@@ -365,13 +376,6 @@ done
 # [[ -n ${p_diff[*]} ]] && printf "${col[fg_red]}%b${col[reset]} Missing:\n" "${p_diff[@]}" # (WIP)
 
 (( timing[plugins] += EPOCHREALTIME ))
-
-
-### XDG base-directories
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_STATE_HOME="$HOME/.local/state"
 
 ### Shell Options
 setopt AUTO_CD              # cd can be omitted when typing in a valid file path
@@ -647,6 +651,7 @@ local -a posargs=()
             local -a debug_valid=( # ** valid values for ${debug_verbosity[*]}, set with the `-v|--verbose <value>` flag.
                 'all'
                 'args'
+                'async'
                 'banner'
                 'color'
                 'installed'
@@ -735,15 +740,16 @@ timing[self]="-$EPOCHREALTIME" # Of course we also wanna time the time the timin
 declare -a timing_order=( # ** Order of timing nodes
 'setup'
   'list_plugins'
-  'color'
+  'color' # async
 
 'args'
   'verbosity'
 
 'main'
+  'ssh_agent' # async
   'printouts'
+    'env_specifics'
     'printouts_banner'
-    'ssh_agent'
   'updates'
     'updates_logic'
   'plugins'
@@ -767,10 +773,10 @@ declare -A timing_line=( # ** helper assoc with the same keys as ${timing[@]} co
         [verbosity]="${col[fg_dark_blue]}${nbsp}└╴${col[reset]}parse verbosity"
 
              [main]="${col[fg_dark_blue]}${nbsp}${col[fg_green]}main()"
+        [ssh_agent]="${col[fg_dark_blue]}${nbsp}├╴${col[reset]}Attach shell to SSH Agent"
     [env_specifics]="${col[fg_dark_blue]}${nbsp}├╴${col[reset]}Determine environment specifics"
         [printouts]="${col[fg_dark_blue]}${nbsp}├╴${col[reset]}Printouts"
- [printouts_banner]="${col[fg_dark_blue]}${nbsp}│${nbsp}├╴${col[reset]}Print Banner"
-        [ssh_agent]="${col[fg_dark_blue]}${nbsp}│${nbsp}└╴${col[reset]}SSH Agent"
+ [printouts_banner]="${col[fg_dark_blue]}${nbsp}│${nbsp}└╴${col[reset]}Print Banner"
           [updates]="${col[fg_dark_blue]}${nbsp}├╴${col[reset]}Update checking"
     [updates_logic]="${col[fg_dark_blue]}${nbsp}│${nbsp}└╴${col[reset]}Update prompt(Realtime)"
           [plugins]="${col[fg_dark_blue]}${nbsp}├╴${col[reset]}Plugin checking"
@@ -781,7 +787,7 @@ declare -A timing_line=( # ** helper assoc with the same keys as ${timing[@]} co
       [completions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Completions"
       [suggestions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}History based autosuggestions"
            [f-sy-h]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Setting up syntax highlighting"
-            [async]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}└╴${col[reset]}Resolving async/awaits"
+            [async]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}└╴${col[reset]}Resolving outstanding promises"
 )
 
 [[ "${debug_verbosity[*]}" =~ (^| )(timings|all)( |$) ]] && { # >< DEBUG: timings
