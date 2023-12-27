@@ -70,7 +70,7 @@ vim.keymap.set('n', '<M-Up>', 'ddkP', { desc = 'Swap line up' })
 vim.keymap.set('n', '<M-C-Down>', 'yyp', { desc = 'Copy line below' })
 vim.keymap.set('n', '<M-C-Up>', 'yyP', { desc = 'Copy line above' })
 vim.keymap.set('v', '<M-Down>', 'yjp', { desc = 'Copy selection below' })
-vim.keymap.set('v', '<M-Up>', 'y^i<cr><Esc>kp', { desc = 'Copy selection above' })
+vim.keymap.set('v', '<M-Up>', 'yyp', { desc = 'Copy selection above' })
 
 -- [[ Save ]]
 vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
@@ -182,6 +182,7 @@ vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
+vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = '[S]how [K]eymaps' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -191,9 +192,9 @@ vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
     ensure_installed = {
-      'c', 'cpp', 'go', 'lua',
-      'python', 'rust', 'tsx', 'javascript',
-      'typescript', 'vimdoc', 'vim', 'bash'
+      'bash', 'c', 'cpp', 'diff', 'go', 'git_config', 'gitignore',
+      'ini', 'lua', 'python', 'regex', 'rust', 'ssh_config',
+      'toml', 'typescript', 'vimdoc', 'vim', 'yaml'
     },
     -- sync_install = '',
     -- ignore_install = '',
