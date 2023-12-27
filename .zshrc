@@ -526,22 +526,11 @@ export DIFFPROG="nvim -d"
 
 alias ls='LC_COLLATE=C ls --file-type --color' # colorize ls by default
 
-# (WIP) function git-squash() {
-# (WIP)     local number_of_commits="$1"
-# (WIP)     git reset --soft HEAD~2 && git commit --edit -m"$(git log --format=%B --reverse HEAD..HEAD@{1})"
-# (WIP) }
-
 # (WIP)
 # mkssh-key() {
 #     local key_name=""
 #     ssh-keygen -t rsa -b 4096 -f "$PWD/$key_name" -C "${USER}@${HOST}-$(date -I)"
 # }
-
-# (WIP)
-# rsync -a -m -z -P --chmod=D0755,F0644 --no-h --out-format="'%p' '%o' '%l' '%f'" --outbuf=line /mnt/c/Users/Josh/Desktop/stuff/VScode/git/.dotfiles/private_dot_zshrc "$HOME/.zshrc" && source "$HOME/.zshrc"
-
-# (WIP)
-# showkeys -a
 
 # (WIP)
 #function parse_ls_cols(){
@@ -596,168 +585,6 @@ timing[f-sy-h]="-$EPOCHREALTIME"
 # only source it if we haven't already
 # shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
 (( ${#FAST_HIGHLIGHT} )) || source "$zsh_script_dir/f-sy-h/F-Sy-H.plugin.zsh"
-
-# !! export ZSH_HIGHLIGHT_HIGHLIGHTERS=( # >< enable additional highlighters
-# !!     'main'
-# !!     'cursor'
-# !!     'brackets'
-# !!     'regexp'
-# !! )
-# !!
-# !!
-# !! local -A re=( # |> helpers for commonly reused meta-regex components
-# !!     [rhs]='(?!.*=~)'                       # (RegEx) check that we don't have a =~ in front of us, aka we're on the right hand (pattern) side of the RegEx
-# !!     [hex]='[a-fA-F0-9]'                    # 0..[fF]
-# !!     [test]='(?=.*\]{2})'                   # (RegEx) check that the pattern starts with a [[ thus confirming we're in a test expression
-# !!     [arith]='(?=.*\){2})'                  # (RegEx) check that the pattern starts with a (( thus confirming we're in an arithmetic context
-# !!     [printf]='\bprintf(?:.|\\\n[ \t])*?\K' # (RegEx) check that the pattern starts with a printf and at least one whitespace character
-# !!     [osc8]='\\e]8;;'                       #
-# !!     [comment]='.*(?=#)?'                   # (RegEx) match up to the next comment or line end
-# !!     [osc_end]='(?:\\a|\\e\\\\)'
-# !! )
-# !!
-# !! # (RegEx) this has so many moving parts I'd rather add to it one piece at a time.
-# !! local printf_format                      # % [$][flags][width][.precision]conversion # ?? complete format of the format
-# !!       printf_format+="(?:\*?\d+\$|\*)"   #   [$]
-# !!       printf_format+="[#0\+\- ']"        #   [flags]
-# !!       printf_format+='(?:\d+\$|\*?\d*)*' #   [width]
-# !!       printf_format+="\.(?:\*?|\d*)"     #   [precision]
-# !!
-# !! declare -Agx ZSH_HIGHLIGHT_REGEXP=( # <> custom PCRE highlighter patterns
-# !!     # |> Escapes
-# !!     ['\\\n']="fg=${pal[orange]}"                                                 # \<newline>
-# !!     ['\\c.']="fg=${pal[yellow]}"                                                 # \cX
-# !!     ['\\e\[']="fg=${pal[yellow]}"                                                # \e[ - CSI
-# !!     ["${re[osc8]}"]="fg=${pal[yellow]}"                                          # Hyperlinks
-# !!     ['\\e\[[0-9;]*m']="fg=${pal[yellow]},underline"                              # graphics escapes, \e[m \e[7m \e[38;5;246m, etc.
-# !!     ['\\0|\\[0-7]{3}']="fg=${pal[yellow]}"                                       # \0 \012 \033
-# !!     ["\\\\U${re[hex]}{1,8}"]="fg=${pal[yellow]}"                                 # \U1F913
-# !!     ["\\\\u${re[hex]}{1,4}"]="fg=${pal[yellow]}"                                 # \uA \u30 \uD9E \u20AC
-# !!     ["\\\\x${re[hex]}{1,2}"]="fg=${pal[yellow]}"                                 # \xA \xFF
-# !!     ["\\\\[\\\\abeEfnrtv?'\"]"]="fg=${pal[yellow]}"                              # \a \b \e \E \f \n \r \t \v \\ \' \" \?
-# !!     ["\\\\e\][02];.*${re[osc_end]}"]="fg=${pal[yellow]},underline"               # Title operations \e]2;foo\a
-# !!     ["${re[osc_end]}\K.*(?=${re[osc8]})"]="fg=${pal[blue]}"                      # OSC 8 Text
-# !!     ["${re[osc8]}\K(?:https?|file):\/\/.*?(?=${re[osc_end]})"]="fg=${pal[blue]}" # OSC 8 Link
-# !!
-# !!     # |> printf formats
-# !!     # (WIP) ["${re[printf]}%${re[pf_flags]}${re[pf_width]}s"]=""
-# !!     # (WIP) ["${re[printf]}%${re[pf_flags]}${re[pf_width]}f"]=""
-# !!     # (WIP) ["${re[printf]}%${re[pf_flags]}${re[pf_width]}[di]"]=""
-# !!     # (WIP) ["${re[printf]}%${re[pf_flags]}${re[pf_width]}[xX]"]=""
-# !!     # (WIP) ["${re[printf]}%${re[pf_flags]}${re[pf_width]}[oO]"]=""
-# !!     # (WIP) ["${re[printf]}%${re[pf_flags]}${re[pf_width]}n"]=""
-# !!     # (WIP) ["${re[printf]}%${re[pf_flags]}${re[pf_width]}%"]=""
-# !!
-# !!     # |> RegEx
-# !!     ["=~${re[test]}"]="fg=${pal[cyan]},underline"                                                          # =~ # (RegEx) operator on tests
-# !!     ["\.${re[test]}${re[rhs]}"]="fg=${pal[light_green]}"                                                   # (RegEx) meta-regex for the . any operator
-# !!     ["\|${re[test]}${re[rhs]}"]="fg=${pal[purple]}"                                                        # (RegEx) meta-regex for the | alternative operator
-# !!     ["\$${re[test]}${re[rhs]}"]="fg=${pal[orange]}"                                                        # (RegEx) meta-regex $ end of line/string operator
-# !!     ["(?<!\[)\^${re[test]}${re[rhs]}"]="fg=${pal[orange]}"                                                 # (RegEx) meta-regex ^ start of line/string operator
-# !!     ["\{,[0-9]*\}${re[test]}${re[rhs]}"]="fg=${pal[red]},standout"                                         # (RegEx) meta-regex for '{,3}' invalid version of the range operator
-# !!     ["\{[0-9]+(?:,[0-9]*)?\}${re[test]}${re[rhs]}"]="fg=${pal[blue]}"                                      # (RegEx) meta-regex for '{3,}' range operator
-# !!     ["(?<![?*+])(?:[+?]{2}|[?*+][+?]|(?<!\*|[?*+]{2})[?*+](?!\*))${re[test]}${re[rhs]}"]="fg=${pal[blue]}" # (RegEx) meta-regex for the ?, *, +, ??, ?+, *?, +?, *+ and ++ operators
-# !!
-# !!     # |> Comments
-# !!     ["#\!/${re[comment]}"]="fg=${pal[blue]}"                                   # #!/ shebangs
-# !!     ["#\s*\?{2}${re[comment]}"]="fg=${pal[blue]}"                              # ?? comments with '??'
-# !!     ["#\s*\!{2}${re[comment]}"]="fg=${pal[red]}"                               # !! comments with '!!'
-# !!     ["#\s*\*{2}${re[comment]}"]="fg=${pal[green]}"                             # ** comments with '**'
-# !!     ["#\s*\<\>${re[comment]}"]="fg=${pal[blue]}"                               # <> comments with '<>'
-# !!     ["#\s*\|\>${re[comment]}"]="fg=${pal[purple]}"                             # |> comments with '|>'
-# !!     ["#\s*\>\<${re[comment]}"]="fg=${pal[zomp]}"                               # >< comments with '><'
-# !!     ["#\s*\([Tt][Oo][Dd][Oo]\)${re[comment]}"]="fg=${pal[yellow]}"             # (TODO) comments
-# !!     ["#\s*\([Ww][Ii][Pp]\)${re[comment]}"]="fg=${pal[orange]}"                 # (WIP) comments
-# !!     ["#\s*\([Aa][Cc][Kk]\)${re[comment]}"]="fg=${pal[magenta]}"                # (ACK) comments
-# !!     ["#\s*\([Rr][Ee][Gg][Ee][Xx]\)${re[comment]}"]="fg=${pal[cyan]},underline" # (RegEx) comments
-# !!
-# !!     # |> Arithmetic expression operators (roughly in order of operations)
-# !!     ["${re[arith]}\+{2}"]="fg=${pal[orange]}"                                             # ++    pre-/post- increment
-# !!     ["${re[arith]}-{2}"]="fg=${pal[orange]}"                                              # --    pre-/post- decrement
-# !!     ["${re[arith]}!"]="fg=${pal[magenta]}"                                                # !     NOT
-# !!     ["${re[arith]}~"]="fg=${pal[magenta]}"                                                # ~     Bitwise NOT
-# !!     ["${re[arith]}\*{2}"]="fg=${pal[orange]}"                                             # **    exponentiation
-# !!     ["${re[arith]}\*"]="fg=${pal[yellow]}"                                                # *     multiply
-# !!     ["${re[arith]}/"]="fg=${pal[yellow]}"                                                 # /     divide
-# !!     ["${re[arith]}%"]="fg=${pal[yellow]}"                                                 # %     modulo
-# !!     ["${re[arith]}\+"]="fg=${pal[green]}"                                                 # +     addition
-# !!     ["${re[arith]}-"]="fg=${pal[green]}"                                                  # -     subtraction
-# !!     ["${re[arith]}<{2}"]="fg=${pal[magenta]}"                                             # <<    Bit-shift left
-# !!     ["${re[arith]}>{2}"]="fg=${pal[magenta]}"                                             # >>    Bit-shift right
-# !!     ["${re[arith]}<"]="fg=${pal[cyan]}"                                                   # <     less than
-# !!     ["${re[arith]}>"]="fg=${pal[cyan]}"                                                   # >     greater than
-# !!     ["${re[arith]}[!<=>]="]="fg=${pal[light_grey]}"                                       # Less  or equal <=, greater or equal >=, equal == and not equal !=
-# !!     ["${re[arith]}&{1,2}"]="fg=${pal[magenta]}"                                           # && &  Logical/Bitwise AND
-# !!     ["${re[arith]}\^"]="fg=${pal[magenta]}"                                               # ^     Bitwise XOR
-# !!     ["${re[arith]}\|{1,2}"]="fg=${pal[magenta]}"                                          # || |  Logical/Bitwise OR
-# !!     ["${re[arith]}\?"]="fg=${pal[blue]}"                                                  # ?     ternary if
-# !!     ["${re[arith]}:"]="fg=${pal[blue]}"                                                   # :     ternary else
-# !!     ["${re[arith]}(?:[\*/%+\-&^|]=|[<>]{2}=|[^!<=>]\K=(?=[^=]))"]="fg=${pal[light_grey]}" # all the assignments = *= /= %= += -= <<= >>= &= ^= |=
-# !!     ["${re[arith]},"]="fg=${pal[light_grey]}"                                             # ,     expression delimiter
-# !!     ["${re[arith]};"]="fg=${pal[light_grey]}"                                             # ;     loop iterator delimiter
-# !!     ["${re[arith]}0[Xx][0-9a-fA-F]+"]="fg=${pal[green]}"                                  # 0xFF  Hex value
-# !!     ["${re[arith]}(?:[2-9]|[1-2][0-9]|3[0-6])#\w+"]="fg=${pal[green]}"                    # 36#8r Base assignment
-# !!     # (WIP) ternary validation '[?:](?=\s*\){2})' -> "(?::|\?(?=.*:)?.*)(?=\s*\){2})"
-# !!
-# !!     # |> Test expression operators
-# !!     ["${re[test]}[<>]"]=""            # lexical comparison in a test expression
-# !!     ["${re[test]}(?<![!=])[!=]?="]="" # string (in)equality tests
-# !! )
-# !!
-# !! declare -Agx ZSH_HIGHLIGHT_STYLES=( # <> styles for Zsh-Syntax-Highlighting, based on `man zshzle(1)` Section: Character Highlighting
-# !!     [double-quoted-argument-unclosed]="fg=${pal[red]},underline"     # "foo
-# !!     [single-quoted-argument-unclosed]="fg=${pal[red]},underline"     # 'foo
-# !!     [dollar-quoted-argument-unclosed]="fg=${pal[red]},underline"     # $'foo
-# !!     [back-quoted-argument-delimiter]="fg=${pal[yellow]},underline"   # `\\` escape char
-# !!     [process-substitution-delimiter]="fg=${pal[purple]}"             # <()
-# !!     [dollar-double-quoted-argument]="fg=${pal[zomp]},underline"      # "$foo"
-# !!     [back-quoted-argument-unclosed]="fg=${pal[red]},underline"       # `foo
-# !!     [command-substitution-unquoted]="fg=${pal[red]},underline"       # $()
-# !!     [back-double-quoted-argument]="fg=${pal[yellow]},bold"           # "foo`\"`bar" escaped chars in strings
-# !!     [back-dollar-quoted-argument]="fg=${pal[yellow]},bold"           # $'\x48' escaped chars in C-quotes
-# !!     [command-substitution-quoted]="fg=${pal[yellow]}"                # "$()"
-# !!     [path_prefix_pathseparator]="fg=${pal[green]},underline"         # `/`path`/`to`/`file, non-final separators
-# !!     [double-quoted-argument]="fg=${pal[light_green]}"                # "foo"
-# !!     [single-quoted-argument]="fg=${pal[light_green]}"                # 'foo'
-# !!     [dollar-quoted-argument]="fg=${pal[light_green]}"                # $'foo'
-# !!     [back-quoted-argument]="fg=${pal[red]}"                          # `foo`, deprecated form of $(foo)
-# !!     [single-hyphen-option]="fg=${pal[cyan]}"                         # -o
-# !!     [double-hyphen-option]="fg=${pal[cyan]}"                         # --option
-# !!     [arithmetic-expansion]="underline"                               # $(( 2 + 2 ))
-# !!     [path_pathseparator]="fg=${pal[light_grey]},bold"                # (final) path separator
-# !!     [history-expansion]="fg=${pal[dark_blue]},bold"                  # `!foo`
-# !!     [commandseparator]="fg=${pal[light_grey]}"                       # `;`, `&`, `|`, `&&`, `||`
-# !!     [bracket-level-1]="fg=${pal[yellow]}"                            # ()                 # >< 'brackets' highlighter
-# !!     [bracket-level-2]="fg=${pal[magenta]}"                           # ( () )             # >< 'brackets' highlighter
-# !!     [bracket-level-3]="fg=${pal[blue]}"                              # ( ( () ) )         # >< 'brackets' highlighter
-# !!     [bracket-level-4]="fg=${pal[yellow]}"                            # ( ( ( () ) ) )     # >< 'brackets' highlighter
-# !!     [bracket-level-5]="fg=${pal[magenta]}"                           # ( ( ( ( () ) ) ) ) # >< 'brackets' highlighter
-# !!     [bracket-error]="fg=${pal[red]},standout,underline"              # ( foo='bar' }      # >< 'brackets' highlighter
-# !!     [autodirectory]="fg=${pal[green]},underline"                     # /path/to/`file` <- path suggestions
-# !!     [unknown-token]="fg=${pal[red]},bold"                            # invalid token
-# !!     [reserved-word]="fg=${pal[yellow]}"                              # `if`, `for`, `while` etc.
-# !!     [redirection]="fg=${pal[purple]}"                                # > >> < << <<<
-# !!     [precommand]="fg=${pal[green]},underline"                        # `sudo` or other pre-commands
-# !!     [numeric-fd]="fg=${pal[purple]}"                                 # {fd} >& 2, the `2`
-# !!     [named-fd]="fg=${pal[purple]},underline"                         # {fd} >& 2, the `fd`
-# !!     [globbing]="fg=${pal[dark_blue]}"                                # *.ext
-# !!     [function]="fg=${pal[green]}"                                    # funcname
-# !!     [comment]="fg=${pal[dark_grey]}"                                 # comments and unset/empty variables
-# !!     [cursor]='none'                                                  # just don't mess with the cursor # >< 'cursor' highlighter
-# !!     [assign]="fg=${pal[light_grey]}"                                 # x='foo', arr=('foo' 'bar')
-# !!     [arg0]="fg=${pal[green]}"                                        # regular command, $0
-# !!     [path]="underline"                                               # existing filenames
-# !! #   [command-substitution-delimiter]="fg=${pal[yellow]}"             # $(foo) # ?? This would overwrite the unquoted style, which we want to highlight
-# !! #   [back-quoted-argument-delimiter]='fg=magenta'                    # `foo`  # ?? deprecated, so we wanna just mark the whole token red
-# !! #   [process-substitution]='none'                                    # <(foo) # ?? we only wanna color the delims
-# !! #   [suffix-alias]='fg=green,underline'                              # ?? I don't use this
-# !! #   [global-alias]='fg=cyan'                                         # ?? I don't use this
-# !! #   [rc-quote]='fg=cyan'                                             # ?? I don't use this
-# !! #   [default]='none'
-# !! )
-# !!
-# !! # shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
-# !! source "$zsh_script_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" 2>> /dev/null # Syntax highlighting; should be loaded last
 (( timing[f-sy-h] += EPOCHREALTIME ))
 
 # only set KSH_ARRAYS after loading plugins to avoid jank
@@ -1034,6 +861,9 @@ unset -v "debug_valid" "debug_verbosity" "timing_order" "timing_ordered" "timing
 # [                                                                          ]
 # [ Dylan Araps' Pure Bash bible                                             ]
 # [ https://github.com/dylanaraps/pure-bash-bible                            ]
+# [                                                                          ]
+# [ Wooledge Wiki - UNIX/Shell scripting wiki                                ]
+# [ https://mywiki.wooledge.org/EnglishFrontPage                             ]
 # [                                                                          ]
 # [ ANSI Escape Sequences                                                    ]
 # [ https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797#rgb-colors ]
