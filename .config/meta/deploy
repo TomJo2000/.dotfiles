@@ -2,7 +2,53 @@
 
 : "${DOT_FILES:="${HOME}/git/.dotfiles"}"
 
-for deploy_script in "${DOT_FILES}/.config/meta/deploy.d"*; do
-    printf '\e[32m%s\e[m\n' "Deploying: ${deploy_script}"
-    : "$deploy_script"
+require() {
+local deps
+for deps in "$@"; do
+    command -v "$deps"
 done
+}
+
+transfer() {
+    : "$@"
+}
+
+# set -x
+deploy() {
+    local unit
+    local -a requires locations
+    : "${deploy_script##*\/}"
+    unit="${_%.*}"
+    # shellcheck source=deploy.d/nvim.sh
+    source "${deploy_script}"
+    require "${requires[@]}" || {
+        printf '\e[38;5;11m%s\e[m\n' "Prerequisites failed for: ${unit}"
+        failed+=("$unit")
+        return
+    }
+    printf '\e[32m%s\e[m\n' "Deploying: ${deploy_script}"
+    transfer "${locations[@]}"
+}
+
+usage() {
+    printf '%b\n' \
+        "$0 [] [UNITS...]" \
+        "" \
+        "The \e[1m${0}\e[m utility checks the dependencies for," \
+        "and deploys the listed dotfiles units (all by default)" \
+        "A unit will only be deployed if its prerequisites are met." \
+        "Otherwise a warning detailing the missing requirements is printed" \
+        "and the unit skipped." \
+        "You can force the unit to be deployed with \e[1m-f\e[m|\e[1m--force\e[m." \
+        "Or quiet the warning with \e[1m-q\e[m|\e[1m--quiet\e[m." \
+        "" \
+        "" \
+        "" \
+        "" \
+}
+
+for deploy_script in "${DOT_FILES}/.config/meta/deploy.d/"*; do
+    deploy "$deploy_script"
+done
+# set +x
+
