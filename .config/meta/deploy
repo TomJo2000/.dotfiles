@@ -2,6 +2,75 @@
 
 : "${DOT_FILES:="${HOME}/git/.dotfiles"}"
 
+### Arg parsing
+parse_args() { # parse passed arguments into the options[] assoc
+    local -a declumped_args=()
+    declump() { # resolve "clumped" flags like '-fqu' to '-f' '-q' '-u'
+        local has_unit='0'
+        while (( $# )); do
+        [[ "$1" =~ ^-[^-]{2,}$ ]] && {
+        for (( i = 1; i < ${#1}; i++ )); do # loop over each char of the clump, skipping the initial -
+            echo "declumping ${1:$i:1}"
+            declumped_args+=( "-${1:$i:1}" )
+        done
+        shift; continue
+        }
+        [[ "$1" =~ ^--.*$ ]] || has_unit='1'
+        declumped_args+=("$1")
+        shift
+        done
+        (( 0 )) &&  read -ra units < <(
+            find "${DOT_FILES}/.config/meta/deploy.d/" -mindepth 1 -printf '%f\n'
+        )
+    }
+
+    declump "$@" && set -- "${declumped_args[@]}"
+
+printf 'DEBUG: \e[38;5;125m%s\e[m\n' "Declumped:" "${@}"
+
+    local -a unknown_args=() units=('all')
+    declare -gA options=()
+    while (( $# )); do
+        if [[ "$1" == '-'* ]]; then # flags
+            case "$1" in
+                ('-u'|'--units') options[units]+="$2"; shift;;
+                ('-f'|'--force') options[force]="1"; shift;;
+                ('-q'|'--quiet') options[quiet]="1"; shift;;
+                (*) unknown_args+=("$1"); shift;;
+            esac
+        else # keywords
+            [[ "${units[*]}" == *"$1"* ]]
+        fi
+    done
+    (( ${#unknown_args[*]} )) && {
+        printf 'Unknown option: \e[38;5;11m%s\e[m\n' "${unknown_args[@]}"
+        usage
+    }
+}
+
+usage() {
+    printf '%b\n' \
+        "$0 [--force|-f] [--quiet|-q] [[--units|-u] UNITS...]" \
+        "" \
+        "The \e[1m${0}\e[m utility checks the dependencies for," \
+        "and deploys the listed dotfiles units (all by default)" \
+        "A unit will only be deployed if its prerequisites are met." \
+        "Otherwise a warning detailing the missing requirements is printed" \
+        "and the unit skipped." \
+        "You can force the unit to be deployed with \e[1m-f\e[m|\e[1m--force\e[m." \
+        "Or quiet the warning with \e[1m-q\e[m|\e[1m--quiet\e[m." \
+        "" \
+        ""
+}
+
+if (( $# )); then
+    parse_args "$@"
+else
+    declare -A options=( [units]='all' )
+fi
+
+### Process deployment files
+
 require() {
 local deps
 for deps in "$@"; do
@@ -21,31 +90,15 @@ deploy() {
     unit="${_%.*}"
     # shellcheck source=deploy.d/nvim.sh
     source "${deploy_script}"
+    printf '\e[32m%s\e[m\n' "Deploying: ${deploy_script}"
     require "${requires[@]}" || {
         printf '\e[38;5;11m%s\e[m\n' "Prerequisites failed for: ${unit}"
         failed+=("$unit")
         return
     }
-    printf '\e[32m%s\e[m\n' "Deploying: ${deploy_script}"
     transfer "${locations[@]}"
 }
 
-usage() {
-    printf '%b\n' \
-        "$0 [] [UNITS...]" \
-        "" \
-        "The \e[1m${0}\e[m utility checks the dependencies for," \
-        "and deploys the listed dotfiles units (all by default)" \
-        "A unit will only be deployed if its prerequisites are met." \
-        "Otherwise a warning detailing the missing requirements is printed" \
-        "and the unit skipped." \
-        "You can force the unit to be deployed with \e[1m-f\e[m|\e[1m--force\e[m." \
-        "Or quiet the warning with \e[1m-q\e[m|\e[1m--quiet\e[m." \
-        "" \
-        "" \
-        "" \
-        "" \
-}
 
 for deploy_script in "${DOT_FILES}/.config/meta/deploy.d/"*; do
     deploy "$deploy_script"
