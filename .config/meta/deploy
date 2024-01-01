@@ -2,34 +2,47 @@
 
 : "${DOT_FILES:="${HOME}/git/.dotfiles"}"
 
+declare -A cksums=(
+#empty file 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+[autostart]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+     [btop]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+     [foot]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+[keepassxc]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+ [neofetch]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+     [nvim]='5559294df3d269c330a7ac00765cf3eb523d874af94e92d89b9283599fdfee8f'
+     [tmux]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+   [vscode]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+      [zsh]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+)
+
 ### Arg parsing
-parse_args() { # parse passed arguments into the options[] assoc
-    local -a declumped_args=()
-    declump() { # resolve "clumped" flags like '-fqu' to '-f' '-q' '-u'
-        local has_unit='0'
-        while (( $# )); do
-        [[ "$1" =~ ^-[^-]{2,}$ ]] && {
-        for (( i = 1; i < ${#1}; i++ )); do # loop over each char of the clump, skipping the initial -
-            echo "declumping ${1:$i:1}"
-            declumped_args+=( "-${1:$i:1}" )
+function declump() { # resolve "clumped" flags like '-fqu' to '-f' '-q' '-u'
+    local char has_kwargs='0'
+    while (( $# )); do # repeat as long as we have still have args on the stack
+        [[ "$1" =~ ^-[^-]{2,}$ ]] && { # Does it need declumping?
+        for (( char = 1; char < ${#1}; char++ )); do # loop over each char of the clump, skipping the initial '-'
+            # printf 'DEBUG: \e[38;5;136m%s\e[m\n' "declumping ${1:char:1}"
+            declumped_args+=( "-${1:char:1}" )
         done
-        shift; continue
+        shift; continue # shift the clump off the stack and skip forward to the next iteration
         }
-        [[ "$1" =~ ^--.*$ ]] || has_unit='1'
-        declumped_args+=("$1")
-        shift
-        done
-        (( 0 )) &&  read -ra units < <(
-            find "${DOT_FILES}/.config/meta/deploy.d/" -mindepth 1 -printf '%f\n'
-        )
-    }
 
+    # if it didn't start with '-' and it doesn't start with '--' interpret it as a keyword argument
+    [[ "$1" =~ ^--.*$ ]] || has_kwargs='1'
+    declumped_args+=("$1") # add the non-clump to the output
+    shift
+    done
+
+    # if we have keywords, get the valid keyword names
+    (( has_kwargs )) && read -ra keywords < <( find "${DOT_FILES}/.config/meta/deploy.d/" -mindepth 1 -printf '%f\n' )
+}
+
+function parse_args() { # parse passed arguments into the options[] assoc
+    local -a declumped_args=()
     declump "$@" && set -- "${declumped_args[@]}"
+    # printf 'DEBUG: \e[38;5;125m%s\e[m\n' "Declumped:" "${@}"
 
-printf 'DEBUG: \e[38;5;125m%s\e[m\n' "Declumped:" "${@}"
-
-    local -a unknown_args=() units=('all')
-    declare -gA options=()
+    local -a unknown_args=() keywords=('all')
     while (( $# )); do
         if [[ "$1" == '-'* ]]; then # flags
             case "$1" in
@@ -39,7 +52,8 @@ printf 'DEBUG: \e[38;5;125m%s\e[m\n' "Declumped:" "${@}"
                 (*) unknown_args+=("$1"); shift;;
             esac
         else # keywords
-            [[ "${units[*]}" == *"$1"* ]]
+            [[ "${keywords[*]}" == *"$1"* ]] || printf '%s\n' "No such unit: '$1'"
+            shift
         fi
     done
     (( ${#unknown_args[*]} )) && {
@@ -48,7 +62,8 @@ printf 'DEBUG: \e[38;5;125m%s\e[m\n' "Declumped:" "${@}"
     }
 }
 
-usage() {
+### Helper functions
+function usage() {
     printf '%b\n' \
         "$0 [--force|-f] [--quiet|-q] [[--units|-u] UNITS...]" \
         "" \
@@ -59,9 +74,57 @@ usage() {
         "and the unit skipped." \
         "You can force the unit to be deployed with \e[1m-f\e[m|\e[1m--force\e[m." \
         "Or quiet the warning with \e[1m-q\e[m|\e[1m--quiet\e[m." \
-        "" \
         ""
 }
+
+function require() {
+    local deps
+    for deps in "$@"; do
+        command -v "$deps" || return 1
+    done
+} &>/dev/null
+
+function check() {
+    local -a requires locations
+    local unit; : "${deploy_script##*\/}"; unit="${_%.*}" # unit name
+    local unit_sha256
+    read -r unit_sha256 _ < <(sha256sum "${deploy_script}")
+    [[ "${unit_sha256}" == "${cksums[$unit]:='<NULL>'}" ]] || {
+        printf '%b\n' \
+            "The checksum for the '\e[38;5;93m${unit}\e[m' unit did not match!" \
+            "Location: \e[38;5;75m${deploy_script/${DOT_FILES}/\$\{DOT_FILES\}}\e[m" \
+            "Expected: \e[38;5;118m${cksums[$unit]}\e[m" \
+            "Got:      \e[38;5;196m${unit_sha256}\e[m" \
+            "" \
+            "Please double check its content" \
+            "and update the SHA256 if you modified it and forgot to." \
+            ""
+    }
+
+    # shellcheck source=deploy.d/nvim.sh
+    source "${deploy_script}"
+    printf '\e[32m%s\e[m\n' "Deploying: ${unit}"
+    require "${requires[@]}" || {
+        printf '\e[38;5;11m%s\e[m\n' "Prerequisites failed for: ${unit}"
+        failed+=("${unit}")
+        return 1
+    }
+    succeeded+=("${unit}")
+}
+
+function summarize() {
+    printf "${#unit_counter}%d %b" \
+        "${unit_counter}" "units deployed:\n" \
+        "${#failed[*]}" "failed: ${failed[*]}\n" \
+        "${#succeeded[*]}" "succeeded: ${succeeded[*]}\n"
+}
+
+function transfer() {
+    : "$@"
+}
+
+### Process arguments
+declare -A options=()
 
 if (( $# )); then
     parse_args "$@"
@@ -70,38 +133,11 @@ else
 fi
 
 ### Process deployment files
-
-require() {
-local deps
-for deps in "$@"; do
-    command -v "$deps"
-done
-}
-
-transfer() {
-    : "$@"
-}
-
-# set -x
-deploy() {
-    local unit
-    local -a requires locations
-    : "${deploy_script##*\/}"
-    unit="${_%.*}"
-    # shellcheck source=deploy.d/nvim.sh
-    source "${deploy_script}"
-    printf '\e[32m%s\e[m\n' "Deploying: ${deploy_script}"
-    require "${requires[@]}" || {
-        printf '\e[38;5;11m%s\e[m\n' "Prerequisites failed for: ${unit}"
-        failed+=("$unit")
-        return
-    }
-    transfer "${locations[@]}"
-}
-
+require 'rsync' || usage
 
 for deploy_script in "${DOT_FILES}/.config/meta/deploy.d/"*; do
-    deploy "$deploy_script"
+    (( unit_counter++ ))
+    check "$deploy_script" && transfer "${locations[@]}"
 done
-# set +x
+summarize
 
