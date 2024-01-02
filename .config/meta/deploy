@@ -3,16 +3,19 @@
 : "${DOT_FILES:="${HOME}/git/.dotfiles"}"
 
 declare -A cksums=(
-#empty file 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
-[autostart]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
-     [btop]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
-     [foot]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
-[keepassxc]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
- [neofetch]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
-     [nvim]='5559294df3d269c330a7ac00765cf3eb523d874af94e92d89b9283599fdfee8f'
-     [tmux]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
-   [vscode]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
-      [zsh]='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+#    empty file 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+    [autostart]='b3fcc933569c155f2c4541db885ffdb99fbecbd19e7e4061b8d3250c32ac7336'
+         [btop]='c6985d200dcb1384ec8dfe0b63ec1bd62063b9b9d6975101c3fa3f81b1e2b602'
+         [foot]='242434d5d536a3e50afab0cad2c5ca216adea55c5a1e3d8d4631a163d3e1b932'
+          [git]='06a6fc07a6bfb224319f50e5b0c48e927a56285be4ff1595107345985946333f'
+    [keepassxc]='dae524beadadcab203d286487c866db86577008fe2488652a27c43357ad4169c'
+     [neofetch]='94e4d16d425e852a81c0315d2bf8a8aee87f9f7e202e74492a75738f7ddf4887'
+         [nvim]='5559294df3d269c330a7ac00765cf3eb523d874af94e92d89b9283599fdfee8f'
+          [ssh]='8774867374f8e58488619e34edbc452d4b52c08ec41443ed0af8a3d110b36798'
+     [starship]='6ddbe4baf79dd390f1455927d342246a768ab9944c6b7ee6d2ea12de0c2776f4'
+         [tmux]='48868d8f2c6d6e2945610555ef41d022d119c237e1b209a8641cd9f6974ce1a8'
+       [vscode]='3500d4bbe13d9a5d63157436ea49b71019e4a9acac6cc1ace3448bc46c0277d9'
+          [zsh]='dd628dc195dda9f9d7cda4a67e4520fc1ac7b87a82c3cb109cf04fc85518409d'
 )
 
 ### Arg parsing
@@ -21,7 +24,7 @@ function declump() { # resolve "clumped" flags like '-fqu' to '-f' '-q' '-u'
     while (( $# )); do # repeat as long as we have still have args on the stack
         [[ "$1" =~ ^-[^-]{2,}$ ]] && { # Does it need declumping?
         for (( char = 1; char < ${#1}; char++ )); do # loop over each char of the clump, skipping the initial '-'
-            # printf 'DEBUG: \e[38;5;136m%s\e[m\n' "declumping ${1:char:1}"
+            printf 'DEBUG: \e[38;5;136m%s\e[m\n' "declumping ${1:char:1}" >&2
             declumped_args+=( "-${1:char:1}" )
         done
         shift; continue # shift the clump off the stack and skip forward to the next iteration
@@ -39,22 +42,32 @@ function declump() { # resolve "clumped" flags like '-fqu' to '-f' '-q' '-u'
 
 function parse_args() { # parse passed arguments into the options[] assoc
     local -a declumped_args=()
-    declump "$@" && set -- "${declumped_args[@]}"
-    # printf 'DEBUG: \e[38;5;125m%s\e[m\n' "Declumped:" "${@}"
+    declump "$@"
+    set -- "${declumped_args[@]}"
+    printf 'DEBUG: \e[38;5;125m%s\e[m\n' "Declumped:" "${@}" >&2
 
     local -a unknown_args=() keywords=('all')
+    # binds args in O(<n) iterations
     while (( $# )); do
-        if [[ "$1" == '-'* ]]; then # flags
+        [[ "$1" == '-'* ]] && { # flags
             case "$1" in
-                ('-u'|'--units') options[units]+="$2"; shift;;
+                ('-u'|'--units') shift;;
                 ('-f'|'--force') options[force]="1"; shift;;
                 ('-q'|'--quiet') options[quiet]="1"; shift;;
                 (*) unknown_args+=("$1"); shift;;
             esac
-        else # keywords
-            [[ "${keywords[*]}" == *"$1"* ]] || printf '%s\n' "No such unit: '$1'"
-            shift
+        }
+
+        if   (( "${#*}" == "${#*/ -/}" )); then # is there only keywords left?
+            # possible early return
+            options[units]+="$*"
+            break
+        elif [[ "${keywords[*]}" == *"$1"* ]]; then # keywords
+            options[units]+="$1 "
+        else
+            printf '%s\n' "No such unit: '$1'"
         fi
+    shift
     done
     (( ${#unknown_args[*]} )) && {
         printf 'Unknown option: \e[38;5;11m%s\e[m\n' "${unknown_args[@]}"
@@ -79,22 +92,29 @@ function usage() {
 
 function require() {
     local deps
+    local -a found=() missing=()
     for deps in "$@"; do
-        command -v "$deps" || return 1
-    done
-} &>/dev/null
+        command -v "$deps" || { missing+=("$deps"); continue; }
+        found+=("$deps")
+    done &>/dev/null
+    (( ${#missing} )) && {
+        printf "Couldn't find: \e[38;5;11m%s\e[m\n" "${missing[@]}"
+        return 1
+    }
+}
 
 function check() {
     local -a requires locations
     local unit; : "${deploy_script##*\/}"; unit="${_%.*}" # unit name
     local unit_sha256
     read -r unit_sha256 _ < <(sha256sum "${deploy_script}")
-    [[ "${unit_sha256}" == "${cksums[$unit]:='<NULL>'}" ]] || {
+    [[ "${unit_sha256}" == "${cksums[$unit]:=$(printf '\e[7;38;5;160m%s %052d' '(undefined)' '0')}" \
+    ]] || {
         printf '%b\n' \
             "The checksum for the '\e[38;5;93m${unit}\e[m' unit did not match!" \
             "Location: \e[38;5;75m${deploy_script/${DOT_FILES}/\$\{DOT_FILES\}}\e[m" \
-            "Expected: \e[38;5;118m${cksums[$unit]}\e[m" \
-            "Got:      \e[38;5;196m${unit_sha256}\e[m" \
+            "Expected: \e[38;5;118;1m${cksums[$unit]}\e[m" \
+            "Got:      \e[38;5;160;1m${unit_sha256}\e[m" \
             "" \
             "Please double check its content" \
             "and update the SHA256 if you modified it and forgot to." \
@@ -103,17 +123,16 @@ function check() {
 
     # shellcheck source=deploy.d/nvim.sh
     source "${deploy_script}"
-    printf '\e[32m%s\e[m\n' "Deploying: ${unit}"
+    printf '%s \e[32m%s\e[m\n' "[$(( ++unit_counter ))]" "Deploying: ${unit}"
     require "${requires[@]}" || {
-        printf '\e[38;5;11m%s\e[m\n' "Prerequisites failed for: ${unit}"
-        failed+=("${unit}")
+        failed+=("\e[7;38;5;124m${unit}\e[m")
         return 1
     }
-    succeeded+=("${unit}")
+    succeeded+=("\e[7;38;5;34m${unit}\e[m")
 }
 
 function summarize() {
-    printf "${#unit_counter}%d %b" \
+    printf "%${#unit_counter}d %b" \
         "${unit_counter}" "units deployed:\n" \
         "${#failed[*]}" "failed: ${failed[*]}\n" \
         "${#succeeded[*]}" "succeeded: ${succeeded[*]}\n"
@@ -136,7 +155,6 @@ fi
 require 'rsync' || usage
 
 for deploy_script in "${DOT_FILES}/.config/meta/deploy.d/"*; do
-    (( unit_counter++ ))
     check "$deploy_script" && transfer "${locations[@]}"
 done
 summarize

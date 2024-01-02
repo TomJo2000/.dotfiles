@@ -5,13 +5,12 @@
 # shellcheck disable=SC2034
 
 locations=(
-    "${HOME}/.zlogout"
-    "${HOME}/.zshrc"
-    "${XDG_DATA_HOME}/zsh/scripts"
+    "${HOME}/.ssh"
+    "${XDG_DATA_HOME}/systemd/user"
 )
 
 
 requires=(
-    'zsh'
+    'ssh'
 )
 

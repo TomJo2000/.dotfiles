@@ -5,13 +5,14 @@
 # shellcheck disable=SC2034
 
 locations=(
-    "${HOME}/.zlogout"
-    "${HOME}/.zshrc"
-    "${XDG_DATA_HOME}/zsh/scripts"
+    "${XDG_CONFIG_HOME}/git"
 )
 
 
 requires=(
-    'zsh'
+    'git'
+    'ssh'
+    'less'
+    'delta'
 )
 
