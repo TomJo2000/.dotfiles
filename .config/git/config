@@ -1,20 +1,16 @@
 # This is Git's per-user configuration file.
+# vim: set filetype=gitconfig et tw=2 sw=2 ff=unix
+
 [user]
-        email = tomjo00@web.de
+       email = tomjo00@web.de
         name = TomIO
+  signingkey = ~/.ssh/keys/external/rsa-4096_GitHub.pub
 
-[diff]
-	tool = nvimdiff
-	algorithm = minimal
-[merge]
-	tool = nvimdiff
-
-[mergetool "nvim"] # define command which will be used when "nvim" is set as a merge tool
-  cmd = nvim -f -c \"DiffviewOpen\" \"$MERGED\"
-[merge] # set "nvim" as tool for merging
-  tool = nvim
-	conflictstyle = diff3
-[mergetool] # automatically launch merge tool without displaying a prompt
-  prompt = false
 [init]
-        defaultBranch = main
+  defaultBranch = main
+
+[gpg]
+  format = ssh
+
+[commit]
+  gpgsign = true
