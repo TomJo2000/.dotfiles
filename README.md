@@ -1,6 +1,9 @@
 <h1 align="center">TomIO's dotfile dump</h1>
 <div align="center">
 
+<!-- (TODO) Have a look at -->
+<!-- https://github.com/4513ECHO/dotfiles/blob/main/scripts/gen_stat.sh -->
+
 ### --Repo stats--
   ![MIT License](https://img.shields.io/github/license/TomJo2000/.dotfiles?color=B7208F&label=License%3A&style=for-the-badge)
   ![GitHub repo size](https://img.shields.io/github/repo-size/TomJo2000/.dotfiles?color=0759B6&logo=Github&style=for-the-badge)<br>
