@@ -1,6 +1,9 @@
 # This is Git's per-user configuration file.
 # vim: set filetype=gitconfig et tw=2 sw=2 ff=unix
 
+[core]
+  pager = delta --config=~/.config/delta.conf --no-gitconfig
+
 [user]
        email = tomjo00@web.de
         name = TomIO
@@ -14,3 +17,27 @@
 
 [commit]
   gpgsign = true
+
+[alias]
+  # Advanced aliases with full (POSIX) /bin/sh syntax.
+  # https://www.atlassian.com/blog/git/advanced-git-aliases
+
+  #show the last <n> (1 by default) commits
+  news = "!f() { git log -p HEAD~${1:-1}..; }; f"
+
+  # Show the <n> (20 by default) most edited files
+  # Written by Corey Haines
+  # Scriptified by Gary Bernhardt
+  # Extended by TomIO
+  # Example, show the 10 most committed to files in the last month:
+  #   $ git churn 10 --since='1 month ago'
+  churn = "!f() { git log --all -M -C --name-only --format='format:' \"${@:2}\" \
+    | sort \
+    | grep -v '^$' \
+    | uniq -c \
+    | sort \
+    | awk 'BEGIN {print \"count\tfile\"} {print $1 \"\t\" $2}' \
+    | sort -g \
+    | tail -n "${1:-20}"; }; f"
+  # Note: I'm really not a fan of this mess of pipes, gonna rewrite this alias later.
+
