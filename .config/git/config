@@ -2,7 +2,7 @@
 # vim: set filetype=gitconfig et tw=2 sw=2 ff=unix
 
 [core]
-  pager = delta --config=~/.config/delta.conf --no-gitconfig
+  pager = delta
 
 [user]
        email = tomjo00@web.de
@@ -30,7 +30,7 @@
   # Scriptified by Gary Bernhardt
   # Extended by TomIO
   # Example, show the 10 most committed to files in the last month:
-  #   $ git churn 10 --since='1 month ago'
+  # ~$ git churn 10 --since='1 month ago'
   churn = "!f() { git log --all -M -C --name-only --format='format:' \"${@:2}\" \
     | sort \
     | grep -v '^$' \
@@ -40,4 +40,8 @@
     | sort -g \
     | tail -n "${1:-20}"; }; f"
   # Note: I'm really not a fan of this mess of pipes, gonna rewrite this alias later.
+
+[include]
+  # Delta config
+  path = /home/tom/.config/delta.conf
 

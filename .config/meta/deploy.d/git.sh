@@ -16,3 +16,9 @@ requires=(
     'delta'
 )
 
+post_deploy() {
+local DELTA_CONF="${XDG_CONFIG_HOME}/delta.conf"
+# Included files in the git config
+git --config-env=include.path=DELTA_CONF config include.path
+}
+
