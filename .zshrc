@@ -27,7 +27,7 @@ setopt INTERACTIVE_COMMENTS # Allow comments in interactive shells
 setopt KSH_ARRAYS           # Make Arrays 0-indexed like god intended
 ### **================================**
 
-declare -gA promises=()
+declare -gA promises=() # holds a list of pending promises to resolve
 
 timing[list_plugins]="-$EPOCHREALTIME"
 ### **=========User Specifics=========**
@@ -44,7 +44,6 @@ declare -gA plugins=( # ?? List plugins you wish to use by repo URL
                   [f-sy-h]='https://github.com/z-shell/F-Sy-H.git'
      [zsh-autosuggestions]='https://github.com/zsh-users/zsh-autosuggestions.git'
          [zsh-completions]='https://github.com/zsh-users/zsh-completions.git'
- [zsh-syntax-highlighting]='https://github.com/zsh-users/zsh-syntax-highlighting.git'
 )
 ### **================================**
 (( timing[list_plugins] += EPOCHREALTIME ))
@@ -159,11 +158,46 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_RUNTIME_DIR
 
 ### SSH Agent
-SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
-local async_fd
-exec {async_fd}<> <( # async / fd_alloc
+local promise
+# If we are connected remotely, don't clobber a possible forwarded agent by overwriting SSH_AUTH_SOCK
+(( ${#SSH_CONNECTION} )) || export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+
+exec {promise}<> <( #
     systemctl show --property MainPID --value --user ssh-agent.service
-)
+); promises[ssh_pid]="$promise"; promise=''
+
+exec {promise}<> <( # promise agent status
+parse_ssh_add() { # make sense of the `ssh-add -l` output and format the output accordingly
+    # Grab the `ssh-agent` PID from our service manager
+    local SSH_AGENT_PID="$(systemctl show --property MainPID --value --user ssh-agent.service)"
+    local -a keys=()
+    local line
+    while read -r line; do
+        keys+=("$line")
+    done < "$1"
+
+    case "${keys[*]}" in
+        ('Could not open a connection to your authentication agent.') # couldn't connect to agent
+        printf '%s\n' "Error: could not attach to SSH Agent." \
+            "${keys[*]}"
+        ;;
+        ('The agent has no identities.') # success no keys
+        printf "%s %s\n" \
+            'Agent PID:    ' "${col[inv]}${SSH_AGENT_PID}${col[reset]}" \
+            'Keys in agent:' "${col[inv]}0${col[reset]}"
+        echo 'Successfully connected to SSH Agent'
+        ;;
+        (*) # success and keys
+        printf "%s %s\n" \
+            'Agent PID:    ' "${col[inv]}${SSH_AGENT_PID}${col[reset]}" \
+            'Keys in agent:' "${col[inv]}${#keys[*]}${col[reset]}"
+        echo 'Successfully connected to SSH Agent'
+        ;;
+    esac
+}
+# We need SSH_AUTH_SOCK and SSH_AGENT_PID for `ssh-add` to connect to the SSH Agent
+parse_ssh_add <(ssh-add -l)
+); promises[ssh_agent]="$promise"; promise=''
 
 [[ "${debug_verbosity[*]}" =~ (^| )(ssh|all)( |$) ]] && { # >< Debug: SSH
     echo "yes"
@@ -593,16 +627,32 @@ timing[f-sy-h]="-$EPOCHREALTIME"
 
 # only set KSH_ARRAYS after loading plugins to avoid jank
 setopt KSH_ARRAYS # Make Arrays start at index 0 # !! breaks unpatched zsh-autosuggestions and z-sy-h
-
-### Resolve async/awaits
-timing[async]="-$EPOCHREALTIME"
-
-SSH_AGENT_PID="$(</dev/fd/${async_fd})" # await / consume
-exec {async_fd}>&- # fd_free
-printf '%b\n' "Connected to SSH Agent.\nPID: ${col[inv]}$SSH_AGENT_PID${col[reset]}"
-
-(( timing[async] += EPOCHREALTIME ))
 (( timing[source] += EPOCHREALTIME ))
+
+### Resolve outstanding promises
+timing[promises]="-$EPOCHREALTIME"
+# $promise already declared local at the top of main()
+local fd
+for promise in "${(k)promises[@]}"; do
+    fd="${promises[$promise]}"
+    case "$promise" in
+        ('ssh_pid') # resolve SSH Agent PID
+            SSH_AGENT_PID="$(</dev/fd/${fd})"
+        ;;
+        ('ssh_agent') # resolve SSH Agent status
+        local agent_status
+        printf '%b\n' "$(</dev/fd/${fd})"
+        export SSH_AUTH_SOCK SSH_AGENT_PID
+        ;;
+        (*) # If I didn't account for it throw a message
+        printf "${col[bold]}${col[fg_red]}%s${col[reset]}\n" "No resolve handler for: ${promise}"
+        ;;
+    esac
+    exec {fd}>&- # close the FD
+done
+unset promises
+
+(( timing[promises] += EPOCHREALTIME ))
 }
 
 function parse_args() { # (ACK) Based on: https://stackoverflow.com/a/14203146
@@ -760,7 +810,7 @@ declare -a timing_order=( # ** Order of timing nodes
     'completions'
     'suggestions'
     'f-sy-h'
-    'async'
+  'promises'
 )
 
 nbsp="\xC2\xA0" # non-breaking space
@@ -787,7 +837,7 @@ declare -A timing_line=( # ** helper assoc with the same keys as ${timing[@]} co
       [completions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Completions"
       [suggestions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}History based autosuggestions"
            [f-sy-h]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Setting up syntax highlighting"
-            [async]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}└╴${col[reset]}Resolving outstanding promises"
+         [promises]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}└╴${col[reset]}Resolving outstanding promises"
 )
 
 [[ "${debug_verbosity[*]}" =~ (^| )(timings|all)( |$) ]] && { # >< DEBUG: timings
