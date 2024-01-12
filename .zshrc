@@ -166,6 +166,7 @@ exec {promise}<> <( #
 ); promises[ssh_pid]="$promise"; promise=''
 
 exec {promise}<> <( # promise agent status
+# We need SSH_AUTH_SOCK and SSH_AGENT_PID for `ssh-add` to connect to the SSH Agent
 parse_ssh_add() { # make sense of the `ssh-add -l` output and format the output accordingly
     # Grab the `ssh-agent` PID from our service manager
     local SSH_AGENT_PID="$(systemctl show --property MainPID --value --user ssh-agent.service)"
@@ -173,29 +174,27 @@ parse_ssh_add() { # make sense of the `ssh-add -l` output and format the output 
     local line
     while read -r line; do
         keys+=("$line")
-    done < "$1"
+    done < <(ssh-add -l)
 
+    local width; (( width = ${#SSH_AGENT_PID} >= ${#keys[*]} ? ${#SSH_AGENT_PID} : ${#keys[*]} ))
     case "${keys[*]}" in
         ('Could not open a connection to your authentication agent.') # couldn't connect to agent
-        printf '%s\n' "Error: could not attach to SSH Agent." \
-            "${keys[*]}"
+        printf '%s\n' "Error: could not attach to SSH Agent." "${keys[*]}"
+        return
         ;;
         ('The agent has no identities.') # success no keys
-        printf "%s %s\n" \
-            'Agent PID:    ' "${col[inv]}${SSH_AGENT_PID}${col[reset]}" \
-            'Keys in agent:' "${col[inv]}0${col[reset]}"
-        echo 'Successfully connected to SSH Agent'
+        printf "%s ${col[inv]}%${width}s${col[reset]}\n" \
+            'Agent PID:    ' "${SSH_AGENT_PID}" \
+            'Keys in agent:' '0'
         ;;
         (*) # success and keys
-        printf "%s %s\n" \
-            'Agent PID:    ' "${col[inv]}${SSH_AGENT_PID}${col[reset]}" \
-            'Keys in agent:' "${col[inv]}${#keys[*]}${col[reset]}"
-        echo 'Successfully connected to SSH Agent'
+        printf "%s ${col[inv]}%${width}s${col[reset]}\n" \
+            'Agent PID:    ' "${SSH_AGENT_PID}" \
+            'Keys in agent:' "${#keys[*]}"
         ;;
     esac
-}
-# We need SSH_AUTH_SOCK and SSH_AGENT_PID for `ssh-add` to connect to the SSH Agent
-parse_ssh_add <(ssh-add -l)
+    echo 'Successfully connected to SSH Agent'
+}; parse_ssh_add
 ); promises[ssh_agent]="$promise"; promise=''
 
 [[ "${debug_verbosity[*]}" =~ (^| )(ssh|all)( |$) ]] && { # >< Debug: SSH
