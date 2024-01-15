@@ -8,8 +8,8 @@ After=ssh-agent.service
 [Service]
 Type=exec
 WorkingDirectory=%h
-Enviroment=SSH_AUTH_SOCK=%t/ssh-agent.socket
-ExecStart=/usr/bin/env ${SSH_AUTH_SOCK} keepassxc -platform xcb
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+ExecStart=/usr/bin/env keepassxc -platform xcb
 Restart=always
 RestartSec=5s
 
