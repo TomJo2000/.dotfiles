@@ -3,11 +3,13 @@
 Description=KeePassXC with automatic restart
 Documentation=man:keepassxc-cli(1) man:keepassxc(1)
 After=graphical.target
+After=ssh-agent.service
 
 [Service]
 Type=exec
 WorkingDirectory=%h
-ExecStart=/usr/bin/env SSH_AUTH_SOCK=%t/ssh-agent.socket keepassxc -platform xcb
+Enviroment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+ExecStart=/usr/bin/env ${SSH_AUTH_SOCK} keepassxc -platform xcb
 Restart=always
 RestartSec=5s
 
