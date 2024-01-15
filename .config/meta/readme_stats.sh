@@ -42,8 +42,13 @@ neovim_plugins() { # any line in lazy-lock.json with "commit" in it is a plugin
     grep -cF '"commit"' "$DOT_FILES/.config/nvim/lazy-lock.json"
 }
 
-# shellcheck disable=SC2046
-insert_command 'tokei' tokei --hidden -- $(git ls-files)
+loc_count() {
+    scc --no-cocomo --no-complexity --sort code \
+        --count-as "conf:ini"
+        # --debug -v
+}
+
+insert_command 'LOC' loc_count
 insert_command 'neovim' neovim_plugins
 
 # shellcheck disable=SC2016
