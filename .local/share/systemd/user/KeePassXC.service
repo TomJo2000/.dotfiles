@@ -7,7 +7,7 @@ After=graphical.target
 [Service]
 Type=exec
 WorkingDirectory=%h
-ExecStart=/usr/bin/env keepassxc -platform xcb
+ExecStart=/usr/bin/env SSH_AUTH_SOCK=%t/ssh-agent.socket keepassxc -platform xcb
 Restart=always
 RestartSec=5s
 
