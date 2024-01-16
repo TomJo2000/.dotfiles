@@ -1,5 +1,5 @@
+# -*- gitconfig -*-
 # This is Git's per-user configuration file.
-# vim: set filetype=gitconfig et tw=2 sw=2 ff=unix
 
 [core]
   pager = delta
@@ -44,4 +44,6 @@
 [include]
   # Delta config
   path = /home/tom/.config/delta.conf
+
+# vim: set ft=gitconfig et tw=2 sw=2 ff=unix
 

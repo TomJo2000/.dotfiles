@@ -1,3 +1,4 @@
+# -*- desktopfile -*-
 [Desktop Action StartChat]
 Exec=gajim --start-chat
 Icon=org.gajim.Gajim

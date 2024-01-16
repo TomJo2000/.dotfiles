@@ -1,8 +1,6 @@
+# -*- ini -*-
 # Theme: TermStream
 # By: TomIO
-# I'm treating this file as Shellscript for markup purposes
-# shellcheck shell=bash disable=SC2034,SC2154
-
 
 ### General settings
 theme[title]="#F5FBFF" # color for box headers
@@ -77,3 +75,6 @@ theme[cpu_end]="#D61E1C"
 theme[temp_start]="#1DA65A"
 theme[temp_mid]="#EDBC00"
 theme[temp_end]="#D61E1C"
+
+# vim: set ft=conf
+

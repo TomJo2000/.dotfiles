@@ -1,3 +1,4 @@
+# -*- service -*-
 # (User) Service Unit for KeePassXC
 [Unit]
 Description=KeePassXC with automatic restart

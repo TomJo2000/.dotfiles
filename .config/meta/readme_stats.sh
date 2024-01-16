@@ -43,18 +43,27 @@ neovim_plugins() { # any line in lazy-lock.json with "commit" in it is a plugin
 }
 
 loc_count() {
-    scc --no-cocomo --no-complexity --sort code \
-        --count-as "conf:ini"
-        # --debug -v
+# scc's --remap-all option is finnicky
+# and doesn't like unquoted whitespace of any kind
+# or being split over multiple lines with leading whitespace.
+scc --no-cocomo --no-complexity \
+--sort code --size-unit binary \
+--remap-all '# shellcheck shell=':Shell,\
+'#!/usr/bin/env bash':Shell,\
+'# -*- desktopfile -*-':'Desktop file',\
+'# -*- gitconfig -*-':'Git config',\
+'# -*- sshconfig -*-':'SSH config',\
+'# -*- service -*-':'Systemd Service',\
+'# -*- ini -*-':INI,\
+-- "$DOT_FILES" | sed -e 's/ (BINARY)//;s/bytes,/Bytes,/;s/megabytes/Megabytes/'
 }
 
 insert_command 'LOC' loc_count
 insert_command 'neovim' neovim_plugins
 
-# shellcheck disable=SC2016
-printf -v updated_at 'Statistics are updated at [`%s`](%s/commit/%s),' \
+printf -v updated_at "Statistics are updated at [\`%s\`](%s/commit/%s)," \
     "$(git rev-parse --short HEAD)" \
-    "$(git remote get-url origin)" \
+    "$(git remote get-url origin | sed -e 's|\.com:|\.com/|;s|^git@|https://|')" \
     "$(git rev-parse HEAD)"
 echo "$updated_at"
 sed -i "s@^Statistics are updated at .*\$@$updated_at@" "$src"

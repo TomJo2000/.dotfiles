@@ -1,3 +1,4 @@
+# -*- desktopfile -*-
 [Desktop Action ComposeMessage]
 Exec=thunderbird -compose
 Name=Write new message

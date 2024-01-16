@@ -1,3 +1,4 @@
+# -*- ini -*-
 # exclude everything by default
 exclude /***
 
@@ -7,7 +8,5 @@ include /.ssh/config
 include /.config/***
 include /.local/share/fonts/***
 include /documentation/***
-
-
-# vim: set filetype=conf
+# vim: set ft=ini
 
