@@ -1,8 +1,11 @@
-require('lazy').setup({
+return {
 
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
+
+  -- Detect tabstop and shiftwidth automatically
+  'tpope/vim-sleuth',
 
   { -- proper merge editor
     --- @see documentation at https://github.com/sindrets/diffview.nvim
@@ -10,11 +13,15 @@ require('lazy').setup({
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
 
-  -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  { -- Useful plugin to show you pending keybinds.
+    'folke/which-key.nvim',
+    opts = {}
+  },
 
-  -- NOTE: This is where your plugins related to LSP can be installed.
-  --  The configuration is done below. Search for lspconfig to find it below.
+  { -- Repeatable prefixed bindings
+    'anuvyklack/hydra.nvim',
+    lazy = true,
+  },
 
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -50,47 +57,9 @@ require('lazy').setup({
     },
   },
 
-  -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',      opts = {} },
-
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = { -- See `:help gitsigns.txt`
-        add          = { text = '' },
-        change       = { text = '⦿' },
-        delete       = { text = '' },
-        topdelete    = { text = '' },
-        changedelete = { text = '⦿' },
-      },
-      on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>ghp', require('gitsigns').preview_hunk,
-          { buffer = bufnr, desc = 'Preview git hunk' })
-
-        -- don't override the built-in and fugitive keymaps
-        local gs = package.loaded.gitsigns
-
-        vim.keymap.set({ 'n', 'v' }, ']c', function()
-          if vim.wo.diff then
-            return ']c'
-          end
-          vim.schedule(function()
-            gs.next_hunk()
-          end)
-          return '<Ignore>'
-        end, { expr = true, buffer = bufnr, desc = 'Jump to next hunk' })
-
-        vim.keymap.set({ 'n', 'v' }, '[c', function()
-          if vim.wo.diff then
-            return '[c'
-          end
-          vim.schedule(function()
-            gs.prev_hunk()
-          end)
-          return '<Ignore>'
-        end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
-      end,
-    },
+  { -- There are way to many statusline plugins, we're using this one.
+    'freddiehaddad/feline.nvim',
+    opts = {}
   },
 
   { -- Theme inspired by Atom
@@ -155,8 +124,46 @@ require('lazy').setup({
       vim.cmd.colorscheme 'onedark'
     end
   },
-  -- There are way to many statusline plugins, we're using this one.
-  { 'freddiehaddad/feline.nvim', opts = {} },
+  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+    'lewis6991/gitsigns.nvim',
+    opts = {
+      signs = { -- See `:help gitsigns.txt`
+        add          = { text = '' },
+        change       = { text = '⦿' },
+        delete       = { text = '' },
+        topdelete    = { text = '' },
+        changedelete = { text = '⦿' },
+      },
+      on_attach = function(bufnr)
+        vim.keymap.set('n', '<leader>ghp', require('gitsigns').preview_hunk,
+          { buffer = bufnr, desc = 'Preview git hunk' })
+
+        -- don't override the built-in and fugitive keymaps
+        local gs = package.loaded.gitsigns
+
+        vim.keymap.set({ 'n', 'v' }, ']c', function()
+          if vim.wo.diff then
+            return ']c'
+          end
+          vim.schedule(function()
+            gs.next_hunk()
+          end)
+          return '<Ignore>'
+        end, { expr = true, buffer = bufnr, desc = 'Jump to next hunk' })
+
+        vim.keymap.set({ 'n', 'v' }, '[c', function()
+          if vim.wo.diff then
+            return '[c'
+          end
+          vim.schedule(function()
+            gs.prev_hunk()
+          end)
+          return '<Ignore>'
+        end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
+      end,
+    },
+  },
+
 
   { -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
@@ -296,4 +303,4 @@ require('lazy').setup({
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   -- { import = 'custom.plugins' },
-}, {})
+}
