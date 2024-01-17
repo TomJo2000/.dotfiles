@@ -45,8 +45,10 @@ vim.opt.rtp:prepend(lazypath)
          │   ├── feline.lua
          │   ├── git.lua
          │   ├── hydra
-         │   │   ├── navigate_hunks.lua
-         │   │   └── resize_split.lua
+         │   │   ├── git_hydra.lua
+         │   │   ├── init.lua
+         │   │   ├── resize_split.lua
+         │   │   └── side_scroll.lua
          │   └── lsp
          │       ├── bashls.lua
          │       ├── gopls.lua
@@ -58,7 +60,8 @@ vim.opt.rtp:prepend(lazypath)
          │       └── debug.lua
          ├── options.lua
          └── plugins.lua
-8 directories, 17 files
+
+8 directories, 19 files
 ]]
 
 -- [[ Setting options ]]

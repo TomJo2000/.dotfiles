@@ -19,21 +19,24 @@
 <table id="scc-table">
   <thead>
     <tr><th>Language</th>        <th>Files</th> <th>Lines</th> <th>Blank</th> <th>Comment</th> <th>Code</th> <th>Bytes</th></tr>
-  </thead><tbody>
-    <tr><th>Shell</th>           <th>18</th>    <th>1425</th>  <th>205</th>   <th>203</th>     <th>1017</th> <th>58285</th></tr>
-    <tr><th>Lua</th>             <th>14</th>    <th>1007</th>  <th>107</th>   <th>265</th>     <th>635</th>  <th>36106</th></tr>
+  </thead>
+  <tbody>
+    <tr><th>Shell</th>           <th>19</th>    <th>1481</th>  <th>217</th>   <th>77</th>      <th>1187</th> <th>59911</th></tr>
+    <tr><th>Lua</th>             <th>18</th>    <th>1115</th>  <th>112</th>   <th>275</th>     <th>728</th>  <th>39425</th></tr>
     <tr><th>JSON</th>            <th>2</th>     <th>488</th>   <th>1</th>     <th>0</th>       <th>487</th>  <th>15749</th></tr>
     <tr><th>TOML</th>            <th>2</th>     <th>408</th>   <th>24</th>    <th>118</th>     <th>266</th>  <th>15420</th></tr>
-    <tr><th>INI</th>             <th>5</th>     <th>246</th>   <th>32</th>    <th>136</th>     <th>78</th>   <th>6289</th></tr>
-    <tr><th>Markdown</th>        <th>1</th>     <th>73</th>    <th>18</th>    <th>0</th>       <th>55</th>   <th>4020</th></tr>
+    <tr><th>INI</th>             <th>5</th>     <th>246</th>   <th>32</th>    <th>134</th>     <th>80</th>   <th>6289</th></tr>
+    <tr><th>Markdown</th>        <th>1</th>     <th>76</th>    <th>18</th>    <th>0</th>       <th>58</th>   <th>3526</th></tr>
     <tr><th>SSH config</th>      <th>1</th>     <th>67</th>    <th>14</th>    <th>0</th>       <th>53</th>   <th>1669</th></tr>
     <tr><th>Python</th>          <th>1</th>     <th>46</th>    <th>5</th>     <th>2</th>       <th>39</th>   <th>3323</th></tr>
     <tr><th>Git config</th>      <th>1</th>     <th>49</th>    <th>11</th>    <th>0</th>       <th>38</th>   <th>1206</th></tr>
     <tr><th>Systemd Service</th> <th>2</th>     <th>43</th>    <th>6</th>     <th>0</th>       <th>37</th>   <th>1175</th></tr>
     <tr><th>License</th>         <th>1</th>     <th>21</th>    <th>4</th>     <th>0</th>       <th>17</th>   <th>1068</th></tr>
-</tbody><tfoot>
-    <tr><th>Total</th>           <th>48</th>    <th>3891</th>  <th>431</th>   <th>598</th>     <th>2862</th> <th>143733</th></tr>
-</tfoot>
+    <tr><th>gitignore</th>       <th>1</th>     <th>4</th>     <th>0</th>     <th>0</th>       <th>4</th>    <th>30</th></tr>
+  </tbody>
+    <tr><th>Total</th>           <th>54</th>    <th>4044</th>  <th>444</th>   <th>606</th>     <th>2994</th> <th>148791</th></tr>
+  <tfoot>
+  </tfoot>
 </table>
 <!--loc-end-->
 </div></h5>
