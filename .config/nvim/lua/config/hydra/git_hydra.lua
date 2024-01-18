@@ -9,6 +9,7 @@ local hint = [[
  ^ ^              _<Enter>_: Neogit              _q_: exit
 ]]
 
+---@return table hydra # A git hydra
 return {
   name = 'Git',
   hint = hint,
@@ -67,3 +68,4 @@ return {
     { 'q',       nil,                                                { exit = true, nowait = true, desc = 'exit' } },
   }
 }
+

@@ -1,3 +1,4 @@
+---@return table hydra # A hydra to side scroll
 return { -- A Hydra for scrolling horizontally
    name = 'Side scroll',
    mode = 'n',

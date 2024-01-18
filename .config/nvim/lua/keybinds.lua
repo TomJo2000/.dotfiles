@@ -1,7 +1,7 @@
--- setup keybinds
----@see nvim/init.lua
+-- [[ setup keybinds ]]
 
--- [[ Moving lines ]]
+-- [[ Basic keybinds ]]
+-- Moving lines
 vim.keymap.set('n', '<M-Down>', 'ddp', { desc = 'Swap line down' })
 vim.keymap.set('n', '<M-Up>', 'ddkP', { desc = 'Swap line up' })
 vim.keymap.set('n', '<M-C-Down>', 'yyp', { desc = 'Copy line below' })
@@ -9,10 +9,7 @@ vim.keymap.set('n', '<M-C-Up>', 'yyP', { desc = 'Copy line above' })
 vim.keymap.set('v', '<M-Down>', 'yjp', { desc = 'Copy selection below' })
 vim.keymap.set('v', '<M-Up>', 'yyp', { desc = 'Copy selection above' })
 
--- [[ Save ]]
-vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
-
--- [[ Moving windows more better ]]
+-- Moving windows more better
 vim.keymap.set('n', '<C-w><C-w>', '<Cmd>WinShift swap<CR>', { desc = 'Swap [w]indow' })
 vim.keymap.set('n', '<C-w><C-Left>', '<Cmd>WinShift left<CR>', { desc = 'Swap window <Left>' })
 vim.keymap.set('n', '<C-w><C-Right>', '<Cmd>WinShift right<CR>', { desc = 'Swap window <Right>' })
@@ -22,10 +19,6 @@ vim.keymap.set('n', '<C-S-w><C-S-Left>', '<Cmd>WinShift far_left<CR>', { desc = 
 vim.keymap.set('n', '<C-S-w><C-S-Right>', '<Cmd>WinShift far_right<CR>', { desc = 'Swap window far <RIGHT>' })
 vim.keymap.set('n', '<C-S-w><C-S-Up>', '<Cmd>WinShift far_up<CR>', { desc = 'Swap window far <UP>' })
 vim.keymap.set('n', '<C-S-w><C-S-Down>', '<Cmd>WinShift far_down<CR>', { desc = 'Swap window far <DOWN>' })
-
--- Keymaps for better default experience
--- See `:help vim.keymap.set()`
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
@@ -37,8 +30,11 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnos
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
--- [[ Configure Telescope ]]
--- See `:help telescope` and `:help telescope.setup()`
+-- Miscellaneous
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
+-- [[ Telescope bindings ]]
+---@see telescope and telescope.setup
 require('telescope').setup {
   defaults = {
     mappings = {
@@ -52,6 +48,9 @@ require('telescope').setup {
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
+
+---@see telescope.builtin
+local Telescope = require('telescope.builtin')
 
 -- Telescope live_grep in git root
 -- Function to find the git root directory based on the current buffer's path
@@ -89,16 +88,13 @@ end
 
 vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
 
--- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
-  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+  Telescope.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
     winblend = 10,
     previewer = false,
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
-
-local Telescope = require('telescope.builtin')
 
 vim.keymap.set('n', '<leader>?', Telescope.oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', Telescope.buffers, { desc = '[ ] Find existing buffers' })
@@ -112,5 +108,14 @@ vim.keymap.set('n', '<leader>sd', Telescope.diagnostics, { desc = '[S]earch [D]i
 vim.keymap.set('n', '<leader>sr', Telescope.resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<leader>sk', Telescope.keymaps, { desc = '[S]how [K]eymaps' })
 
+-- [[ Mini.map bindings ]]
+local MiniMap = require('mini.map')
+vim.keymap.set('n', '<Leader>mm', MiniMap.toggle, { desc = '[M]ini.[m]ap toggle' })
+vim.keymap.set('n', '<Leader>mo', MiniMap.open, { desc = '[M]ini.map [o]pen' })
+vim.keymap.set('n', '<Leader>mc', MiniMap.close, { desc = '[M]ini.map [c]lose' })
+vim.keymap.set('n', '<Leader>mr', MiniMap.refresh, { desc = '[M]ini.map [r]efresh' })
+MiniMap.open()
+
 -- [[ Hydra bindings ]]
+---@source ./config/hydra/init.lua
 require('config.hydra')

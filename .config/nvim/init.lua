@@ -16,7 +16,7 @@ Based on Kickstarter.nvim
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- [[ Install `lazy.nvim` plugin manager ]]
+-- [[ Bootstrap `lazy.nvim` plugin manager ]]
 ---@see Lazy.nvim https://github.com/folke/lazy.nvim
 -- `:help lazy.nvim.txt` for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -49,10 +49,11 @@ vim.opt.rtp:prepend(lazypath)
          │   │   ├── init.lua
          │   │   ├── resize_split.lua
          │   │   └── side_scroll.lua
-         │   └── lsp
-         │       ├── bashls.lua
-         │       ├── gopls.lua
-         │       └── lua_ls.lua
+         │   ├── lsp
+         │   │   ├── bashls.lua
+         │   │   ├── gopls.lua
+         │   │   └── lua_ls.lua
+         │   └── treesitter.lua
          ├── keybinds.lua
          ├── kickstart
          │   └── plugins
@@ -61,16 +62,19 @@ vim.opt.rtp:prepend(lazypath)
          ├── options.lua
          └── plugins.lua
 
-8 directories, 19 files
+8 directories, 20 files
 ]]
 
 -- [[ Setting options ]]
+---@source ./lua/options.lua
 require('options')
 
 -- [[ Configure plugins ]]
+---@source ./lua/plugins.lua
 require('lazy').setup('plugins', {})
 
 -- [[ Setup keybindings ]]
+---@source ./lua/keybinds.lua
 require('keybinds')
 
 ---@deprecated local config_path = vim.fn.stdpath('config') .. '/lua/config'
@@ -87,85 +91,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- [[ Configure Treesitter ]]
--- See `:help nvim-treesitter`
--- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
-vim.defer_fn(function()
-  require('nvim-treesitter.configs').setup {
-    -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = {
-      'bash', 'c', 'cpp', 'diff', 'go', 'git_config', 'gitignore',
-      'ini', 'lua', 'python', 'regex', 'rust', 'ssh_config',
-      'toml', 'typescript', 'vimdoc', 'vim', 'yaml'
-    },
-    -- sync_install = '',
-    -- ignore_install = '',
-    -- modules = '',
-    -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-    auto_install = false,
-    -- Install languages synchronously (only applied to `ensure_installed`)
-    sync_install = false,
-    -- List of parsers to ignore installing
-    ignore_install = {},
-    -- You can specify additional Treesitter modules here: -- For example: -- playground = {--enable = true,-- },
-    modules = {},
-
-    highlight = { enable = true },
-    indent = { enable = true },
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection = '<c-space>',
-        node_incremental = '<c-space>',
-        scope_incremental = '<c-s>',
-        node_decremental = '<M-space>',
-      },
-    },
-    textobjects = {
-      select = {
-        enable = true,
-        lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-        keymaps = {
-          -- You can use the capture groups defined in textobjects.scm
-          ['aa'] = '@parameter.outer',
-          ['ia'] = '@parameter.inner',
-          ['af'] = '@function.outer',
-          ['if'] = '@function.inner',
-          ['ac'] = '@class.outer',
-          ['ic'] = '@class.inner',
-        },
-      },
-      move = {
-        enable = true,
-        set_jumps = true, -- whether to set jumps in the jumplist
-        goto_next_start = {
-          [']m'] = '@function.outer',
-          [']]'] = '@class.outer',
-        },
-        goto_next_end = {
-          [']M'] = '@function.outer',
-          [']['] = '@class.outer',
-        },
-        goto_previous_start = {
-          ['[m'] = '@function.outer',
-          ['[['] = '@class.outer',
-        },
-        goto_previous_end = {
-          ['[M'] = '@function.outer',
-          ['[]'] = '@class.outer',
-        },
-      },
-      swap = {
-        enable = true,
-        swap_next = {
-          ['<leader>a'] = '@parameter.inner',
-        },
-        swap_previous = {
-          ['<leader>A'] = '@parameter.inner',
-        },
-      },
-    },
-  }
-end, 0)
+---@source ./lua/config/treesitter.lua
+require('config.treesitter')
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
@@ -218,13 +145,6 @@ local on_attach = function(_, bufnr)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
 end
-
-MiniMap = require('mini.map')
-vim.keymap.set('n', '<Leader>mm', MiniMap.toggle, { desc = '[M]ini.[m]ap toggle' })
-vim.keymap.set('n', '<Leader>mo', MiniMap.open, { desc = '[M]ini.map [o]pen' })
-vim.keymap.set('n', '<Leader>mc', MiniMap.close, { desc = '[M]ini.map [c]lose' })
-vim.keymap.set('n', '<Leader>mr', MiniMap.refresh, { desc = '[M]ini.map [r]efresh' })
-MiniMap.open()
 
 -- document existing key chains
 require('which-key').register {
