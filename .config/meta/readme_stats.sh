@@ -6,7 +6,7 @@
 src="${1:-README.md}"
 
 err() {
-    echo "error: $*"
+    printf 'error: %s\n' "$*"
 } >&2
 
 die() {
@@ -46,8 +46,8 @@ loc_count() {
 # scc's --remap-all option is finnicky
 # and doesn't like unquoted whitespace of any kind
 # or being split over multiple lines with leading whitespace.
-scc --no-cocomo --no-complexity \
---sort code --size-unit binary \
+scc --no-cocomo --no-complexity --exclude-file .gitignore \
+--sort code --size-unit binary --format html-table \
 --remap-all '# shellcheck shell=':Shell,\
 '#!/usr/bin/env bash':Shell,\
 '# -*- desktopfile -*-':'Desktop file',\
@@ -55,7 +55,7 @@ scc --no-cocomo --no-complexity \
 '# -*- sshconfig -*-':'SSH config',\
 '# -*- service -*-':'Systemd Service',\
 '# -*- ini -*-':INI,\
--- "$DOT_FILES" | sed -e 's/ (BINARY)//;s/bytes,/Bytes,/;s/megabytes/Megabytes/'
+-- "$DOT_FILES" | sed -e 's@\t@  @g'
 }
 
 insert_command 'LOC' loc_count
