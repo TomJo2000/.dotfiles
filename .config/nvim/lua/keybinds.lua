@@ -62,6 +62,7 @@ end, {
 -- Miscellaneous
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
+
 -- [[ Telescope bindings ]]
 ---@see telescope and telescope.setup
 require('telescope').setup {
@@ -137,6 +138,48 @@ vim.keymap.set('n', '<leader>sd', Telescope.diagnostics, { desc = '[S]earch [D]i
 vim.keymap.set('n', '<leader>sr', Telescope.resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<leader>sk', Telescope.keymaps, { desc = '[S]how [K]eymaps' })
 
+-- [[ LSP bindings ]]
+  ---@alias mode
+  ---|"'n'" # normal mode
+  ---|"'i'" # insert mode
+  ---|"'v'" # visual mode
+  ---|"'c'" # command mode
+  ---|"'r'" # replace mode
+  ---@param modes mode | table<mode> # one or more modes
+  ---@param keys string              # the keybinding
+  ---@param func string | function   # action to trigger
+  ---@param desc string?             # description (optional)
+  local lsp_map = function(modes, keys, func, desc)
+    if desc then
+      desc = 'LSP: ' .. desc
+    end
+
+    vim.keymap.set(modes, keys, func, { buffer = bufnr, desc = desc })
+  end
+
+  lsp_map('n', '<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+  lsp_map('n', '<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+
+  local telescope = require('telescope.builtin')
+  lsp_map('n', 'gd', telescope.lsp_definitions, '[G]oto [D]efinition')
+  lsp_map('n', 'gr', telescope.lsp_references, '[G]oto [R]eferences')
+  lsp_map('n', 'gI', telescope.lsp_implementations, '[G]oto [I]mplementation')
+  lsp_map('n', '<leader>D', telescope.lsp_type_definitions, 'Type [D]efinition')
+  lsp_map('n', '<leader>ds', telescope.lsp_document_symbols, '[D]ocument [S]ymbols')
+  lsp_map('n', '<leader>ws', telescope.lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+
+  -- See `:help K` for why this keymap
+  lsp_map('n', 'K', vim.lsp.buf.hover, 'Hover Documentation')
+  lsp_map('n', '<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+
+  -- Lesser used LSP functionality
+  lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+  lsp_map('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
+  lsp_map('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
+  lsp_map('n', '<leader>wl', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, '[W]orkspace [L]ist Folders')
+
 -- [[ Mini.map bindings ]]
 local MiniMap = require('mini.map')
 vim.keymap.set('n', '<Leader>mm', MiniMap.toggle, { desc = '[M]ini.[m]ap toggle' })
@@ -148,3 +191,19 @@ MiniMap.open()
 -- [[ Hydra bindings ]]
 ---@source ./config/hydra/init.lua
 require('config.hydra')
+
+-- [[ which-key ]]
+-- document existing key chains
+require('which-key').register {
+  ['<leader>c']  = { name = '[C]ode', _ = 'which_key_ignore' },
+  ['<leader>d']  = { name = '[D]ocument', _ = 'which_key_ignore' },
+  ['<leader>g']  = { name = '[G]it', _ = 'which_key_ignore' },
+  ['<leader>gh'] = { name = '[G]it [h]unks', _ = 'which_key_ignore' },
+  ['<leader>r']  = { name = '[R]ename', _ = 'which_key_ignore' },
+  ['<leader>s']  = { name = '[S]earch', _ = 'which_key_ignore' },
+  ['<leader>w']  = { name = '[W]orkspace', _ = 'which_key_ignore' },
+  -- my key chains
+  ['<leader>l']  = { name = '[L]ine numbers', _ = 'which_key_ignore' },
+  ['<leader>m']  = { name = '[M]ini.map', _ = 'which_key_ignore' },
+}
+
