@@ -7,8 +7,8 @@ Based on Kickstarter.nvim
 ---| https://github.com/nvim-lua/kickstart.nvim/tree/ee9790b381416781063d0de6653b303f10ed89b0
 
 ---@see tracking_to
----|#76c5b1e upstream commit (Dec 8 2023)
----| https://github.com/nvim-lua/kickstart.nvim/tree/76c5b1ec57f40d17ac787feb018817a802e24bb6
+---|#2510c29 upstream commit (Jan 10 2024)
+---| https://github.com/nvim-lua/kickstart.nvim/tree/2510c29d62d39d63bb75f1a613d2ae628a2af4ee
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -90,7 +90,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- See `:help nvim-treesitter`
 -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
 vim.defer_fn(function()
-  ---@diagnostic disable-next-line
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
     ensure_installed = {
@@ -103,6 +102,12 @@ vim.defer_fn(function()
     -- modules = '',
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
+    -- Install languages synchronously (only applied to `ensure_installed`)
+    sync_install = false,
+    -- List of parsers to ignore installing
+    ignore_install = {},
+    -- You can specify additional Treesitter modules here: -- For example: -- playground = {--enable = true,-- },
+    modules = {},
 
     highlight = { enable = true },
     indent = { enable = true },

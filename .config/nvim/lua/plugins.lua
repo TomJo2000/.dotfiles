@@ -32,10 +32,10 @@ return {
         dependencies = { 'SmiteshP/nvim-navic', 'MunifTanjim/nui.nvim' },
       },
       -- Automatically install LSPs to stdpath for neovim
-      'williamboman/mason.nvim',
+      { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
       -- Useful status updates for LSP
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
       -- function signatures for nvim's Lua API
       'folke/neodev.nvim',
     },
