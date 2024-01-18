@@ -18,27 +18,6 @@ vim.o.hlsearch = false
 -- Make (absolute) line numbers default
 vim.wo.number = true
 
--- toggle between absolute and relative line numbers with <leader>ll
-vim.keymap.set({ 'n', 'v' }, '<leader>ll', function()
-  local state = vim.o.number
-  vim.o.number = not state
-  vim.o.relativenumber = state
-end, { desc = 'toggle [l]ine number mode' })
-
-vim.keymap.set({ 'n', 'v' }, '<leader>la', function()
-  vim.o.number = not vim.o.number
-end, { desc = 'toggle [a]bsolute line numbers' })
-
-vim.keymap.set({ 'n', 'v' }, '<leader>lr', function()
-  vim.o.relativenumber = not vim.o.relativenumber
-end, { desc = 'toggle [r]elative line numbers' })
-
-vim.keymap.set({ 'n', 'v' }, '<leader>lh', function()
-  local state = not vim.o.relativenumber
-  vim.o.number = state
-  vim.o.relativenumber = state
-end, { desc = 'toggle [h]ybrid line numbers' })
-
 -- Enable mouse mode
 vim.o.mouse = 'a'
 

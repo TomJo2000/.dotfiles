@@ -30,6 +30,35 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnos
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
+-- Line numbers
+vim.keymap.set({ 'n', 'v' }, '<leader>ll', function()
+  local state = vim.o.number
+  vim.o.number = not state
+  vim.o.relativenumber = state
+end, {
+  desc = 'toggle [l]ine number mode'
+})
+
+vim.keymap.set({ 'n', 'v' }, '<leader>la', function()
+  vim.o.number = not vim.o.number
+end, {
+  desc = 'toggle [a]bsolute line numbers'
+})
+
+vim.keymap.set({ 'n', 'v' }, '<leader>lr', function()
+  vim.o.relativenumber = not vim.o.relativenumber
+end, {
+  desc = 'toggle [r]elative line numbers'
+})
+
+vim.keymap.set({ 'n', 'v' }, '<leader>lh', function()
+  local state = not vim.o.relativenumber
+  vim.o.number = state
+  vim.o.relativenumber = state
+end, {
+  desc = 'toggle [h]ybrid line numbers'
+})
+
 -- Miscellaneous
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
