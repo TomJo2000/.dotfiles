@@ -15,6 +15,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 ---@source ./lua/config/treesitter.lua
 require('config.treesitter')
 
+-- [[ Delimiter colorization ]]
+vim.g.rainbow_delimiters = require('config.delims')
+
 -- [[ Configure LSPs ]]
 -- This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
