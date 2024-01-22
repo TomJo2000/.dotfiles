@@ -21,8 +21,8 @@ vim.keymap.set('n', '<C-S-w><C-S-Up>', '<Cmd>WinShift far_up<CR>', { desc = 'Swa
 vim.keymap.set('n', '<C-S-w><C-S-Down>', '<Cmd>WinShift far_down<CR>', { desc = 'Swap window far <DOWN>' })
 
 -- Remap for dealing with word wrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+vim.keymap.set('n', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, silent = true })
+vim.keymap.set('n', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, silent = true })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
@@ -90,17 +90,17 @@ local function find_git_root()
   local current_dir
   local cwd = vim.fn.getcwd()
   -- If the buffer is not associated with a file, return nil
-  if current_file == "" then
+  if current_file == '' then
     current_dir = cwd
   else
     -- Extract the directory from the current file's path
-    current_dir = vim.fn.fnamemodify(current_file, ":h")
+    current_dir = vim.fn.fnamemodify(current_file, ':h')
   end
 
   -- Find the Git root directory from the current file's path
-  local git_root = vim.fn.systemlist("git -C " .. vim.fn.escape(current_dir, " ") .. " rev-parse --show-toplevel")[1]
+  local git_root = vim.fn.systemlist('git -C ' .. vim.fn.escape(current_dir, ' ') .. ' rev-parse --show-toplevel')[1]
   if vim.v.shell_error ~= 0 then
-    print("Not a git repository. Searching on current working directory")
+    print('Not a git repository. Searching on current working directory')
     return cwd
   end
   return git_root
@@ -153,7 +153,7 @@ vim.keymap.set('n', '<leader>sk', Telescope.keymaps, { desc = '[S]how [K]eymaps'
     if desc then
       desc = 'LSP: ' .. desc
     end
-
+  ---@diagnostic disable-next-line: undefined-global
     vim.keymap.set(modes, keys, func, { buffer = bufnr, desc = desc })
   end
 
