@@ -178,6 +178,7 @@ require('lazy').setup({
         cond = function()
           return vim.fn.executable 'make' == 1
         end,
+        ---@source config = require('config.telescope')
       },
     },
   },
