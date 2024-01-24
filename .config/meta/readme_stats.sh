@@ -40,8 +40,35 @@ neovim_plugins() { # any line in lazy-lock.json with "commit" in it is a plugin
     grep -cF '"commit"' "${DOT_FILES}/.config/nvim/lazy-lock.json"
 }
 
+table_format() { # (WIP) cursed regex iterator/formater
+    local -a _vals=() _len=()
+    local line row_count col_count idx='0' regex='<th>[^<]*<\/th>'
+
+    while read -r line; do # read in the table line by line
+    (( row_count++ ))
+    [[ "$line" == *'<tr>'*'<th>'* ]] && { # if it's a row with headings
+        while [[ "$line" =~ $regex ]]; do # format
+        if (( idx < col_count )); then
+            (( ${#BASH_REMATCH[0]} > _len[idx % 8] )) && {
+                _len[idx % 8]="${#BASH_REMATCH[0]}"
+            }
+        else
+            _len[idx % 8]="${#BASH_REMATCH[0]}"
+        fi
+        _vals[idx++]="${BASH_REMATCH[0]}"
+
+        line="${line/"${BASH_REMATCH[0]}"/}"
+        done
+        printf "%-${_len[0]}s %-${_len[1]}s %-${_len[2]}s %-${_len[3]}s %-${_len[4]}s %-${_len[5]}s %-${_len[6]}s %-${_len[7]}s\n" \
+            "${_vals[@]}"
+    continue
+    }
+
+    done <<< "$*"
+}
+
 loc_count() {
-local line table
+local line
 local -a files
 
 while read -r line; do
@@ -71,22 +98,13 @@ done < <(git -C "${GIT_ROOT}" ls-files --full-name)
 : "${_//><\/tbody>/>$'\n'    <\/tbody>}"
 : "${_//><\/tfoot>/>$'\n'    <\/tfoot>}"
 : "${_//><\/table>/>$'\n'  <\/table>}"
-table="$_"
-printf '%s\n' "  $table"
+# read -ra formatted_table < <(table_format "$_")
 
-# (WIP) cursed regex iterator/formater
-# foo="$table"
-# local -a max=( '0' '0' '0' '0' '0' '0' '0' '0' ) _table=()
-# local regex='<th>[^<]*<\/th>'
-# while [[ "$foo" =~ $regex ]]; do
-#     printf '%s' "$(( i++ )) " "${BASH_REMATCH[0]}"
-#     (( i % 8 )) || echo
-#     (( ${#BASH_REMATCH[0]} > ${#max[i % 8 ]} )) && max[i]="${BASH_REMATCH[0]}"
-#     _table=("${BASH_REMATCH[0]}")
-#     foo="${foo/"${BASH_REMATCH[0]}"/}"
-# done >&2
+printf '%s\n' "  ${_}"
+# printf '%s\n' "${formatted_table[@]}"
 }
 
+# set -x
 insert_command 'loc' loc_count
 # insert_command 'neovim' neovim_plugins
 
@@ -97,4 +115,5 @@ printf -v updated_at 'Statistics are updated at [`%s`](%s/commit/%s)' \
     "$(git -C "${GIT_ROOT}" rev-parse HEAD)"
 echo "$updated_at"
 sed -i "s@^Statistics are updated at .*\$@$updated_at@" "$src"
+# set +x
 
