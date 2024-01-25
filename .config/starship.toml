@@ -39,7 +39,7 @@ format = """\
 #?? A continuation prompt is trigged if you enter an incomplete statement on the command line.
 #?? Only supported in Bash, Zsh and PowerShell.
 continuation_prompt = """\
-[   ]()[ ](bg:col_cont)
+    [   ]()[ ](bg:col_cont)
 """
 
 add_newline = false # disable multiline prompt
