@@ -1,65 +1,79 @@
 #!/usr/bin/env lua
 -- trilerp.lua
 
-local f = { r = 25, g = 31, b = 237 }  -- from #191FED
-local t = { r = 243, g = 208, b = 91 } -- to   #F3D05B
-local d = {                            -- diffs, min and max per channel
-  r = math.abs(f.r - t.r),
-  g = math.abs(f.g - t.g),
-  b = math.abs(f.b - t.b),
+---@param hex string | number
+---@return rgb
+local function hex2rgb(hex)
+  hex = hex:gsub('^#', '')
+  return {
+    r = tonumber('0x' .. hex:sub(1, 2)),
+    g = tonumber('0x' .. hex:sub(3, 4)),
+    b = tonumber('0x' .. hex:sub(5, 6))
+  }
+end
+
+local from = hex2rgb(arg[1] or '#191FED')
+local to = hex2rgb(arg[2] or '#F3D05B')
+local diffs = { -- diffs, min and max per channel
   min = {
-    r = math.min(f.r, t.r),
-    g = math.min(f.g, t.g),
-    b = math.min(f.b, t.b),
+    r = math.min(from.r, to.r),
+    g = math.min(from.g, to.g),
+    b = math.min(from.b, to.b),
   },
   max = {
-    r = math.max(f.r, t.r),
-    g = math.max(f.g, t.g),
-    b = math.max(f.b, t.b),
+    r = math.max(from.r, to.r),
+    g = math.max(from.g, to.g),
+    b = math.max(from.b, to.b),
   }
+  r = math.abs(from.r - to.r),
+  g = math.abs(from.g - to.g),
+  b = math.abs(from.b - to.b),
 }
 
-local v = { -- vertices
-  ['rgb'] = { r = d.min.r, g = d.min.g, b = d.min.b },
-  ['rgB'] = { r = d.min.r, g = d.min.g, b = d.max.b },
-  ['rGb'] = { r = d.min.r, g = d.max.g, b = d.min.b },
-  ['rGB'] = { r = d.min.r, g = d.max.g, b = d.max.b },
-  ['Rgb'] = { r = d.max.r, g = d.min.g, b = d.min.b },
-  ['RgB'] = { r = d.max.r, g = d.min.g, b = d.max.b },
-  ['RGb'] = { r = d.max.r, g = d.max.g, b = d.min.b },
-  ['RGB'] = { r = d.max.r, g = d.max.g, b = d.max.b },
+local verts = { -- vertices
+  ['rgb'] = { r = diffs.min.r, g = diffs.min.g, b = diffs.min.b },
+  ['rgB'] = { r = diffs.min.r, g = diffs.min.g, b = diffs.max.b },
+  ['rGb'] = { r = diffs.min.r, g = diffs.max.g, b = diffs.min.b },
+  ['rGB'] = { r = diffs.min.r, g = diffs.max.g, b = diffs.max.b },
+  ['Rgb'] = { r = diffs.max.r, g = diffs.min.g, b = diffs.min.b },
+  ['RgB'] = { r = diffs.max.r, g = diffs.min.g, b = diffs.max.b },
+  ['RGb'] = { r = diffs.max.r, g = diffs.max.g, b = diffs.min.b },
+  ['RGB'] = { r = diffs.max.r, g = diffs.max.g, b = diffs.max.b },
 }
 
 ---@alias rgb {r: integer, g: integer, b: integer}
----@param from  rgb   # RGB tuple
----@param to    rgb       # RGB tuple
----@param step integer # Step
+---@param _from rgb    # *RGB tuple*
+---@param _to   rgb    # *RGB tuple*
+---@param step integer # *Step*
 ---@return rgb
-local function rgb_lerp(from, to, step)
+local function rgb_lerp(_from, _to, step)
   return {
-    r = from.r * (1 - step) + to.r * step,
-    g = from.g * (1 - step) + to.g * step,
-    b = from.b * (1 - step) + to.b * step,
+    r = _from.r * (1 - step) + _to.r * step,
+    g = _from.g * (1 - step) + _to.g * step,
+    b = _from.b * (1 - step) + _to.b * step,
   }
 end
 
-local function rgb_bilerp(v1, v2, v3, v4, x, y)
+local function rgb_bilerp(v1, v2, v3, v4, x_step, y_step)
   return rgb_lerp(
-    rgb_lerp(v1, v2, x),
-    rgb_lerp(v3, v4, x),
-    y
+    rgb_lerp(v1, v2, x_step),
+    rgb_lerp(v3, v4, x_step),
+    y_step
   )
 end
 
-local function rgb_trilerp(v1, v2, v3, v4, v5, v6, v7, v8, x, y, z)
+local function rgb_trilerp(v1, v2, v3, v4, v5, v6, v7, v8, x_step, y_step, z_step)
   return rgb_lerp(
-    rgb_bilerp(v1, v2, v3, v4, x, y),
-    rgb_bilerp(v5, v6, v7, v8, x, y),
-    z
+    rgb_bilerp(v1, v2, v3, v4, x_step, y_step),
+    rgb_bilerp(v5, v6, v7, v8, x_step, y_step),
+    z_step
   )
 end
 
-local result = rgb_trilerp(v.rgb, v.rgB, v.rGb, v.rGB, v.Rgb, v.RgB, v.RGb, v.RGB, 0.5, 0.5, 0.5)
-local out_str = string.format('%s;%s;%s', math.floor(result.r), math.floor(result.g), math.floor(result.b))
-io.write(string.format('\x1b[38;2;%sm%s\x1b[m\n', out_str, out_str))
+local x, y, z = 0.5, 0.5, 0.5 -- step values for each axis, might add per axis skew correction later
+local result = rgb_trilerp(verts.rgb, verts.rgB, verts.rGb, verts.rGB, verts.Rgb, verts.RgB, verts.RGb, verts.RGB, x, y, z)
+
+local out_fmt = string.format('%s;%s;%s', math.floor(result.r), math.floor(result.g), math.floor(result.b))
+local out_str = string.format('#%X%X%X' , math.floor(result.r), math.floor(result.g), math.floor(result.b))
+io.write(string.format('\x1b[48;2;%sm%s\x1b[m\n', out_fmt, out_str))
 
