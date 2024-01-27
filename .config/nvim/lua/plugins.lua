@@ -216,10 +216,13 @@ require('lazy').setup({
 
   { -- Code minimap
     'echasnovski/mini.map',
-    opts = {
-      symbols = { scroll_line = '⦿', scroll_view = '┃' },
-      window  = { show_integration_count = true }
-    },
+    -- branch = 'main',
+    config = function()
+      require('mini.map').setup(
+        ---@source ./config/mini.map.lua
+        require('config.mini_map')
+      )
+    end,
   },
 
   { -- Per project file shortcuts
