@@ -47,7 +47,3 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
-if vim.fn.executable('wslpath') == 1 then
-  require('config.wsl_clipboard')
-end
-
