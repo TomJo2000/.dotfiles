@@ -18,19 +18,18 @@
     <thead>
       <tr><th>Language</th><th>Files</th><th>Lines</th><th>Blank</th><th>Comment</th><th>Code</th><th>Complexity</th><th>Bytes</th></tr>
     </thead><tbody>
-      <tr><th>Lua</th><th>25</th><th>1536</th><th>135</th><th>291</th><th>1110</th><th>0</th><th>51588</th></tr>
-      <tr><th>Shell</th><th>19</th><th>1462</th><th>207</th><th>252</th><th>1003</th><th>0</th><th>59866</th></tr>
+      <tr><th>Lua</th><th>28</th><th>1665</th><th>146</th><th>299</th><th>1220</th><th>0</th><th>55578</th></tr>
+      <tr><th>Shell</th><th>19</th><th>1452</th><th>210</th><th>247</th><th>995</th><th>0</th><th>58464</th></tr>
       <tr><th>JSON</th><th>2</th><th>495</th><th>1</th><th>0</th><th>494</th><th>0</th><th>16428</th></tr>
-      <tr><th>TOML</th><th>2</th><th>408</th><th>24</th><th>118</th><th>266</th><th>0</th><th>15420</th></tr>
+      <tr><th>TOML</th><th>2</th><th>398</th><th>24</th><th>118</th><th>256</th><th>0</th><th>14664</th></tr>
       <tr><th>INI</th><th>5</th><th>246</th><th>32</th><th>137</th><th>77</th><th>0</th><th>6289</th></tr>
       <tr><th>SSH config</th><th>1</th><th>67</th><th>14</th><th>0</th><th>53</th><th>0</th><th>1669</th></tr>
       <tr><th>Markdown</th><th>1</th><th>54</th><th>15</th><th>0</th><th>39</th><th>0</th><th>1669</th></tr>
-      <tr><th>Python</th><th>1</th><th>46</th><th>5</th><th>2</th><th>39</th><th>0</th><th>3323</th></tr>
       <tr><th>Git config</th><th>1</th><th>49</th><th>11</th><th>0</th><th>38</th><th>0</th><th>1206</th></tr>
       <tr><th>Systemd Service</th><th>2</th><th>43</th><th>6</th><th>0</th><th>37</th><th>0</th><th>1175</th></tr>
       <tr><th>License</th><th>1</th><th>21</th><th>4</th><th>0</th><th>17</th><th>0</th><th>1073</th></tr>
     </tbody><tfoot>
-      <tr><th>Total</th><th>60</th><th>4427</th><th>454</th><th>800</th><th>3173</th><th>0</th><th>159706</th></tr>
+      <tr><th>Total</th><th>62</th><th>4490</th><th>463</th><th>801</th><th>3226</th><th>0</th><th>158215</th></tr>
     </tfoot>
   </table>
 <!--loc-end-->

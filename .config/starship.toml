@@ -278,30 +278,20 @@ am = "am'ing"
 am_or_rebase = "am/rebase"
 format = "[$state(❮$progress_current/$progress_total❯)]($style)"
 
-[git_status] # symbolic and plaintext versions for clairity (if preferred).
+[git_status]
 disabled = false
-
 style = "fg:col_info bg:col_text_dark"
-stashed = "${count}" # Regular symbol for stashed files
-# stashed = "stashed: ${count}"
-staged = "󰸞${count}" # Regular symbol for staged files
-# staged = "staged: ${count}"
-modified = "󰑕${count}" # Regular symbol for modified files
-# modified = "modified: ${count}"
-renamed = "󰗧${count}" # Regular symbol for renamed files
-# renamed = "renamed: ${count}"
-untracked = "󰏢${count}" # Regular symbol for untracked files
-# untracked = "u${count}"
-deleted = "${count}" # Regular symbol for deletions
-# deleted = "deletions: ${count}"
-conflicted = "${count}" # Regular symbol for conflicts
-# conflicted = "conflicts: ${count}"
-ahead = "󰞙${count}" # Regular symbol for number of commits ahead of remote
-# ahead = "ahead: ${count}"
-behind = "󰞖${count}" # Regular symbol for number of commits behind remote
-# behind = "behind: ${count}"
-diverged = "󰓢${ahead_count} ${behind_count}" # Regular symbol for branch diversion
-# diverged = "divergent: ${ahead_count} ${behind_count}"
+stashed = "${count}"
+staged = "󰸞${count}"
+modified = "󰑕${count}"
+typechanged = "󰶻${count}"
+renamed = "󰗧${count}"
+untracked = "󰏢${count}"
+deleted = "${count}"
+conflicted = "${count}"
+ahead = "󰞙${count}"
+behind = "󰞖${count}"
+diverged = "󰓢${ahead_count} ${behind_count}"
 format = "[($stashed$staged$modified$renamed$untracked$deleted$conflicted$ahead_behind)]($style)"
 
 [hostname] # system hostname, with indicator if logged in via SSH session.
