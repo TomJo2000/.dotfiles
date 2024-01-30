@@ -536,7 +536,8 @@ for promise in "${(k)promises[@]}"; do
             export SSH_AUTH_SOCK SSH_AGENT_PID
         ;;
         ('plugin_updates') # resolve plugin updates
-            printf '%b\n' "$(</dev/fd/${fd})"
+            : # (FIXME) Something broke with this.
+            # printf '%b\n' "$(</dev/fd/${fd})"
         ;;
         (*) # If I didn't account for it throw a message
         printf "${col[bold]}${col[fg_red]}%s${col[reset]}\n" "No resolve handler for: ${promise}"

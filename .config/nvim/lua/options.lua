@@ -47,3 +47,7 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+-- Enable highlighting the current line
+vim.o.cursorline = true
+vim.o.cursorlineopt = 'screenline'
+
