@@ -1,7 +1,10 @@
 #!/usr/bin/env luajit
-package.path = './lua/?.lua;' .. package.path
+
+local script_root = arg[0]:match('@?(.*/)') or ''
+package.path = string.format('%s?.lua;', script_root) .. package.path
+
 ---@source ./lua/trilerp.lua
-local t = require('trilerp')
+local t = require('lua.trilerp')
 local pal = {}
 
 
