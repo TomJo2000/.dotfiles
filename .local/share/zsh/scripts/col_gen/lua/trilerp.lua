@@ -13,20 +13,18 @@ local M = {}
 ---@return rgb
 ---@alias hex2rgb fun(hex): rgb
 function M.hex2rgb(hex)
-  assert(hex ~= nil, "can't convert a nil value to RGB")
+  assert(hex ~= nil, "Can't convert a nil value to RGB")
   hex = hex:gsub('^#', '')
   if #hex == 3 then
-    local str = ''
-    for i in hex:gmatch('.') do
-      str = i:rep(2) .. (str or '')
-    end
-    hex = str
+    local r, g, b = hex:match('(.)(.)(.)')
+    hex = r:rep(2) .. g:rep(2) .. b:rep(2)
   end
   assert(hex:match('%x*'):len() == 6, "invalid hex: " .. hex)
+  local r, g, b = hex:match('(..)(..)(..)')
   return {
-    r = tonumber('0x' .. hex:sub(1, 2)),
-    g = tonumber('0x' .. hex:sub(3, 4)),
-    b = tonumber('0x' .. hex:sub(5, 6))
+    r = tonumber('0x' .. r),
+    g = tonumber('0x' .. g),
+    b = tonumber('0x' .. b),
   }
 end
 
@@ -81,9 +79,9 @@ end
 ---@return rgb         # {r, g, b}:int
 function M.rgb_bilerp(v, x_step, y_step)
   return M.rgb_lerp({
-    M.rgb_lerp({v[1], v[2]}, x_step),
-    M.rgb_lerp({v[3], v[4]}, x_step),
-    }, y_step
+    M.rgb_lerp({ v[1], v[2] }, x_step),
+    M.rgb_lerp({ v[3], v[4] }, x_step),
+  }, y_step
   )
 end
 
@@ -95,9 +93,9 @@ end
 ---@return rgb         # {r, g, b}: int
 function M.rgb_trilerp(v, x_step, y_step, z_step)
   return M.rgb_lerp({
-    M.rgb_bilerp({v[1], v[2], v[3], v[4]}, x_step, y_step),
-    M.rgb_bilerp({v[5], v[6], v[7], v[8]}, x_step, y_step),
-    }, z_step
+    M.rgb_bilerp({ v[1], v[2], v[3], v[4] }, x_step, y_step),
+    M.rgb_bilerp({ v[5], v[6], v[7], v[8] }, x_step, y_step),
+  }, z_step
   )
 end
 
@@ -105,7 +103,7 @@ local x, y, z = 0.5, 0.5, 0.5 -- step values for each axis, might add per axis s
 local result = M.rgb_trilerp({
   verts.rgb, verts.rgB, verts.rGb, verts.rGB,
   verts.Rgb, verts.RgB, verts.RGb, verts.RGB,
-  }, x, y, z
+}, x, y, z
 )
 
 local out_fmt = string.format('%s;%s;%s', math.floor(result.r), math.floor(result.g), math.floor(result.b))
