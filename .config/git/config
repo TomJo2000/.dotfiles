@@ -22,8 +22,12 @@
   # Advanced aliases with full (POSIX) /bin/sh syntax.
   # https://www.atlassian.com/blog/git/advanced-git-aliases
 
+  # show information and diffs for staged files
+  staged = "!{ git status; git -P diff --staged --shortstat && git -P diff --staged; } | delta"
+
   #show the last <n> (1 by default) commits
   news = "!f() { git log -p HEAD~${1:-1}..; }; f"
+
 
   # Show the <n> (20 by default) most edited files
   # Written by Corey Haines
