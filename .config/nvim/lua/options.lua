@@ -51,3 +51,11 @@ vim.o.termguicolors = true
 vim.o.cursorline = true
 vim.o.cursorlineopt = 'screenline'
 
+-- Ask for confirmation when quiting an unsaved buffer instead of refusing
+vim.o.confirm = true
+
+-- Set defaults for splits
+vim.o.splitright = true -- :vs[plit] opens to the right
+vim.o.splitbelow = true -- :sp[lit] opens below
+
+

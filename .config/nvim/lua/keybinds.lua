@@ -86,7 +86,6 @@ require('config.telescope.binds')
     vim.keymap.set(modes, keys, func, { buffer = bufnr, desc = desc })
   end
 
-  lsp_map('n', '<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   lsp_map('n', '<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
   local telescope = require('telescope.builtin')
@@ -128,7 +127,7 @@ require('which-key').register {
   ['<leader>d']  = { name = '[D]ocument', _ = 'which_key_ignore' },
   ['<leader>g']  = { name = '[G]it', _ = 'which_key_ignore' },
   ['<leader>gh'] = { name = '[G]it [h]unks', _ = 'which_key_ignore' },
-  ['<leader>r']  = { name = '[R]ename', _ = 'which_key_ignore' },
+  ['<leader>r']  = { name = '[R]eplace', _ = 'which_key_ignore' },
   ['<leader>s']  = { name = '[S]earch', _ = 'which_key_ignore' },
   ['<leader>w']  = { name = '[W]orkspace', _ = 'which_key_ignore' },
   -- my key chains

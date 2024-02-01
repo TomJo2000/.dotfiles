@@ -1,4 +1,6 @@
 local Hydra = require('hydra')
+---@source ./replace.lua
+Hydra(require('config.hydra.replace'))
 ---@source ./git_hydra.lua
 Hydra(require('config.hydra.git_hydra'))
 ---@source ./side_scroll.lua
