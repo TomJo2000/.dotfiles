@@ -23,7 +23,7 @@ return {
   },
   window = {
     side = 'right',
-    width = 15,
+    width = math.floor(require('config.info').width() / 9),
     winblend = 70, -- This looks about right to me
     show_integration_count = true,
   },
