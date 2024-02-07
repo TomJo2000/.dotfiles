@@ -75,6 +75,9 @@ require('lazy').setup({
     },
   },
 
+  -- More customizable formatters.
+  { 'mhartington/formatter.nvim' },
+
   { -- There are way to many statusline plugins, we're using this one.
     'freddiehaddad/feline.nvim',
     opts = {}

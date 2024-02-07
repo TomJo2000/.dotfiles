@@ -40,7 +40,6 @@ require('mason-lspconfig').setup()
 -- Enable LSPs
 ---| Lua_ls
 ---| Bashls
----| Gopls (not yet setup)
 ---@source ./config/lsp/init.lua
 local servers = require('config.lsp')
 

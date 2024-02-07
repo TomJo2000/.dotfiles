@@ -1,11 +1,20 @@
----@return table Lua_ls_config
+---@return Lua_ls_config
+---@enum Lua_ls_config
 return {
   Lua = {
-    runtime = {
-      -- Tell the language server which version of Lua you're using
-      -- (most likely LuaJIT in the case of Neovim)
-      version = 'LuaJIT'
+    completion = {
+      displayContext = 5,
+      keywordSnippet = 'Both',
+      postfix = ' ',
     },
+    format = { enable = false }, -- I prefer using Stylua for formatting
+    hint = {
+      enable = true,
+      arrayIndex = 'Enable',
+      setType = true,
+    },
+    hover = { enumsLimit = 50 },
+    runtime = { version = 'LuaJIT' },
     -- Make the server aware of Neovim runtime files
     ---@see workspace = { checkThirdParty = false },
     workspace = {
@@ -15,7 +24,6 @@ return {
         -- "${3rd}/luv/library"
         -- "${3rd}/busted/library",
       }
-      ---@see telemetry = { enable = false },
       ---@see NOTE: toggle below to ignore Lua_LS's noisy `missing-fields` warnings
       ---@see diagnostics = { disable = { 'missing-fields' } },
       -- or pull in all of 'runtimepath'. NOTE: this is a lot slower

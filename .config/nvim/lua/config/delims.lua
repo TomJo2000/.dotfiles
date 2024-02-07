@@ -1,6 +1,5 @@
 local delim = require('rainbow-delimiters')
 
----@return rainbow_delimiter.config
 return {
   strategy = {
     [''] = delim.strategy['global'],
@@ -24,4 +23,3 @@ return {
     -- 'RainbowDelimiterCyan',
   },
 }
-
