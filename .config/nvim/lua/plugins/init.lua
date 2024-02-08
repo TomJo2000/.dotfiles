@@ -1,16 +1,16 @@
 --[[ Bootstrap `lazy.nvim` plugin manager ]]
 ---@see Lazy.nvim https://github.com/folke/lazy.nvim
 -- `:help lazy.nvim.txt` for more info
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system {
+  vim.fn.system({
     'git',
     'clone',
     '--filter=blob:none',
     'https://github.com/folke/lazy.nvim.git',
     '--branch=stable', -- latest stable release
     lazypath,
-  }
+  })
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -24,17 +24,25 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+  -- Useful plugin to show you pending keybinds.
+  { 'folke/which-key.nvim' },
+
+  -- Repeatable prefixed bindings
+  { 'anuvyklack/hydra.nvim', lazy = true },
+
   { -- proper merge editor
     --- @see documentation at https://github.com/sindrets/diffview.nvim
     'sindrets/diffview.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
 
-  -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim' },
+  { -- More customizable formatters.
+    'mhartington/formatter.nvim',
+    config = require('plugins.formatter'),
+  },
 
-  -- Repeatable prefixed bindings
-  { 'anuvyklack/hydra.nvim', lazy = true, },
+  -- Split or join oneliners to multiline statements and vise versa
+  { 'AndrewRadev/splitjoin.vim' },
 
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -42,13 +50,16 @@ require('lazy').setup({
       { -- symbol navigation
         'SmiteshP/nvim-navbuddy',
         opts = { lsp = { auto_attach = true } },
-        dependencies = { 'SmiteshP/nvim-navic', 'MunifTanjim/nui.nvim' },
+        dependencies = {
+          'SmiteshP/nvim-navic',
+          'MunifTanjim/nui.nvim',
+        },
       },
       -- Automatically install LSPs to stdpath for neovim
       { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
       -- Useful status updates for LSP
-      { 'j-hui/fidget.nvim',       opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
       -- function signatures for nvim's Lua API
       'folke/neodev.nvim',
     },
@@ -59,33 +70,24 @@ require('lazy').setup({
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
+    -- stylua: ignore
     dependencies = {
-      -- Snippet Engine & its associated nvim-cmp source
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
-      -- Adds LSP completion capabilities
-      'hrsh7th/cmp-nvim-lsp',
-      -- File path completion
-      'hrsh7th/cmp-path',
-      -- Adds a number of user-friendly snippets
-      'rafamadriz/friendly-snippets',
+      'L3MON4D3/LuaSnip',             -- Snippet Engine
+      'saadparwaiz1/cmp_luasnip',     -- and its associated nvim-cmp source
+      'hrsh7th/cmp-nvim-lsp',         -- Adds LSP completion capabilities
+      'hrsh7th/cmp-path',             -- File path completion
+      'rafamadriz/friendly-snippets', -- Adds a number of user-friendly snippets
     },
   },
 
-  -- More customizable formatters.
-  { 'mhartington/formatter.nvim' },
-
   { -- There are way to many statusline plugins, we're using this one.
     'freddiehaddad/feline.nvim',
-    opts = {}
+    opts = {},
   },
 
-  require('plugins.onedark')  ,
+  require('plugins.onedark'),
 
   require('plugins.gitsigns'),
-
-  -- Split or join oneliners to multiline statements and vise versa
-  { 'AndrewRadev/splitjoin.vim' },
 
   --(TODO): https://dotfyle.com/plugins/HakonHarnes/img-clip.nvim
 
@@ -104,13 +106,14 @@ require('lazy').setup({
 
   { -- bulk comments
     'numToStr/Comment.nvim',
+    -- stylua: ignore
     opts = {
       padding   = true,
       sticky    = true,
       mappings  = { basic = true, extra = true },
-      toggler   = { line = '<leader>cc', block = '<leader>bb' },
-      opleader  = { line = '<leader>c', block = '<leader>b' },
-      extra     = { above = '<leader>cO', below = '<leader>co', eol = '<leader>cA' },
+      toggler   = { line  = '<leader>cc', block = '<leader>bb' },
+      opleader  = { line  = '<leader>c' , block = '<leader>b'  },
+      extra     = { above = '<leader>cO', below = '<leader>co'  , eol = '<leader>cA' },
       pre_hook  = nil,
       post_hook = nil,
       ignore    = nil,
@@ -132,7 +135,7 @@ require('lazy').setup({
         --       refer to the README for telescope-fzf-native for more instructions.
         build = 'make',
         cond = function()
-          return vim.fn.executable 'make' == 1
+          return vim.fn.executable('make') == 1
         end,
         ---@source config = require('config.telescope')
       },
@@ -151,7 +154,9 @@ require('lazy').setup({
     'iamcco/markdown-preview.nvim',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
     ft = { 'markdown' },
-    build = function() vim.fn['mkdp#util#install']() end,
+    build = function()
+      vim.fn['mkdp#util#install']()
+    end,
   },
 
   { -- Hex color highlighting
@@ -184,62 +189,16 @@ require('lazy').setup({
   { -- Per project file shortcuts
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
-    dependencies = { 'nvim-lua/plenary.nvim' }
+    dependencies = { 'nvim-lua/plenary.nvim' },
   },
 
   { -- Ergonomic window movements
     'sindrets/winshift.nvim',
     opts = {
-      keymaps = { disable_defaults = true }
+      keymaps = { disable_defaults = true },
     },
-    -- { -- A port of the Better Comments extension for VS Code to Neovim
-    --   'TomJo2000/better-comments.nvim',
-    --   opts = {
-    --     tags = {
-    --       { -- ** Highlight
-    --         name = '**', fg = '#0AA342', bg = '', bold = false, --[[ italic = false, underline = false, strikethrough = false ]] },
-    --       { -- ?? Informational
-    --         name = '??', fg = '#0759B6', bg = '', bold = false, --[[ italic = false, underline = false, strikethrough = false ]] },
-    --       { -- >< Ancillary
-    --         name = '><', fg = '#0C8167', bg = '', bold = false, --[[ italic = true, underline = false, strikethrough = false ]] },
-    --       { -- !! Important
-    --         name = '!!', fg = '#DF0D0B', bg = '', bold = false, --[[ italic = false, underline = false, strikethrough = false ]] },
-    --       { -- ~~ Invalidated
-    --         name = '~~', fg = '#4F4D4B', bg = '', bold = true, --[[ italic = true, underline = false, strikethrough = true ]] },
-    --       { -- <> Top Level blocks
-    --         name = '<>', fg = '#0759B6', bg = '', bold = true, --[[ italic = true, underline = false, strikethrough = false ]] },
-    --       { -- |> nested blocks
-    --         name = '|>', fg = '#B84FE0', bg = '', bold = true, --[[ italic = false, underline = false, strikethrough = false ]] },
-    --       { -- (TODO) Todo comments
-    --         name = '(TODO)', fg = '#EDBA04', bg = '', bold = false, --[[ italic = true, underline = false, strikethrough = false ]] },
-    --       { -- (WIP) Work in Progress comments
-    --         name = '(WIP)', fg = '#F36D11', bg = '', bold = false, --[[ italic = true, underline = false, strikethrough = false ]] },
-    --       { -- (ACK) Code contribution acknowledgements
-    --         name = '(ACK)', fg = '#B7208F', bg = '', bold = false, --[[ italic = false, underline = false, strikethrough = false ]] },
-    --       { -- (RegEx) additional explanations for Regular Expressions
-    --         name = '(RegEx)', fg = '#06C2F7', bg = '', bold = false, --[[ italic = false, underline = true, strikethrough = false ]] },
-    --     },
-    --     config = function(_, opts)
-    --       require('better-comments').Setup(opts)
-    --     end
-    --   },
-    -- },
   },
 
   -- Tree-sitter based bracket pair highlighting
   { 'HiPhish/rainbow-delimiters.nvim' },
-
-  -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
-  --       These are some example plugins that I've included in the kickstart repository.
-  --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
-
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
-  --    up-to-date with whatever is in the kickstart repo.
-  --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --
-  --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
 }, {})

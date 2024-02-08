@@ -27,7 +27,7 @@ local function capture(cmd, fmt)
 end
 
 local git_root = capture('git -C ' .. os.getenv('PWD') .. ' rev-parse --show-toplevel')
-         or capture('git -C ' .. os.getenv('DOTFILES') .. ' rev-parse --show-toplevel')
+        or capture('git -C ' .. os.getenv('DOT_FILES') .. ' rev-parse --show-toplevel')
 
 print(
   capture({ [[scc ]]
