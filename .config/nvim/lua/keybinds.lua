@@ -7,7 +7,7 @@ vim.keymap.set('n', '<M-Up>', 'ddkP', { desc = 'Swap line up' })
 vim.keymap.set('n', '<M-C-Down>', 'yyp', { desc = 'Copy line below' })
 vim.keymap.set('n', '<M-C-Up>', 'yyP', { desc = 'Copy line above' })
 vim.keymap.set('v', '<M-Down>', 'yjp', { desc = 'Copy selection below' })
-vim.keymap.set('v', '<M-Up>', 'yyp', { desc = 'Copy selection above' })
+vim.keymap.set('v', '<M-Up>', 'ykp', { desc = 'Copy selection above' })
 
 -- Moving windows more better
 vim.keymap.set('n', '<C-w><C-w>', '<Cmd>WinShift swap<CR>', { desc = 'Swap [w]indow' })
@@ -30,7 +30,11 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnos
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
--- Line numbers
+-- Miscellaneous
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
+
+--[[ Line numbers ]]
 vim.keymap.set({ 'n', 'v' }, '<leader>ll', function()
   local state = vim.o.number
   vim.o.number = not state
@@ -59,15 +63,11 @@ end, {
   desc = 'toggle [h]ybrid line numbers'
 })
 
--- Miscellaneous
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
-vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = '[S]ave' })
-
--- [[ Telescope bindings ]]
+--[[ Telescope bindings ]]
 ---@source ./config/telescope/init.lua
 require('config.telescope.binds')
 
--- [[ LSP bindings ]]
+--[[ LSP bindings ]]
   ---@alias mode
   ---|"'n'" # normal mode
   ---|"'i'" # insert mode
@@ -108,30 +108,23 @@ require('config.telescope.binds')
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
 
--- [[ Mini.map bindings ]]
+--[[ Mini.map bindings ]]
 local MiniMap = require('mini.map')
-vim.keymap.set('n', '<Leader>mm', MiniMap.toggle, { desc = '[M]ini.[m]ap toggle' })
-vim.keymap.set('n', '<Leader>mo', MiniMap.open, { desc = '[M]ini.map [o]pen' })
-vim.keymap.set('n', '<Leader>mc', MiniMap.close, { desc = '[M]ini.map [c]lose' })
+vim.keymap.set('n', '<Leader>mm', MiniMap.toggle , { desc = '[M]ini.[m]ap toggle'  })
+vim.keymap.set('n', '<Leader>mo', MiniMap.open   , { desc = '[M]ini.map [o]pen'    })
+vim.keymap.set('n', '<Leader>mc', MiniMap.close  , { desc = '[M]ini.map [c]lose' })
 vim.keymap.set('n', '<Leader>mr', MiniMap.refresh, { desc = '[M]ini.map [r]efresh' })
 MiniMap.open()
 
--- [[ Hydra bindings ]]
+--[[ (TODO) Splitjoin bindings ]]
+-- gS -> Split
+-- gJ -> Join
+
+--[[ Hydra bindings ]]
 ---@source ./config/hydra/init.lua
 require('config.hydra')
 
--- [[ which-key ]]
--- document existing key chains
-require('which-key').register {
-  ['<leader>c']  = { name = '[C]ode', _ = 'which_key_ignore' },
-  ['<leader>d']  = { name = '[D]ocument', _ = 'which_key_ignore' },
-  ['<leader>g']  = { name = '[G]it', _ = 'which_key_ignore' },
-  ['<leader>gh'] = { name = '[G]it [h]unks', _ = 'which_key_ignore' },
-  ['<leader>r']  = { name = '[R]eplace', _ = 'which_key_ignore' },
-  ['<leader>s']  = { name = '[S]earch', _ = 'which_key_ignore' },
-  ['<leader>w']  = { name = '[W]orkspace', _ = 'which_key_ignore' },
-  -- my key chains
-  ['<leader>l']  = { name = '[L]ine numbers', _ = 'which_key_ignore' },
-  ['<leader>m']  = { name = '[M]ini.map', _ = 'which_key_ignore' },
-}
+--[[ which-key ]]
+---@source ./config/hydra/init.lua
+require('config.which_key')
 

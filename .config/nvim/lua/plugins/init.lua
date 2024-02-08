@@ -1,4 +1,4 @@
--- [[ Bootstrap `lazy.nvim` plugin manager ]]
+--[[ Bootstrap `lazy.nvim` plugin manager ]]
 ---@see Lazy.nvim https://github.com/folke/lazy.nvim
 -- `:help lazy.nvim.txt` for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -15,7 +15,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-
+  -- A fully customizable start screen
+  require('plugins.alpha_nvim'),
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -29,15 +30,11 @@ require('lazy').setup({
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
 
-  { -- Useful plugin to show you pending keybinds.
-    'folke/which-key.nvim',
-    opts = {}
-  },
+  -- Useful plugin to show you pending keybinds.
+  { 'folke/which-key.nvim' },
 
-  { -- Repeatable prefixed bindings
-    'anuvyklack/hydra.nvim',
-    lazy = true,
-  },
+  -- Repeatable prefixed bindings
+  { 'anuvyklack/hydra.nvim', lazy = true, },
 
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -83,58 +80,14 @@ require('lazy').setup({
     opts = {}
   },
 
-  { -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
-    priority = 1000,
-    -- Main options --
-    ---@source ./config/colorscheme.lua
-    opts = require('config.colorscheme'),
-    config = function(_, opts)
-      require('onedark').setup(opts)
-      vim.cmd.colorscheme 'onedark'
-    end
-  },
+  require('plugins.onedark')  ,
 
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = { -- See `:help gitsigns.txt`
-        add          = { text = '' },
-        change       = { text = '⦿' },
-        delete       = { text = '' },
-        topdelete    = { text = '' },
-        changedelete = { text = '⦿' },
-      },
-      on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>ghp', require('gitsigns').preview_hunk,
-          { buffer = bufnr, desc = 'Preview git hunk' })
+  require('plugins.gitsigns'),
 
-        -- don't override the built-in and fugitive keymaps
-        local gs = package.loaded.gitsigns
+  -- Split or join oneliners to multiline statements and vise versa
+  { 'AndrewRadev/splitjoin.vim' },
 
-        vim.keymap.set({ 'n', 'v' }, ']c', function()
-          if vim.wo.diff then
-            return ']c'
-          end
-          vim.schedule(function()
-            gs.next_hunk()
-          end)
-          return '<Ignore>'
-        end, { expr = true, buffer = bufnr, desc = 'Jump to next hunk' })
-
-        vim.keymap.set({ 'n', 'v' }, '[c', function()
-          if vim.wo.diff then
-            return '[c'
-          end
-          vim.schedule(function()
-            gs.prev_hunk()
-          end)
-          return '<Ignore>'
-        end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
-      end,
-    },
-  },
-
+  --(TODO): https://dotfyle.com/plugins/HakonHarnes/img-clip.nvim
 
   { -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
