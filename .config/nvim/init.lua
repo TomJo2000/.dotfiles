@@ -16,39 +16,51 @@ Based on Kickstarter.nvim
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Config layout
---[[ ${XDG_CONFIG_HOME}/nvim
-     ├── doc
-     │   └── tags
-     ├── init.lua
-     ├── lazy-lock.json
-     └── lua
-         ├── config
-         │   ├── cmp.lua
-         │   ├── colorscheme.lua
-         │   ├── feline.lua
-         │   ├── git.lua
-         │   ├── hydra
-         │   │   ├── git_hydra.lua
-         │   │   ├── init.lua
-         │   │   ├── resize_split.lua
-         │   │   └── side_scroll.lua
-         │   ├── lsp
-         │   │   ├── bashls.lua
-         │   │   ├── gopls.lua
-         │   │   ├── init.lua
-         │   │   └── lua_ls.lua
-         │   └── treesitter.lua
-         ├── keybinds.lua
-         ├── kickstart
-         │   └── plugins
-         │       ├── autoformat.lua
-         │       └── debug.lua
-         ├── options.lua
-         ├── plugins.lua
-         └── posthoc.lua
+--[[ Config layout
 
-8 directories, 22 files
+${XDG_CONFIG_HOME}/nvim
+├── lua
+│   ├── config
+│   │   ├── hydra
+│   │   │   ├── git_hydra.lua
+│   │   │   ├── init.lua
+│   │   │   ├── replace.lua
+│   │   │   ├── resize_split.lua
+│   │   │   └── side_scroll.lua
+│   │   ├── lsp
+│   │   │   ├── bashls.lua
+│   │   │   ├── init.lua
+│   │   │   └── lua_ls.lua
+│   │   ├── telescope
+│   │   │   ├── binds.lua
+│   │   │   ├── delta.lua
+│   │   │   └── init.lua
+│   │   ├── cmp.lua
+│   │   ├── delims.lua
+│   │   ├── feline.lua
+│   │   ├── git.lua
+│   │   ├── mini_map.lua
+│   │   ├── treesitter.lua
+│   │   └── which_key.lua
+│   ├── kickstart
+│   │   ├── autoformat.lua
+│   │   └── debug.lua
+│   ├── plugins
+│   │   ├── alpha_nvim.lua
+│   │   ├── formatter.lua
+│   │   ├── gitsigns.lua
+│   │   ├── init.lua
+│   │   └── onedark.lua
+│   ├── utils
+│   │   ├── capture.lua
+│   │   └── init.lua
+│   ├── keybinds.lua
+│   ├── options.lua
+│   └── posthoc.lua
+├── init.lua
+└── lazy-lock.json
+
+9 directories, 32 files
 ]]
 
 -- [[ Setting options ]]
