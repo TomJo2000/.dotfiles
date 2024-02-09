@@ -18,6 +18,22 @@ require('config.treesitter')
 -- [[ Delimiter colorization ]]
 vim.g.rainbow_delimiters = require('config.delims')
 
+-- [[ Comments ]]
+vim.g.skip_ts_context_commentstring_module = true
+require('ts_context_commentstring').setup({ enable_autocmd = false })
+-- stylua: ignore
+require('Comment').setup({
+  padding   = true,
+  sticky    = true,
+  mappings  = { basic = true, extra = true },
+  toggler   = { line  = '<leader>cc', block = '<leader>bb' },
+  opleader  = { line  = '<leader>c' , block = '<leader>b'  },
+  extra     = { above = '<leader>cO', below = '<leader>co'  , eol = '<leader>cA' },
+  pre_hook  = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+  post_hook = nil,
+  ignore    = nil,
+})
+
 -- [[ Configure LSPs ]]
 -- This function gets run when an LSP connects to a particular buffer.
 -- local on_attach = function(_, bufnr) end

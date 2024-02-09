@@ -106,21 +106,9 @@ require('lazy').setup({
     },
   },
 
-  { -- bulk comments
-    'numToStr/Comment.nvim',
-    -- stylua: ignore
-    opts = {
-      padding   = true,
-      sticky    = true,
-      mappings  = { basic = true, extra = true },
-      toggler   = { line  = '<leader>cc', block = '<leader>bb' },
-      opleader  = { line  = '<leader>c' , block = '<leader>b'  },
-      extra     = { above = '<leader>cO', below = '<leader>co'  , eol = '<leader>cA' },
-      pre_hook  = nil,
-      post_hook = nil,
-      ignore    = nil,
-    },
-    -- lazy =false
+  { -- set the commentstring based on the treesitter context
+    'JoosepAlviste/nvim-ts-context-commentstring',
+    dependencies = { 'numToStr/Comment.nvim' }, -- bulk comments
   },
 
   { -- Fuzzy Finder (files, lsp, etc)
