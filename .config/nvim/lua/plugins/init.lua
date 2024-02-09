@@ -62,6 +62,8 @@ require('lazy').setup({
       { 'j-hui/fidget.nvim', opts = {} },
       -- function signatures for nvim's Lua API
       'folke/neodev.nvim',
+      -- icons for LSP suggestions
+      'onsails/lspkind.nvim',
     },
   },
 

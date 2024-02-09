@@ -2,6 +2,7 @@ local MiniMap = require('mini.map')
 MiniMap.setup()
 
 return {
+  -- stylua: ignore
   integrations = {
     MiniMap.gen_integration.builtin_search(),
     MiniMap.gen_integration.diagnostic({
@@ -23,9 +24,8 @@ return {
   },
   window = {
     side = 'right',
-    width = math.floor(require('config.info').width() / 9),
+    width = math.floor(vim.o.columns / 9),
     winblend = 70, -- This looks about right to me
     show_integration_count = true,
   },
 }
-
