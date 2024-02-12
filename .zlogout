@@ -12,8 +12,6 @@
 # (ACK) acknowledgment
 # (RegEx) additional explanations for RegEx
 
-kill "${SSH_AGENT_PID}" # clean up dangling `ssh-agent`'s on logout
-
 # <> Loading order for Zsh startup files.
 # +----------------+-----------+-----------+------+ +----------------------------+
 # |                |Interactive|Interactive|Script| |                            |

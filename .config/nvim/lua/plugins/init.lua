@@ -191,4 +191,15 @@ require('lazy').setup({
 
   -- Tree-sitter based bracket pair highlighting
   { 'HiPhish/rainbow-delimiters.nvim' },
+
+  { -- Discord Rich Presence
+    'andweeb/presence.nvim',
+    cond = function()
+      return vim.fn.executable('discord') == 1
+    end,
+    opts = require('plugins.presence'),
+    config = function(opts)
+      require('presence').setup(opts)
+    end,
+  },
 }, {})

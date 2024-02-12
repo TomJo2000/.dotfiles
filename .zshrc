@@ -41,7 +41,7 @@ declare -gA plugins=( # ?? List plugins you wish to use by repo URL
                [shell_pad]="${zsh_script_dir}/shell_pad/shell_pad.zsh"      # local
                   [synker]="${zsh_script_dir}/synker/synker.sh"             # local
                   [typeof]="${zsh_script_dir}/typeof/typeof.sh"             # local
-                  [f-sy-h]='https://github.com/z-shell/F-Sy-H.git'
+                  [F-Sy-H]='https://github.com/z-shell/F-Sy-H.git'
      [zsh-autosuggestions]='https://github.com/zsh-users/zsh-autosuggestions.git'
          [zsh-completions]='https://github.com/zsh-users/zsh-completions.git'
 )
@@ -509,12 +509,12 @@ source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" 2>> /dev/nu
 
 
 # <> Fast-syntax-highlighting customization
-timing[f-sy-h]="-$EPOCHREALTIME"
+timing[F-Sy-H]="-$EPOCHREALTIME"
 
 # only source it if we haven't already
 # shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
-(( ${#FAST_HIGHLIGHT} )) || source "$zsh_script_dir/f-sy-h/F-Sy-H.plugin.zsh"
-(( timing[f-sy-h] += EPOCHREALTIME ))
+(( ${#FAST_HIGHLIGHT} )) || source "$zsh_script_dir/F-Sy-H/F-Sy-H.plugin.zsh"
+(( timing[F-Sy-H] += EPOCHREALTIME ))
 
 # only set KSH_ARRAYS after loading plugins to avoid jank
 setopt KSH_ARRAYS # Make Arrays start at index 0 # !! breaks unpatched zsh-autosuggestions and z-sy-h
@@ -704,7 +704,7 @@ declare -a timing_order=( # ** Order of timing nodes
     'source'
     'completions'
     'suggestions'
-    'f-sy-h'
+    'F-Sy-H'
   'promises'
 )
 
@@ -731,7 +731,7 @@ declare -A timing_line=( # ** helper assoc with the same keys as ${timing[@]} co
            [source]="${col[fg_dark_blue]}${nbsp}└╴${col[reset]}Sourcing Plugins"
       [completions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Completions"
       [suggestions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}History based autosuggestions"
-           [f-sy-h]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Setting up syntax highlighting"
+           [F-Sy-H]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Setting up syntax highlighting"
          [promises]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}└╴${col[reset]}Resolving outstanding promises"
 )
 
