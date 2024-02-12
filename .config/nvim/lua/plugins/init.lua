@@ -34,6 +34,7 @@ require('lazy').setup({
     --- @see documentation at https://github.com/sindrets/diffview.nvim
     'sindrets/diffview.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
+    lazy = true,
   },
 
   { -- More customizable formatters.
@@ -46,24 +47,31 @@ require('lazy').setup({
 
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
+    -- stylua: ignore
     dependencies = {
-      { -- symbol navigation
-        'SmiteshP/nvim-navbuddy',
-        opts = { lsp = { auto_attach = true } },
+      { -- LSP context breadcrumbs
+        'SmiteshP/nvim-navic',
+        event = 'LspAttach',
+        opts = require('config.breadcrumbs'),
         dependencies = {
-          'SmiteshP/nvim-navic',
-          'MunifTanjim/nui.nvim',
+          'nvim-tree/nvim-web-devicons', -- NerdFont icons
+          { -- Breadcrumb menu
+            'SmiteshP/nvim-navbuddy',
+            dependencies = 'MunifTanjim/nui.nvim'
+          },
         },
+        lazy = true,
       },
-      -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true },
-      'williamboman/mason-lspconfig.nvim',
-      -- Useful status updates for LSP
-      { 'j-hui/fidget.nvim', opts = {} },
-      -- function signatures for nvim's Lua API
-      'folke/neodev.nvim',
-      -- icons for LSP suggestions
-      'onsails/lspkind.nvim',
+      { -- Automatically install LSPs to stdpath for Neovim
+        'williamboman/mason.nvim',
+        dependencies = {
+          'williamboman/mason-lspconfig.nvim', -- Mason/lspconfig interop
+        },
+        config = true,
+      },
+      'j-hui/fidget.nvim',    -- Useful status updates for LSP
+      'folke/neodev.nvim',    -- function signatures for nvim's Lua API
+      'onsails/lspkind.nvim', -- icons for LSP suggestions
     },
   },
 
@@ -80,30 +88,40 @@ require('lazy').setup({
       'hrsh7th/cmp-path',             -- File path completion
       'rafamadriz/friendly-snippets', -- Adds a number of user-friendly snippets
     },
+    lazy = true,
   },
 
   { -- There are way to many statusline plugins, we're using this one.
     'freddiehaddad/feline.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = {},
   },
 
-  require('plugins.onedark'),
+  { -- Theme inspired by Atom
+    'navarasu/onedark.nvim',
+    priority = 1000,
+    opts = require('plugins.onedark'),
+    config = function(_, opts)
+      require('onedark').setup(opts)
+      vim.cmd.colorscheme('onedark')
+    end,
+  },
 
-  require('plugins.gitsigns'),
+  { -- Git diffs in the status column
+    'lewis6991/gitsigns.nvim',
+    opts = require('plugins.gitsigns'),
+  },
 
   --(TODO): https://dotfyle.com/plugins/HakonHarnes/img-clip.nvim
 
   { -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help ibl`
-    main = 'ibl',
-    opts = {
-      -- indent = { char = '|' },
-      -- whitespace = {
-      --   highlight = { 'Function', 'Label' },
-      -- },
+    dependencies = { -- Tree-sitter based bracket pair highlighting
+      'HiPhish/rainbow-delimiters.nvim',
     },
+    main = 'ibl',
+    config = require('config.indents'),
+    lazy = true,
   },
 
   { -- set the commentstring based on the treesitter context
@@ -130,6 +148,7 @@ require('lazy').setup({
         ---@source config = require('config.telescope')
       },
     },
+    lazy = true,
   },
 
   { -- Highlight, edit, and navigate code
@@ -143,10 +162,27 @@ require('lazy').setup({
   { -- Markdown preview in the browser synced to nvim
     'iamcco/markdown-preview.nvim',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-    ft = { 'markdown' },
+    ft = { 'markdown', 'html' },
     build = function()
       vim.fn['mkdp#util#install']()
     end,
+    lazy = true,
+  },
+
+  { -- A reminder for when your lines are getting too long
+    'm4xshen/smartcolumn.nvim',
+    -- stylua: ignore
+    opts = {
+      disabled_filetypes = {
+        'help', 'text', 'markdown', 'lazy',
+        'mason', 'lspinfo', 'checkhealth',
+      },
+      custom_colorcolumn = {
+        lua = 160,
+        sh  = 120,
+        zsh = 120,
+      },
+    },
   },
 
   { -- Hex color highlighting
@@ -180,26 +216,26 @@ require('lazy').setup({
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
     dependencies = { 'nvim-lua/plenary.nvim' },
+    lazy = true,
   },
 
   { -- Ergonomic window movements
     'sindrets/winshift.nvim',
-    opts = {
+    cmd = 'WinShift',
+    opts = { -- This can't be lazy since I use it for a keymap
       keymaps = { disable_defaults = true },
     },
   },
 
-  -- Tree-sitter based bracket pair highlighting
-  { 'HiPhish/rainbow-delimiters.nvim' },
-
   { -- Discord Rich Presence
     'andweeb/presence.nvim',
-    cond = function()
+    cond = function() -- Only load this plugin if Discord is installed.
       return vim.fn.executable('discord') == 1
     end,
     opts = require('plugins.presence'),
     config = function(opts)
       require('presence').setup(opts)
     end,
+    lazy = true,
   },
-}, {})
+}, require('config.lazy'))
