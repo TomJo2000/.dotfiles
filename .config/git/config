@@ -3,14 +3,18 @@
 
 [core]
 pager = delta
+fsmonitor = true
 
 [user]
      email = tomjo00@web.de
       name = TomIO
-signingkey = ~/.ssh/keys/external/rsa-4096_GitHub.pub
+signingkey = ~/.ssh/keys/external/ed25519_GitHub.pub
 
 [init]
 defaultBranch = main
+
+[fetch]
+writeCommitGraph = true
 
 [gpg]
 format = ssh
