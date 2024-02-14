@@ -51,8 +51,6 @@ require('lazy').setup({
     dependencies = {
       { -- LSP context breadcrumbs
         'SmiteshP/nvim-navic',
-        event = 'LspAttach',
-        opts = require('config.breadcrumbs'),
         dependencies = {
           'nvim-tree/nvim-web-devicons', -- NerdFont icons
           { -- Breadcrumb menu
@@ -60,7 +58,8 @@ require('lazy').setup({
             dependencies = 'MunifTanjim/nui.nvim'
           },
         },
-        lazy = true,
+        opts = require('config.breadcrumbs'),
+        event = 'LspAttach',
       },
       { -- Automatically install LSPs to stdpath for Neovim
         'williamboman/mason.nvim',
@@ -121,7 +120,7 @@ require('lazy').setup({
     },
     main = 'ibl',
     config = require('config.indents'),
-    lazy = true,
+    event = 'BufEnter'
   },
 
   { -- set the commentstring based on the treesitter context

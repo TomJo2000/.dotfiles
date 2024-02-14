@@ -65,11 +65,12 @@ mason_lspconfig.setup({
 
 mason_lspconfig.setup_handlers({
   function(server_name)
+    -- stylua: ignore
     require('lspconfig')[server_name].setup({
       capabilities = capabilities,
-      --    on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
+      settings     = servers[server_name].settings,
+      on_attach    = servers[server_name].on_attach,
+      filetypes    = (servers[server_name] or {}).filetypes,
     })
   end,
 })

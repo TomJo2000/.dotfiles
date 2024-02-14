@@ -1,6 +1,6 @@
----@return Lua_ls_config
----@enum Lua_ls_config
-return {
+local M = {}
+
+M.settings = {
   Lua = {
     completion = {
       displayContext = 5,
@@ -20,10 +20,10 @@ return {
     workspace = {
       checkThirdParty = false,
       library = {
-        vim.env.VIMRUNTIME
+        vim.env.VIMRUNTIME,
         -- "${3rd}/luv/library"
         -- "${3rd}/busted/library",
-      }
+      },
       ---@see NOTE: toggle below to ignore Lua_LS's noisy `missing-fields` warnings
       ---@see diagnostics = { disable = { 'missing-fields' } },
       -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
@@ -31,3 +31,11 @@ return {
     },
   },
 }
+
+M.on_attach = function(client, bufnr)
+  if client.server_capabilities.documentSymbolProvider then
+    require('nvim-navic').attach(client, bufnr)
+  end
+end
+
+return M

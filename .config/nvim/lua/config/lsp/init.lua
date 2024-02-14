@@ -1,4 +1,3 @@
----@return table LSPs
 return {
   ---@source ./lua_ls.lua
   lua_ls = require('config.lsp.lua_ls'),
