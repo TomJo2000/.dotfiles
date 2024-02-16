@@ -17,6 +17,10 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- A fully customizable start screen
   require('plugins.alpha_nvim'),
+
+  -- Session persistence and management
+  { 'folke/persistence.nvim', lazy = true },
+
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -24,8 +28,16 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
-  -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim' },
+  { -- Useful plugin to show you pending keybinds.
+    'folke/which-key.nvim',
+    event = 'VeryLazy',
+    disable = {
+      buftypes = {
+        'terminal', 'lspinfo', 'checkhealth',
+        'help', 'lazy', 'mason',
+      },
+    },
+  },
 
   -- Repeatable prefixed bindings
   { 'anuvyklack/hydra.nvim', lazy = true },
@@ -120,7 +132,7 @@ require('lazy').setup({
     },
     main = 'ibl',
     config = require('config.indents'),
-    event = 'BufEnter'
+    event = 'BufEnter',
   },
 
   { -- set the commentstring based on the treesitter context

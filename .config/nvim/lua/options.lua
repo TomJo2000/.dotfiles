@@ -1,7 +1,7 @@
 -- Whitespace symbols
 vim.opt.listchars = {
   space = '∙',
-  tab = '░ ',
+  tab = '› ',
   trail = '◦',
   extends = '»',
   precedes = '«',

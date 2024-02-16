@@ -1,15 +1,16 @@
 return {
+  numhl = true,
+  attach_to_untracked = true,
   -- stylua: ignore
-  signs = { -- See `:help gitsigns.txt`
+  signs = {
     add          = { text = '' },
     change       = { text = '⦿' },
     delete       = { text = '' },
     topdelete    = { text = '' },
     changedelete = { text = '⦿' },
+    untracked    = { text = '┇' },
   },
   on_attach = function(bufnr)
-    vim.keymap.set('n', '<leader>ghp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
-
     -- don't override the built-in and fugitive keymaps
     local gs = package.loaded.gitsigns
 
@@ -32,5 +33,8 @@ return {
       end)
       return '<Ignore>'
     end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
+
+    vim.keymap.set('n', '<leader>ghp', gs.preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
+    -- vim.keymap.set('n', '<leader>ghp', gs.preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
   end,
 }
