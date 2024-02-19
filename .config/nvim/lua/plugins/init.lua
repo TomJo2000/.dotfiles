@@ -32,6 +32,7 @@ require('lazy').setup({
     'folke/which-key.nvim',
     event = 'VeryLazy',
     disable = {
+      -- stylua: ignore
       buftypes = {
         'terminal', 'lspinfo', 'checkhealth',
         'help', 'lazy', 'mason',
@@ -110,10 +111,9 @@ require('lazy').setup({
 
   { -- Theme inspired by Atom
     'navarasu/onedark.nvim',
-    priority = 1000,
-    opts = require('plugins.onedark'),
-    config = function(_, opts)
-      require('onedark').setup(opts)
+    priority = 1000, -- make sure the colorscheme is loaded immediately
+    config = function()
+      require('onedark').setup(require('plugins.onedark'))
       vim.cmd.colorscheme('onedark')
     end,
   },
@@ -127,9 +127,8 @@ require('lazy').setup({
 
   { -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
-    dependencies = { -- Tree-sitter based bracket pair highlighting
-      'HiPhish/rainbow-delimiters.nvim',
-    },
+    -- Tree-sitter based bracket pair highlighting
+    dependencies = { 'HiPhish/rainbow-delimiters.nvim' },
     main = 'ibl',
     config = require('config.indents'),
     event = 'BufEnter',
@@ -193,8 +192,8 @@ require('lazy').setup({
     -- stylua: ignore
     opts = {
       disabled_filetypes = {
-        'help', 'text', 'markdown', 'lazy',
-        'mason', 'lspinfo', 'checkhealth',
+        'text', 'markdown', 'html', 'lspinfo',
+        'mason', 'help', 'lazy', 'checkhealth',
       },
       custom_colorcolumn = {
         lua = 160,
