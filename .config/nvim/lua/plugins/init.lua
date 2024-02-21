@@ -225,9 +225,14 @@ require('lazy').setup({
     config = function()
       require('mini.map').setup(
         ---@source ./config/mini.map.lua
-        require('config.mini_map')
+        require('config.mini.map')
       )
     end,
+  },
+
+  { -- Add, delete, replace, find, highlight surrounding characters
+    'echasnovski/mini.surround',
+    config = require('config.mini.surround')
   },
 
   { -- Per project file shortcuts
