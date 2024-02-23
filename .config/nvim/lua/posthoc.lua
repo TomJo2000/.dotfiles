@@ -46,6 +46,9 @@ require('mason-lspconfig').setup()
 -- Enable LSPs
 ---| Lua_ls
 ---| Bashls
+---| Taplo (TOML)
+---| Cspell (Spellchecker)
+---| editorconfig-checker
 ---@source ./config/lsp/init.lua
 local servers = require('config.lsp')
 
@@ -64,14 +67,9 @@ mason_lspconfig.setup({
 })
 
 mason_lspconfig.setup_handlers({
+  ---@param server_name string
   function(server_name)
-    -- stylua: ignore
-    require('lspconfig')[server_name].setup({
-      capabilities = capabilities,
-      settings     = servers[server_name].settings,
-      on_attach    = servers[server_name].on_attach,
-      filetypes    = (servers[server_name] or {}).filetypes,
-    })
+    require('lspconfig')[server_name].setup(require('config.lsp')[server_name])
   end,
 })
 

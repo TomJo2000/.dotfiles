@@ -47,346 +47,347 @@ add_newline = false # disable multiline prompt
 palette = "24Bit" # !! This feature depends on `starship` >= v1.11.0
 
 [palettes.24Bit] # Regluar Color palette
-  col_text_inv="#050307" # -- Text inverse
- col_attention="#DF0D0B" # -- Error/Attention
-   col_success="#0AA342" # -- Success/Time
-      col_info="#EDBA04" # -- Informational
-      col_user="#0759B6" # -- User/Hostname bg
-   col_special="#B7208F" # -- /tmp directory and Termux Prefix
-     col_shell="#06C2F7" # -- Shell
-col_text_light="#B0B2B4" # -- Text light
- col_text_dark="#4F4D4B" # -- bg dark
-     col_abort="#F36D11" # -- Abort/Interrupt
-      col_cont="#B84FE0" # -- Continuation Prompt
-      col_text="#FBF6FD" # -- Text color general
+    col_text_inv = "#050307" # -- Text inverse
+   col_attention = "#DF0D0B" # -- Error/Attention
+     col_success = "#0AA342" # -- Success/Time
+        col_info = "#EDBA04" # -- Informational
+        col_user = "#0759B6" # -- User/Hostname bg
+     col_special = "#B7208F" # -- /tmp directory and Termux Prefix
+       col_shell = "#06C2F7" # -- Shell
+  col_text_light = "#B0B2B4" # -- Text light
+   col_text_dark = "#4F4D4B" # -- bg dark
+       col_abort = "#F36D11" # -- Abort/Interrupt
+        col_cont = "#B84FE0" # -- Continuation Prompt
+        col_text = "#FBF6FD" # -- Text color general
 
 [palettes.root] # Color palette for <root> user
-  col_text_inv="#050307" # -- Text inverse
- col_attention="#DF0D0B" # -- Error/Attention
-   col_success="#64B141" # -- Success/Time
-      col_info="#EDBA04" # -- Informational
-      col_user="#E03C31" # -- User/Hostname bg
-   col_special="#B7208F" # -- /tmp directory and Termux Prefix
-     col_shell="#06C2F7" # -- Shell
-col_text_light="#B0B2B4" # -- Text light
- col_text_dark="#4F4D4B" # -- bg dark
-     col_abort="#F36D11" # -- Abort/Interrupt
-      col_cont="#B84FE0" # -- Continuation Prompt
-      col_text="#FBF6FD" # -- Text color general
+    col_text_inv = "#050307" # -- Text inverse
+   col_attention = "#DF0D0B" # -- Error/Attention
+     col_success = "#64B141" # -- Success/Time
+        col_info = "#EDBA04" # -- Informational
+        col_user = "#E03C31" # -- User/Hostname bg
+     col_special = "#B7208F" # -- /tmp directory and Termux Prefix
+       col_shell = "#06C2F7" # -- Shell
+  col_text_light = "#B0B2B4" # -- Text light
+   col_text_dark = "#4F4D4B" # -- bg dark
+       col_abort = "#F36D11" # -- Abort/Interrupt
+        col_cont = "#B84FE0" # -- Continuation Prompt
+        col_text = "#FBF6FD" # -- Text color general
 
 # [battery] # Battery Charge state (This breaks the Termux version of starship)
-# charging_symbol = ""
-# discharging_symbol = ""
-# format = "[$symbol$percentage]($style)"
+#   charging_symbol = ""
+#   discharging_symbol = ""
+#   format = "[$symbol$percentage]($style)"
 #
 # [[battery.display]]
-# threshold = 10 # %
-# charging_symbol = ""
-# discharging_symbol = "󰁺"
-# style = "fg:col_attention bg:col_text_dark"
+#   threshold = 10 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰁺"
+#   style = "fg:col_attention bg:col_text_dark"
 #
 # [[battery.display]]
-# threshold = 20 # %
-# charging_symbol = ""
-# discharging_symbol = "󰁻"
-# style = "fg:col_attention bg:col_text_dark"
+#   threshold = 20 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰁻"
+#   style = "fg:col_attention bg:col_text_dark"
 #
 # [[battery.display]]
-# threshold = 30 # %
-# charging_symbol = ""
-# discharging_symbol = "󰁼"
-# style = "fg:col_abort bg:col_text_dark"
+#   threshold = 30 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰁼"
+#   style = "fg:col_abort bg:col_text_dark"
 #
 # [[battery.display]]
-# threshold = 40 # %
-# charging_symbol = ""
-# discharging_symbol = "󰁽"
-# style = "fg:col_abort bg:col_text_dark"
+#   threshold = 40 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰁽"
+#   style = "fg:col_abort bg:col_text_dark"
 #
 # [[battery.display]]
-# threshold = 50 # %
-# charging_symbol = ""
-# discharging_symbol = "󰁾"
-# style = "fg:col_info bg:col_text_dark"
+#   threshold = 50 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰁾"
+#   style = "fg:col_info bg:col_text_dark"
 #
 # [[battery.display]]
-# threshold = 60 # %
-# charging_symbol = ""
-# discharging_symbol = "󰁾"
-# style = "fg:col_info bg:col_text_dark"
+#   threshold = 60 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰁾"
+#   style = "fg:col_info bg:col_text_dark"
 #
 # [[battery.display]]
-# threshold = 70 # %
-# charging_symbol = ""
-# discharging_symbol = "󰁿"
-# style = "fg:col_info bg:col_text_dark"
+#   threshold = 70 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰁿"
+#   style = "fg:col_info bg:col_text_dark"
 #
 # [[battery.display]]
-# threshold = 80 # %
-# charging_symbol = ""
-# discharging_symbol = "󰂀"
-# style = "fg:col_success bg:col_text_dark"
+#   threshold = 80 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰂀"
+#   style = "fg:col_success bg:col_text_dark"
 #
 # [[battery.display]]
-# threshold = 90 # %
-# charging_symbol = ""
-# discharging_symbol = "󰂁"
-# style = "fg:col_success bg:col_text_dark"
+#   threshold = 90 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰂁"
+#   style = "fg:col_success bg:col_text_dark"
 #
 # [[battery.display]]
-# threshold = 99 # %
-# charging_symbol = ""
-# discharging_symbol = "󰁹"
-# style = "fg:col_success bg:col_text_dark"
+#   threshold = 99 # %
+#   charging_symbol = ""
+#   discharging_symbol = "󰁹"
+#   style = "fg:col_success bg:col_text_dark"
 
 [cmd_duration] # track runtime of a command
-disabled = false
-style = "fg:col_info bg:col_text_dark"
-min_time = 1
-show_milliseconds = true
-show_notifications = false
-min_time_to_notify = 45_000
-format = "[$duration]($style)"
+  disabled = false
+  style = "fg:col_info bg:col_text_dark"
+  min_time = 1
+  show_milliseconds = true
+  show_notifications = false
+  min_time_to_notify = 45_000
+  format = "[$duration]($style)"
 
 [custom.git_newline] # Add a newline if we are in a git repo.
-# disabled = true
-# shell = ["sh", "--posix", "--noprofile", "--norc", "--noediting"]
-# when = "git rev-parse --is-inside-work-tree 2> /dev/null"
-when = true
-require_repo = true # !! This feature depends on `starship` >= v1.14.0
-description = "Adds a newline if in a git repo."
-symbol = "\n"
-style = "fg:col_abort bg:col_success"
-format = "[$symbol]($style)"
+  # disabled = true
+  # shell = ["sh", "--posix", "--noprofile", "--norc", "--noediting"]
+  # when = "git rev-parse --is-inside-work-tree 2> /dev/null"
+  when = true
+  require_repo = true # !! This feature depends on `starship` >= v1.14.0
+  description = "Adds a newline if in a git repo."
+  symbol = "\n"
+  style = "fg:col_abort bg:col_success"
+  format = "[$symbol]($style)"
 
 [directory] # current directory
-style = "fg:col_attention bg:col_text_dark"
-read_only_style = "fg:col_attention bg:col_text_dark"
-repo_root_style = "fg:col_abort bg:col_text_dark"
-truncation_length = 255 # maximum path depth before truncation
-read_only = ""
-truncation_symbol = ""
-use_os_path_sep = true # '/' for Linux/MacOS or other UNIX based systems; '\' for Windows
-use_logical_path = true
-truncate_to_repo = false # change this if you prefer only showing the repo
-format = "([$read_only]($read_only_style))[$path]($style)"
-repo_root_format = "[$before_root_path](fg:col_text_light bg:col_text_dark)[$read_only]($read_only_style)[\n󰊢$repo_root]($repo_root_style)[$path](fg:col_text_light bg:col_text_dark)"
+  style = "fg:col_attention bg:col_text_dark"
+  read_only_style = "fg:col_attention bg:col_text_dark"
+  repo_root_style = "fg:col_abort bg:col_text_dark"
+  truncation_length = 255 # maximum path depth before truncation
+  read_only = ""
+  truncation_symbol = ""
+  use_os_path_sep = true # '/' for Linux/MacOS or other UNIX based systems; '\' for Windows
+  use_logical_path = true
+  truncate_to_repo = false # change this if you prefer only showing the repo
+  format = "([$read_only]($read_only_style))[$path]($style)"
+  repo_root_format = "[$before_root_path](fg:col_text_light bg:col_text_dark)[$read_only]($read_only_style)[\n󰊢$repo_root]($repo_root_style)[$path](fg:col_text_light bg:col_text_dark)"
 
 [directory.substitutions] # Differential coloring for certain directories
-# ANSI escape sequence rituals for
-# differential coloring of substituted directories.
-# ------Generic  forms------+--Esc-sequences--+
-# ESC[38;2;{r};{g};{b}m - fg|                 |
-# ESC[48;2;{r};{g};{b}m - bg|                 |
-# --HEX-- ->  R | G | B     |                 |
-# ------------bg------------|                 |
-# #4F4D4B ->  79; 77; 75 -> |48;2;79;77;75m   |
-# ------------fg------------|                 |
-# #B0B2B4 -> 176;178;180 -> |38;2;176;178;180m|
-# #06C2F7 ->   6;194;247 -> |38;2;6;194;247m  |
-# #DF0D0B -> 223; 13; 11 -> |38;2;223;13;11m  |
-# #F36D11 -> 243;109; 17 -> |38;2;243;109;17m |
-# #EDBA04 -> 237;186;  4 -> |38;2;237;186;4m  |
-# #0AA342 ->  10;163; 66 -> |38;2;10;163;66m  |
-# --------------------------+-----------------+
-# example substitution:
-# ** Full format: "/dir/example" = "<CSI><38;2;r;g;b>mSubstitution<CSI><38;2;r;g;b>m"
-# !! Substitute string has to be a basic string ("<str>") for Escape sequences to work↲
-#    "/dir/example", the directory to be substituted; "basic" or 'literal' string
-#    <CSI> = <U+001B><U+005B> = ␛[ - The Control Sequence Introducer starts a ANSI escape sequence
-#     ↳<U+009B> is a single character Control Sequence Introducer, however it is not universally supportted and does not work in Termux.
-#    <38;2;r;g;b> - Escape sequence for setting the foreground color in 24bit truecolor mode
-#    m - ends the graphics mode escape sequence
-#    <Substitution> - the actual text to be used as substitution
-# !! since this has to be a basic string any characters with special purposes like [ have to be escaped with a backslash \
-# ?? for more info see: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797#rgb-colors
+  # ANSI escape sequence rituals for
+  # differential coloring of substituted directories.
+  # ------Generic  forms------+--Esc-sequences--+
+  # ESC[38;2;{r};{g};{b}m - fg|                 |
+  # ESC[48;2;{r};{g};{b}m - bg|                 |
+  # --HEX-- ->  R | G | B     |                 |
+  # ------------bg------------|                 |
+  # #4F4D4B ->  79; 77; 75 -> |48;2;79;77;75m   |
+  # ------------fg------------|                 |
+  # #B0B2B4 -> 176;178;180 -> |38;2;176;178;180m|
+  # #06C2F7 ->   6;194;247 -> |38;2;6;194;247m  |
+  # #DF0D0B -> 223; 13; 11 -> |38;2;223;13;11m  |
+  # #F36D11 -> 243;109; 17 -> |38;2;243;109;17m |
+  # #EDBA04 -> 237;186;  4 -> |38;2;237;186;4m  |
+  # #0AA342 ->  10;163; 66 -> |38;2;10;163;66m  |
+  # --------------------------+-----------------+
+  # example substitution:
+  # ** Full format: "/dir/example" = "<CSI><38;2;r;g;b>mSubstitution<CSI><38;2;r;g;b>m"
+  # !! Substitute string has to be a basic string ("<str>") for Escape sequences to work↲
+  #    "/dir/example", the directory to be substituted; "basic" or 'literal' string
+  #    <CSI> = <U+001B><U+005B> = ␛[ - The Control Sequence Introducer starts a ANSI escape sequence
+  #     ↳<U+009B> is a single character Control Sequence Introducer, however it is not universally supportted and does not work in Termux.
+  #    <38;2;r;g;b> - Escape sequence for setting the foreground color in 24bit truecolor mode
+  #    m - ends the graphics mode escape sequence
+  #    <Substitution> - the actual text to be used as substitution
+  # !! since this has to be a basic string any characters with special purposes like [ have to be escaped with a backslash \
+  # ?? for more info see: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797#rgb-colors
 
-### special cases - bg:#4F4D4B (inherited from [directory] module, <style> key)
-    "~" = "\u001B\u005B38;2;10;163;66m~\u001B\u005B38;2;176;178;180m"     # <~>     - fg:#0AA342
- "/bin" = "\u001B\u005B38;2;237;186;4m/bin\u001B\u005B38;2;176;178;180m"  # </bin>  - fg:#EDBA04
- "/dev" = "\u001B\u005B38;2;243;109;17m/dev\u001B\u005B38;2;176;178;180m" # </dev>  - fg:#F36D11
- "/etc" = "\u001B\u005B38;2;6;194;247m/etc\u001B\u005B38;2;176;178;180m"  # </etc>  - fg:#06C2F7
-"/home" = "\u001B\u005B38;2;10;163;66m/home\u001B\u005B38;2;176;178;180m" # </home> - fg:#0AA342
-"/root" = "\u001B\u005B38;2;223;13;11m/root\u001B\u005B38;2;176;178;180m" # </root> - fg:#DF0D0B
- "/mnt" = "\u001B\u005B38;2;6;194;247m/mnt\u001B\u005B38;2;176;178;180m"  # </mnt>  - fg:#06C2F7
- "/tmp" = "\u001B\u005B38;2;183;32;143m/tmp\u001B\u005B38;2;176;178;180m" # </tmp>  - fg:#B7208F
- "/usr" = "\u001B\u005B38;2;6;194;247m/usr\u001B\u005B38;2;176;178;180m"  # </usr>  - fg:#06C2F7
- "/var" = "\u001B\u005B38;2;237;186;4m/var\u001B\u005B38;2;176;178;180m"  # </var>  - fg:#EDBA04
-"/data/data/com.termux/files" = "\u001B\u005B38;2;183;32;143mTermux\u001B\u005B38;2;176;178;180m" # Termux $PREFIX - fg:#B7208F
-### general case - fg:#B0B2B4 bg:#4F4D4B (inherited from [directory] module, <style> key)
-      "/boot" = "\u001B\u005B38;2;176;178;180m/boot"
-      "/init" = "\u001B\u005B38;2;176;178;180m/init"
-       "/lib" = "\u001B\u005B38;2;176;178;180m/lib"
-     "/lib64" = "\u001B\u005B38;2;176;178;180m/lib64"
-"/lost+found" = "\u001B\u005B38;2;176;178;180m/lost+found"
-     "/media" = "\u001B\u005B38;2;176;178;180m/media"
-       "/opt" = "\u001B\u005B38;2;176;178;180m/opt"
-      "/proc" = "\u001B\u005B38;2;176;178;180m/proc"
-       "/run" = "\u001B\u005B38;2;176;178;180m/run"
-      "/sbin" = "\u001B\u005B38;2;176;178;180m/sbin"
-       "/srv" = "\u001B\u005B38;2;176;178;180m/srv"
-       "/sys" = "\u001B\u005B38;2;176;178;180m/sys"
+  ### special cases - bg:#4F4D4B (inherited from [directory] module, <style> key)
+      "~" = "\u001B\u005B38;2;10;163;66m~\u001B\u005B38;2;176;178;180m"     # <~>     - fg:#0AA342
+   "/bin" = "\u001B\u005B38;2;237;186;4m/bin\u001B\u005B38;2;176;178;180m"  # </bin>  - fg:#EDBA04
+   "/dev" = "\u001B\u005B38;2;243;109;17m/dev\u001B\u005B38;2;176;178;180m" # </dev>  - fg:#F36D11
+   "/etc" = "\u001B\u005B38;2;6;194;247m/etc\u001B\u005B38;2;176;178;180m"  # </etc>  - fg:#06C2F7
+  "/home" = "\u001B\u005B38;2;10;163;66m/home\u001B\u005B38;2;176;178;180m" # </home> - fg:#0AA342
+  "/root" = "\u001B\u005B38;2;223;13;11m/root\u001B\u005B38;2;176;178;180m" # </root> - fg:#DF0D0B
+   "/mnt" = "\u001B\u005B38;2;6;194;247m/mnt\u001B\u005B38;2;176;178;180m"  # </mnt>  - fg:#06C2F7
+   "/tmp" = "\u001B\u005B38;2;183;32;143m/tmp\u001B\u005B38;2;176;178;180m" # </tmp>  - fg:#B7208F
+   "/usr" = "\u001B\u005B38;2;6;194;247m/usr\u001B\u005B38;2;176;178;180m"  # </usr>  - fg:#06C2F7
+   "/var" = "\u001B\u005B38;2;237;186;4m/var\u001B\u005B38;2;176;178;180m"  # </var>  - fg:#EDBA04
+  "/data/data/com.termux/files" = "\u001B\u005B38;2;183;32;143mTermux\u001B\u005B38;2;176;178;180m" # Termux $PREFIX - fg:#B7208F
+  ### general case - fg:#B0B2B4 bg:#4F4D4B (inherited from [directory] module, <style> key)
+        "/boot" = "\u001B\u005B38;2;176;178;180m/boot"
+        "/init" = "\u001B\u005B38;2;176;178;180m/init"
+         "/lib" = "\u001B\u005B38;2;176;178;180m/lib"
+       "/lib64" = "\u001B\u005B38;2;176;178;180m/lib64"
+  "/lost+found" = "\u001B\u005B38;2;176;178;180m/lost+found"
+       "/media" = "\u001B\u005B38;2;176;178;180m/media"
+         "/opt" = "\u001B\u005B38;2;176;178;180m/opt"
+        "/proc" = "\u001B\u005B38;2;176;178;180m/proc"
+         "/run" = "\u001B\u005B38;2;176;178;180m/run"
+        "/sbin" = "\u001B\u005B38;2;176;178;180m/sbin"
+         "/srv" = "\u001B\u005B38;2;176;178;180m/srv"
+         "/sys" = "\u001B\u005B38;2;176;178;180m/sys"
 
 [env_var.termux] # Detect if the prompt is running on Android/Termux, if so add an Android symbol infront of the directory.
-disabled = false
-variable = "ANDROID_ROOT"
-symbol = "󰀲"
-style = "fg:col_success bg:col_text_dark"
-format = "[$symbol]($style)"
+  disabled = false
+  variable = "ANDROID_ROOT"
+  symbol = "󰀲"
+  style = "fg:col_success bg:col_text_dark"
+  format = "[$symbol]($style)"
 
 [env_var.pwd] # Probably blood sacrifices
-disabled = false
-variable = "PWD"
-style = "fg:none bg:none"
-format = "[\u001B\\]8;;file://$env_value\u001B\\\\]($style)"
+  disabled = false
+  variable = "PWD"
+  style = "fg:none bg:none"
+  format = "[\u001B\\]8;;file://$env_value\u001B\\\\]($style)"
 
 ### Modules for git
 [git_branch] # name of the current git branch
-disabled = false
-symbol = ""
-style = "fg:col_info bg:col_text_dark"
-# truncation_length = 4
-# truncation_symbol = ""
-format = "[$symbol$branch]($style)"
+  disabled = false
+  symbol = ""
+  style = "fg:col_info bg:col_text_dark"
+  # truncation_length = 4
+  # truncation_symbol = ""
+  format = "[$symbol$branch]($style)"
 
 [git_commit] # current commit hash on detached branch
-disabled = false
-tag_disabled = false
-tag_symbol = "v"
-style = "fg:col_info bg:col_text_dark"
-commit_hash_length = 7
-only_detached = true # Don't show Hash when on regular main branch
-format = "([$tag#$hash]($style))"
+  disabled = false
+  tag_disabled = false
+  tag_symbol = "v"
+  style = "fg:col_info bg:col_text_dark"
+  commit_hash_length = 7
+  only_detached = true # Don't show Hash when on regular main branch
+  format = "([$tag#$hash]($style))"
 
 [git_metrics] # show additions and deletions since last push
-disabled = false
-only_nonzero_diffs = true # set false for testing purposes
-added_style = "fg:col_success bg:col_text_dark"
-deleted_style = "fg:col_attention bg:col_text_dark"
-format = "([](fg:col_info bg:col_text_dark)[$added]($added_style)[⥮](fg:col_text_light bg:col_text_dark)[$deleted]($deleted_style))"
+  disabled = false
+  only_nonzero_diffs = true # set false for testing purposes
+  added_style = "fg:col_success bg:col_text_dark"
+  deleted_style = "fg:col_attention bg:col_text_dark"
+  format = "([](fg:col_info bg:col_text_dark)[$added]($added_style)[⥮](fg:col_text_light bg:col_text_dark)[$deleted]($deleted_style))"
 
 
 [git_state] # progress of the current git operation
-disabled = false
-style = "fg:col_info bg:col_text_dark"
-rebase = "rebasing"
-merge = "merging"
-revert = "reverting"
-cherry_pick = " picking"
-bisect = "bisecting"
-am = "am'ing"
-am_or_rebase = "am/rebase"
-format = "[$state(❮$progress_current/$progress_total❯)]($style)"
+  disabled = false
+  style = "fg:col_info bg:col_text_dark"
+  rebase = "rebasing"
+  merge = "merging"
+  revert = "reverting"
+  cherry_pick = " picking"
+  bisect = "bisecting"
+  am = "am'ing"
+  am_or_rebase = "am/rebase"
+  format = "[$state(❮$progress_current/$progress_total❯)]($style)"
 
 [git_status]
-disabled = false
-style = "fg:col_info bg:col_text_dark"
-stashed = "${count}"
-staged = "󰸞${count}"
-modified = "󰑕${count}"
-typechanged = "󰶻${count}"
-renamed = "󰗧${count}"
-untracked = "󰏢${count}"
-deleted = "${count}"
-conflicted = "${count}"
-ahead = "󰞙${count}"
-behind = "󰞖${count}"
-diverged = "󰓢${ahead_count} ${behind_count}"
-format = "[($stashed$staged$modified$renamed$untracked$deleted$conflicted$ahead_behind)]($style)"
+  disabled = false
+  style = "fg:col_info bg:col_text_dark"
+  stashed = "${count}"
+  staged = "󰸞${count}"
+  modified = "󰑕${count}"
+  typechanged = "󰶻${count}"
+  renamed = "󰗧${count}"
+  untracked = "󰏢${count}"
+  deleted = "${count}"
+  conflicted = "${count}"
+  ahead = "󰞙${count}"
+  behind = "󰞖${count}"
+  diverged = "󰓢${ahead_count} ${behind_count}"
+  format = "[($stashed$staged$modified$renamed$untracked$deleted$conflicted$ahead_behind)]($style)"
 
 [hostname] # system hostname, with indicator if logged in via SSH session.
-disabled = false
-style = "fg:col_text bg:col_user"
-#trim_at = "."
-ssh_only = false
-ssh_symbol = ""
-format = "[$hostname$ssh_symbol]($style)"
+  disabled = false
+  style = "fg:col_text bg:col_user"
+  #trim_at = "."
+  ssh_only = false
+  ssh_symbol = ""
+  format = "[$hostname$ssh_symbol]($style)"
 
 [jobs] # background tasks
-disabled = false
-symbol = ""
-style = "fg:col_info bg:col_user"
-number_threshold = 1
-symbol_threshold = 1
-format = "[$number$symbol]($style)"
+  disabled = false
+  symbol = ""
+  style = "fg:col_info bg:col_user"
+  number_threshold = 1
+  symbol_threshold = 1
+  format = "[$number$symbol]($style)"
 
 [localip]
-disabled = false
-ssh_only = true
-style = "fg:col_text bg:col_user"
-format = "[\\($localipv4\\)]($style)"
+  disabled = false
+  ssh_only = true
+  style = "fg:col_text bg:col_user"
+  format = "[\\($localipv4\\)]($style)"
 
 # [os]
-# disabled = false
-# style = "fg:col_text bg:col_user"
-# format = "[$symbol ]($style)"
+#   disabled = false
+#   style = "fg:col_text bg:col_user"
+#   format = "[$symbol ]($style)"
+
 # [os.symbols]
-# Android = "󰀲"
-# Arch = ""
-# Debian = ""
-# Fedora = ""
-# Raspbian = ""
-# Linux = ""
-# Windows = ""
+#   Android = "󰀲"
+#   Arch = ""
+#   Debian = ""
+#   Fedora = ""
+#   Raspbian = ""
+#   Linux = ""
+#   Windows = ""
 
 [shell]
-disabled = false
-bash_indicator = "b"
-# elvish_indicator = "elv"
-# fish_indicator = "fish"
-# ion_indicator = "ion"
-# nu_indicator = "nu"
-# tcsh_indicator = "tc"
-# xonsh_indicator = "xon"
-zsh_indicator = "󰞷z"
-unknown_indicator = "?"
-# cmd_indicator = "CMD"
-powershell_indicator = "pw"
-style = "fg:col_shell bg:col_text_dark"
-format = "[$indicator]($style)[](fg:col_info bg:col_text_dark)"
+  disabled = false
+  bash_indicator = "b"
+  # elvish_indicator = "elv"
+  # fish_indicator = "fish"
+  # ion_indicator = "ion"
+  # nu_indicator = "nu"
+  # tcsh_indicator = "tc"
+  # xonsh_indicator = "xon"
+  zsh_indicator = "󰞷z"
+  unknown_indicator = "?"
+  # cmd_indicator = "CMD"
+  powershell_indicator = "pw"
+  style = "fg:col_shell bg:col_text_dark"
+  format = "[$indicator]($style)[](fg:col_info bg:col_text_dark)"
 
 [shlvl] # indicator for nested shells
-disabled = false
-symbol = ""
-style = "bold fg:col_info bg:col_user"
-threshold = 2
-format = "[$symbol$shlvl]($style)"
+  disabled = false
+  symbol = ""
+  style = "bold fg:col_info bg:col_user"
+  threshold = 2
+  format = "[$symbol$shlvl]($style)"
 
 [status] # customized end segments for the prompt based on exit code
-disabled = false
-symbol = "[$status](underline fg:col_attention bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[](fg:col_text_dark bg:col_attention)[](fg:col_attention)"
-success_symbol = "[](fg:col_text_dark bg:col_success)[](fg:col_success)" # Don't show exit code <0> on success
-not_executable_symbol = "[$status](underline fg:col_abort bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[󰉃](fg:col_abort bg:col_text_dark)[](bg:col_abort fg:col_text_dark)[](fg:col_abort)"
-not_found_symbol = "[$status](underline fg:col_info bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[?](fg:col_info bg:col_text_dark)[](bg:col_info fg:col_text_dark)[](fg:col_info)"
-sigint_symbol = "[$status](underline fg:col_abort bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[](fg:col_abort bg:col_text_dark)[](bg:col_abort fg:col_text_dark)[](fg:col_abort)"
-signal_symbol = "[$status](underline fg:col_shell bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[](fg:col_user bg:col_text_dark)[](bg:col_user fg:col_text_dark)[](fg:col_user)"
-style = "bold fg:col_text_light bg:col_text_dark"
-map_symbol = true
-recognize_signal_code = true
-format = '[](fg:col_info bg:col_text_dark)[$symbol]($style)'
+  disabled = false
+  symbol = "[$status](underline fg:col_attention bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[](fg:col_text_dark bg:col_attention)[](fg:col_attention)"
+  success_symbol = "[](fg:col_text_dark bg:col_success)[](fg:col_success)" # Don't show exit code <0> on success
+  not_executable_symbol = "[$status](underline fg:col_abort bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[󰉃](fg:col_abort bg:col_text_dark)[](bg:col_abort fg:col_text_dark)[](fg:col_abort)"
+  not_found_symbol = "[$status](underline fg:col_info bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[?](fg:col_info bg:col_text_dark)[](bg:col_info fg:col_text_dark)[](fg:col_info)"
+  sigint_symbol = "[$status](underline fg:col_abort bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[](fg:col_abort bg:col_text_dark)[](bg:col_abort fg:col_text_dark)[](fg:col_abort)"
+  signal_symbol = "[$status](underline fg:col_shell bg:col_text_dark)[](bold fg:col_info bg:col_text_dark)[](fg:col_user bg:col_text_dark)[](bg:col_user fg:col_text_dark)[](fg:col_user)"
+  style = "bold fg:col_text_light bg:col_text_dark"
+  map_symbol = true
+  recognize_signal_code = true
+  format = '[](fg:col_info bg:col_text_dark)[$symbol]($style)'
 ### Pipe Status handling - not currently implemented, it'd be very janky with this setup. Might add it if I get a good idea how to handle the formatting properly
-#pipestatus = true
-#pipestatus_separator = "|"
-#pipestatus_format = "[󰓡$pipestatus](fg:col_info bg:col_text_dark)[$common_meaning$signal_name]($style)"
+#   pipestatus = true
+#   pipestatus_separator = "|"
+#   pipestatus_format = "[󰓡$pipestatus](fg:col_info bg:col_text_dark)[$common_meaning$signal_name]($style)"
 
 [sudo] # indicate stored sudo credentials
-disabled = false
-style = "fg:col_attention bg:col_user"
-symbol = "󰌋"
-format = "[$symbol]($style)"
+  disabled = false
+  style = "fg:col_attention bg:col_user"
+  symbol = "󰌋"
+  format = "[$symbol]($style)"
 
 [time] # time; HH:MM:SS (local time)
-disabled = false
-style = "fg:col_text_inv bg:col_success"
-use_12hr = false
-time_format = "%T"
-utc_time_offset = "local"
-format = "[❮]($style)[$time](underline $style)[❯]($style)"
+  disabled = false
+  style = "fg:col_text_inv bg:col_success"
+  use_12hr = false
+  time_format = "%T"
+  utc_time_offset = "local"
+  format = "[❮]($style)[$time](underline $style)[❯]($style)"
 
 [username] # the currently logged in user
-disabled = false
-show_always = true
-style_root = "bold fg:col_attention bg:col_user"
-style_user = "fg:col_text bg:col_user"
-format = "[$user]($style)"
+  disabled = false
+  show_always = true
+  style_root = "bold fg:col_attention bg:col_user"
+  style_user = "fg:col_text bg:col_user"
+  format = "[$user]($style)"
 #EOF

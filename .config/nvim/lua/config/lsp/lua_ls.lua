@@ -1,5 +1,7 @@
 local M = {}
 
+M.filetypes = 'lua'
+
 M.settings = {
   Lua = {
     completion = {
