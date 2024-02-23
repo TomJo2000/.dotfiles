@@ -12,21 +12,26 @@ local function find_verts(colors)
     r = 0, g = 0, b = 0,
   }
 
-  local min, max = diffs.min, diffs.max
   for k, _ in pairs(colors) do
     -- get minimum values
-    min.r = min.r < colors[k].r and min.r or colors[k].r
-    min.g = min.g < colors[k].g and min.g or colors[k].g
-    min.b = min.b < colors[k].b and min.b or colors[k].b
+    diffs.min.r = diffs.min.r < colors[k].r and diffs.min.r or colors[k].r
+    diffs.min.g = diffs.min.g < colors[k].g and diffs.min.g or colors[k].g
+    diffs.min.b = diffs.min.b < colors[k].b and diffs.min.b or colors[k].b
 
     -- get maximum values
-    max.r = max.r > colors[k].r and max.r or colors[k].r
-    max.g = max.g > colors[k].g and max.g or colors[k].g
-    max.b = max.b > colors[k].b and max.b or colors[k].b
+    diffs.max.r = diffs.max.r > colors[k].r and diffs.max.r or colors[k].r
+    diffs.max.g = diffs.max.g > colors[k].g and diffs.max.g or colors[k].g
+    diffs.max.b = diffs.max.b > colors[k].b and diffs.max.b or colors[k].b
   end
   diffs.r = diffs.max.r - diffs.min.r
   diffs.g = diffs.max.g - diffs.min.g
   diffs.b = diffs.max.b - diffs.min.b
+
+print(
+  ('Min: %d;%d;%d\n'):format(diffs.min.r,diffs.min.g,diffs.min.b) ..
+  ('Max: %d;%d;%d\n'):format(diffs.max.r,diffs.max.g,diffs.max.b) ..
+  ('Del: %d;%d;%d\n'):format(diffs.r,diffs.g,diffs.b)
+)
 
   ---@alias verts { ['rgb'|'rgB'|'rGb'|'rGB'|'Rgb'|'RgB'|'RGb'|'RGB']: rgb }
   return { -- vertices
@@ -77,11 +82,13 @@ end
 ---@param step float # *Step*
 ---@return rgb
 function M.rgb_lerp(lerp, step)
-  return {
+  local L = {
     r = lerp[1].r * (1 - step) + lerp[2].r * step,
     g = lerp[1].g * (1 - step) + lerp[2].g * step,
     b = lerp[1].b * (1 - step) + lerp[2].b * step,
   }
+  print(('%3s;%3s;%3s'):format(L.r, L.g, L.b))
+  return L
 end
 
 ---@alias bilerp table<lerp, lerp, float, float>

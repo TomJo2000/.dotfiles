@@ -1,13 +1,12 @@
 #!/usr/bin/env luajit
 
 local script_root = arg[0]:match('@?(.*/)') or ''
-package.path = string.format('%s?.lua;', script_root) .. package.path
+package.path = ('%s?.lua;'):format(script_root) .. package.path
 
 ---@source ./lua/trilerp.lua
 local t = require('lua.trilerp')
 ---@type rgb[]
 local pal = {}
-
 
 for i = 1, #arg, 2 do
   print(string.format('%-3d%-13s%-3d%s', i, arg[i], i + 1, arg[i + 1]))
