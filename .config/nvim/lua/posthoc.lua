@@ -35,43 +35,7 @@ require('Comment').setup({
 })
 
 -- [[ Configure LSPs ]]
--- This function gets run when an LSP connects to a particular buffer.
--- local on_attach = function(_, bufnr) end
-
--- mason-lspconfig requires that these setup functions are called in this order
--- before setting up the servers.
-require('mason').setup()
-require('mason-lspconfig').setup()
-
--- Enable LSPs
----| Lua_ls
----| Bashls
----| Taplo (TOML)
----| Cspell (Spellchecker)
----| editorconfig-checker
----@source ./config/lsp/init.lua
-local servers = require('config.lsp')
-
--- Setup neovim lua configuration
-require('neodev').setup()
-
--- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
--- Ensure the servers above are installed
-local mason_lspconfig = require('mason-lspconfig')
-
-mason_lspconfig.setup({
-  ensure_installed = vim.tbl_keys(servers),
-})
-
-mason_lspconfig.setup_handlers({
-  ---@param server_name string
-  function(server_name)
-    require('lspconfig')[server_name].setup(require('config.lsp')[server_name])
-  end,
-})
+require('config.lsp')
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`

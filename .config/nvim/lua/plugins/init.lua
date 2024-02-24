@@ -58,32 +58,28 @@ require('lazy').setup({
   -- Split or join oneliners to multiline statements and vise versa
   { 'AndrewRadev/splitjoin.vim' },
 
-  { -- LSP Configuration & Plugins
-    'neovim/nvim-lspconfig',
-    -- stylua: ignore
+  -- [[ LSP ]]
+  { -- Automatically install LSPs to stdpath for Neovim
+    'williamboman/mason.nvim',
+    config = true,
     dependencies = {
+      'williamboman/mason-lspconfig.nvim', -- Mason/lspconfig interop
+      'j-hui/fidget.nvim', -- Useful status updates for LSP
+      'folke/neodev.nvim', -- function signatures for nvim's Lua API
+      'neovim/nvim-lspconfig', -- LSP Configuration & Plugins
+      'onsails/lspkind.nvim', -- icons for LSP suggestions
       { -- LSP context breadcrumbs
         'SmiteshP/nvim-navic',
+        event = 'LspAttach',
+        opts = require('config.breadcrumbs'),
         dependencies = {
           'nvim-tree/nvim-web-devicons', -- NerdFont icons
           { -- Breadcrumb menu
             'SmiteshP/nvim-navbuddy',
-            dependencies = 'MunifTanjim/nui.nvim'
+            dependencies = 'MunifTanjim/nui.nvim',
           },
         },
-        opts = require('config.breadcrumbs'),
-        event = 'LspAttach',
       },
-      { -- Automatically install LSPs to stdpath for Neovim
-        'williamboman/mason.nvim',
-        dependencies = {
-          'williamboman/mason-lspconfig.nvim', -- Mason/lspconfig interop
-        },
-        config = true,
-      },
-      'j-hui/fidget.nvim',    -- Useful status updates for LSP
-      'folke/neodev.nvim',    -- function signatures for nvim's Lua API
-      'onsails/lspkind.nvim', -- icons for LSP suggestions
     },
   },
 
@@ -232,7 +228,7 @@ require('lazy').setup({
 
   { -- Add, delete, replace, find, highlight surrounding characters
     'echasnovski/mini.surround',
-    config = require('config.mini.surround')
+    config = require('config.mini.surround'),
   },
 
   { -- Per project file shortcuts
