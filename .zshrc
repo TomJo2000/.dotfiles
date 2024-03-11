@@ -252,19 +252,17 @@ printf -v col_banner '%b' \
     [[ -z "$ANDROID_ROOT" || -n "${debug_verbosity[*]}" ]] && printf '%b' "${col_banner}\n" # test that we're not on Android/Termux.
     [[ -n "$STARSHIP_SHELL" ]] && printf '%b\n' '🚀 Starship Prompt Initialized' # print confirmation message if starship successfully started
     (( timing[printouts_banner] = timing[printouts] + EPOCHREALTIME ))
-
-
+(( timing[printouts] += EPOCHREALTIME ))
 
 ### Update checking
-(( timing[printouts] += EPOCHREALTIME ))
+timing[plugins]="-$EPOCHREALTIME"
     exec {promise}<> <( #
         source "${zsh_script_dir}/update.sh"
         updates
     ); promises[plugin_updates]="$promise"; promise=''
-(( timing[updates] += EPOCHREALTIME ))
+(( timing[updates] = timing[plugins] + EPOCHREALTIME ))
 
 ### Evaluate missing plugins
-timing[plugins]="-$EPOCHREALTIME"
 [[ "${debug_verbosity[*]}" =~ (^| )("missing"|"all")( |$) ]] && { # >< Debug: Missing plugins
     debug_plugins=( # Add a couple fake missing plug-ins for debugging
         'https://127.0.0.1/fake_plugin/zsh-fake-plugin'
