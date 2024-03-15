@@ -31,8 +31,8 @@ require('lazy').setup({
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VeryLazy',
+    -- stylua: ignore
     disable = {
-      -- stylua: ignore
       buftypes = {
         'terminal', 'lspinfo', 'checkhealth',
         'help', 'lazy', 'mason',
@@ -41,7 +41,7 @@ require('lazy').setup({
   },
 
   -- Repeatable prefixed bindings
-  { 'anuvyklack/hydra.nvim', lazy = true },
+  { 'anuvyklack/hydra.nvim', event = 'BufEnter' },
 
   { -- proper merge editor
     --- @see documentation at https://github.com/sindrets/diffview.nvim

@@ -34,11 +34,5 @@ return {
       return '<Ignore>'
     end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
 
-    vim.keymap.set('n', '<leader>gbb', gs.blame_line, { buffer = bufnr, desc = 'Show git blame' })
-    vim.keymap.set('n', '<leader>ghh', gs.preview_hunk, { buffer = bufnr, desc = 'Show git hunk' })
-    vim.keymap.set('n', '<leader>gss', gs.stage_hunk, { buffer = bufnr, desc = 'Stage git hunk' })
-    vim.keymap.set('n', '<leader>gtt', gs.toggle_current_line_blame, { buffer = bufnr, desc = 'Toggle inline git blame' })
-    vim.keymap.set('n', '<leader>guu', gs.undo_stage_hunk, { buffer = bufnr, desc = 'Unstage git hunk' })
-    vim.keymap.set('n', '<leader>gvv', gs.select_hunk, { buffer = bufnr, desc = 'Select git hunk' })
   end,
 }

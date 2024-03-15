@@ -23,7 +23,6 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>?', Telescope.oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', Telescope.buffers, { desc = '[ ] Find existing buffers' })
-vim.keymap.set('n', '<leader>gf', Telescope.git_files, { desc = '[G]it [F]ile search' })
 vim.keymap.set('n', '<leader>sf', Telescope.find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', Telescope.help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', Telescope.grep_string, { desc = '[S]earch current [W]ord' })
