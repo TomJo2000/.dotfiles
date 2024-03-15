@@ -64,6 +64,7 @@ require('lazy').setup({
     config = true,
     dependencies = {
       'williamboman/mason-lspconfig.nvim', -- Mason/lspconfig interop
+      'mfussenegger/nvim-lint', -- Linter support
       'j-hui/fidget.nvim', -- Useful status updates for LSP
       'folke/neodev.nvim', -- function signatures for nvim's Lua API
       'neovim/nvim-lspconfig', -- LSP Configuration & Plugins
@@ -82,9 +83,6 @@ require('lazy').setup({
       },
     },
   },
-
-  -- Linter support
-  { 'mfussenegger/nvim-lint' },
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
