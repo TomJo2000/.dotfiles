@@ -100,9 +100,9 @@ require('lazy').setup({
   },
 
   { -- There are way to many statusline plugins, we're using this one.
-    'freddiehaddad/feline.nvim',
+    'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    opts = {},
+    opts = require('plugins.lualine'),
   },
 
   { -- Theme inspired by Atom
