@@ -1,8 +1,8 @@
 -- A Hydra for common Git operations
 
 local hint = [[
- _J_: next hunk     _s_: stage hunk        _d_: show deleted   _b_: blame line
- _K_: prev hunk     _u_: undo last stage   _h_: preview hunk   _B_: blame show full
+ _<Down>_: next hunk     _s_: stage hunk        _d_: show deleted   _b_: blame line
+ _<Up>_: prev hunk     _u_: undo last stage   _h_: preview hunk   _B_: blame show full
  _v_: select hunk   _S_: stage buffer      _f_: file search    _t_: toggle inline blame
  _/_: show base file ^ ^ ^ ^ _q_: exit
 ]]
@@ -24,29 +24,29 @@ return {
       vim.cmd('mkview')
       vim.cmd('silent! %foldopen!')
       vim.bo.modifiable = false
-      gitsigns.toggle_signs(true)
-      gitsigns.toggle_linehl(true)
+      -- gitsigns.toggle_signs(true)
+      -- gitsigns.toggle_linehl(true)
     end,
     on_exit = function()
       local cursor_pos = vim.api.nvim_win_get_cursor(0)
       vim.cmd('loadview')
       vim.api.nvim_win_set_cursor(0, cursor_pos)
       vim.cmd('normal zv')
-      gitsigns.toggle_signs(false)
-      gitsigns.toggle_linehl(false)
-      gitsigns.toggle_deleted(false)
+      -- gitsigns.toggle_signs(false)
+      -- gitsigns.toggle_linehl(false)
+      -- gitsigns.toggle_deleted(false)
     end,
   },
   body = '<leader>g',
   -- stylua: ignore
   heads = {
-    { 'J', function()
+    { '<Down>', function()
       if vim.wo.diff then return ']c' end
       vim.schedule(function() gitsigns.next_hunk() end)
       return '<Ignore>'
     end, { expr = true, desc = 'next hunk' }
     },
-    { 'K', function()
+    { '<Up>', function()
         if vim.wo.diff then return '[c' end
         vim.schedule(function() gitsigns.prev_hunk() end)
         return '<Ignore>'

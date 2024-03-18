@@ -12,7 +12,7 @@ return {
   },
   lsp = {
     auto_attach = true,
-    preference = { 'lua_ls', 'bashls' },
+    preference = nil
   },
   highlight = false,
   separator = '❯',

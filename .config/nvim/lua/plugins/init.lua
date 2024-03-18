@@ -59,28 +59,38 @@ require('lazy').setup({
   { 'AndrewRadev/splitjoin.vim' },
 
   -- [[ LSP ]]
+  { -- Generic LSP injections via Lua
+    'nvimtools/none-ls.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local none = require('null-ls')
+      none.setup({
+        -- debug = true,
+        sources = {
+          none.builtins.code_actions.gitrebase, -- inject a code action for fast git rebase interactive mode switching
+          none.builtins.completion.luasnip, -- LuaSnip snippets as completions
+          none.builtins.completion.spell, -- Spelling suggestions as completions
+          none.builtins.diagnostics.actionlint, -- GitHub Actions linter
+          none.builtins.diagnostics.editorconfig_checker, -- EC compliance checker
+          none.builtins.diagnostics.yamllint, -- YAML linter
+        },
+        update_in_insert = true,
+        debounce = 150,
+      })
+    end,
+  },
+
   { -- Automatically install LSPs to stdpath for Neovim
     'williamboman/mason.nvim',
     config = true,
     dependencies = {
+      'neovim/nvim-lspconfig', -- LSP Configuration & Plugins
       'williamboman/mason-lspconfig.nvim', -- Mason/lspconfig interop
-      'mfussenegger/nvim-lint', -- Linter support
+      -- 'mfussenegger/nvim-lint', -- Linter support
       'j-hui/fidget.nvim', -- Useful status updates for LSP
       'folke/neodev.nvim', -- function signatures for nvim's Lua API
-      'neovim/nvim-lspconfig', -- LSP Configuration & Plugins
       'onsails/lspkind.nvim', -- icons for LSP suggestions
-      { -- LSP context breadcrumbs
-        'SmiteshP/nvim-navic',
-        event = 'LspAttach',
-        opts = require('config.breadcrumbs'),
-        dependencies = {
-          'nvim-tree/nvim-web-devicons', -- NerdFont icons
-          { -- Breadcrumb menu
-            'SmiteshP/nvim-navbuddy',
-            dependencies = 'MunifTanjim/nui.nvim',
-          },
-        },
-      },
     },
   },
 
@@ -95,6 +105,16 @@ require('lazy').setup({
       'rafamadriz/friendly-snippets', -- Adds a number of user-friendly snippets
     },
     lazy = true,
+  },
+
+  { -- LSP context breadcrumbs
+    'SmiteshP/nvim-navic',
+    event = 'LspAttach',
+    opts = require('config.breadcrumbs'),
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'nvim-tree/nvim-web-devicons', -- NerdFont icons
+    },
   },
 
   { -- There are way to many statusline plugins, we're using this one.
@@ -146,10 +166,6 @@ require('lazy').setup({
       on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
     },
   },
-
-  -- need to look into this later
-  -- { nvimtools/none-ls.nvim }
-  ---@source https://github.com/nvimtools/none-ls.nvim
 
   { -- set the commentstring based on the treesitter context
     'JoosepAlviste/nvim-ts-context-commentstring',
