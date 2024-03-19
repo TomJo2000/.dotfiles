@@ -23,13 +23,17 @@ local conditions = {
 -- Config
 local config = {
   options = {
-    -- Disable sections and component separators
+    theme = 'onedark',
+    always_divide_middle = false,
     component_separators = '',
     section_separators = '',
-    theme = 'onedark',
-    -- We are going to use lualine_c and lualine_x as left and
-    -- right section. Both are highlighted by c theme .  So we
-    -- are just setting default looks to statusline
+    icons_enabled = true,
+    padding = { left = 0, right = 0 },
+    refresh = { statusline = 150, tabline = 150, winbar = 150 },
+    disabled_filetypes = { -- Filetypes to disable lualine for.
+      statusline = {}, -- only ignores the ft for statusline.
+      winbar = {}, -- only ignores the ft for winbar.
+    },
     -- normal = { c = { fg = theme.fg, bg = theme.bg0 } },
     -- inactive = { c = { fg = theme.fg, bg = theme.bg0 } },
   },
@@ -50,13 +54,13 @@ local config = {
 }
 
 -- Add components to left sections
-config.sections.lualine_c = {
+local left_side = {
   { -- Left edge
     function()
       return '▊'
     end,
     color = { fg = theme.blue }, -- Sets highlighting of component
-    padding = { left = 0, right = 1 }, -- We don't need space before this
+    padding = { right = 1 }, -- We don't need space before this
   },
   { -- Vim mode indicator
     function()
@@ -77,7 +81,7 @@ config.sections.lualine_c = {
             Rv = theme.purple,  -- Replace mode (virtual)
              s = theme.orange,  -- Select mode (charwise)
              S = theme.orange,  -- Select mode (linewise)
-             c = theme.dark_purple, -- Command mode
+             c = theme.purple, -- Command mode
             ce = theme.red,     -- ???
             cv = theme.red,     -- Ex mode
              t = theme.red,     -- Terminal mode
@@ -94,31 +98,38 @@ config.sections.lualine_c = {
   { -- File size (also controls save indicator)
     'filesize',
     cond = conditions.buffer_not_empty,
+    color = { fg = theme.cyan },
+    padding = { right = 1 },
   },
-  { -- File name
-    'filename',
-    cond = conditions.buffer_not_empty,
-    color = { fg = theme.purple, gui = 'bold' },
+  { -- File name, with changed formatting
+    function()
+      local options = {
+        read_only = '',
+        modified = '⦿',
+        max_len = vim.fn.winwidth(0) / 3,
+      }
+      return ('%s%s%s'):format(
+        vim.bo.modifiable and '' or options.read_only, -- Readonly?
+        vim.fn.expand('%:p:~'), -- file and immediate parent
+        vim.bo.modified and options.modified or '' -- Unsaved changes?
+      )
+    end,
+    color = { fg = theme.green },
+    padding = { right = 1 },
   },
-  { -- Line:Column
-    'location',
-  },
-  { -- Percentage into the file
-    'progress',
-    color = { fg = theme.fg, gui = 'bold' },
-  },
-  { -- LSP diagnostics count
-    'diagnostics',
-    sources = { 'nvim_diagnostic' },
-    symbols = { error = ' ', warn = ' ', info = ' ' },
-    diagnostics_color = {
-      color_error = { fg = theme.red },
-      color_warn = { fg = theme.yellow },
-      color_info = { fg = theme.cyan },
-    },
+  { -- combined location and progress component
+    function()
+      local line = ('%d:%d┇%d%%%%'):format(
+        vim.fn.line('.'), -- current line
+        vim.fn.virtcol('.'), -- current column
+        math.floor(100 * vim.fn.line('.') / vim.fn.line('$')) -- percentage into the file
+      )
+      return ('%s'):format(line)
+    end,
+    color = { fg = theme.bg_blue, gui = 'bold' },
   },
   { -- Insert mid section. You can make any number of sections in neovim :)
-    -- for lualine it's any number greater then 2
+    -- for lualine it's any number greater than 2
     function()
       return '%='
     end,
@@ -145,23 +156,35 @@ config.sections.lualine_c = {
 }
 
 -- Add components to right sections
-config.sections.lualine_x = {
+local right_side = {
+  { -- LSP diagnostics count
+    'diagnostics',
+    sources = { 'nvim_diagnostic' },
+    symbols = { error = '', warn = '', info = '' },
+    diagnostics_color = {
+      color_error = { fg = theme.red },
+      color_warn = { fg = theme.yellow },
+      color_info = { fg = theme.cyan },
+    },
+    padding = { right = 1 },
+  },
   { -- File encoding
     'o:encoding', -- option component same as &encoding in viml
     fmt = string.upper, -- I'm not sure why it's upper case either ;)
     cond = conditions.hide_in_width,
     color = { fg = theme.green, gui = 'bold' },
+    padding = { left = 1 },
   },
   { -- Line endings
     'fileformat',
     fmt = string.upper,
-    icons_enabled = true,
     color = { fg = theme.green, gui = 'bold' },
   },
   { -- Git branch
     'branch',
     icon = '',
     color = { fg = theme.purple, gui = 'bold' },
+    padding = { left = 1 },
   },
   { -- Git diff
     'diff',
@@ -172,6 +195,7 @@ config.sections.lualine_x = {
       removed = { fg = theme.red },
     },
     cond = conditions.hide_in_width,
+    padding = { left = 1 },
   },
   { -- Right edge
     function()
@@ -181,5 +205,8 @@ config.sections.lualine_x = {
     padding = { left = 1 },
   },
 }
--- Now don't forget to initialize lualine
+
+config.sections.lualine_c = left_side
+config.sections.lualine_x = right_side
+
 return config
