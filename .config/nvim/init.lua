@@ -30,27 +30,35 @@ ${XDG_CONFIG_HOME}/nvim
 │   │   ├── lsp
 │   │   │   ├── bashls.lua
 │   │   │   ├── init.lua
-│   │   │   └── lua_ls.lua
+│   │   │   ├── lua_ls.lua
+│   │   │   └── taplo.lua
+│   │   ├── mini
+│   │   │   ├── map.lua
+│   │   │   └── surround.lua
 │   │   ├── telescope
 │   │   │   ├── binds.lua
 │   │   │   ├── delta.lua
 │   │   │   └── init.lua
+│   │   ├── alpha_nvim.lua
+│   │   ├── breadcrumbs.lua
 │   │   ├── cmp.lua
+│   │   ├── colors.lua
 │   │   ├── delims.lua
-│   │   ├── feline.lua
 │   │   ├── git.lua
-│   │   ├── mini_map.lua
+│   │   ├── indents.lua
+│   │   ├── lazy.lua
 │   │   ├── treesitter.lua
 │   │   └── which_key.lua
 │   ├── kickstart
 │   │   ├── autoformat.lua
 │   │   └── debug.lua
 │   ├── plugins
-│   │   ├── alpha_nvim.lua
 │   │   ├── formatter.lua
 │   │   ├── gitsigns.lua
 │   │   ├── init.lua
-│   │   └── onedark.lua
+│   │   ├── lualine.lua
+│   │   ├── onedark.lua
+│   │   └── presence.lua
 │   ├── utils
 │   │   ├── capture.lua
 │   │   └── init.lua
@@ -58,9 +66,11 @@ ${XDG_CONFIG_HOME}/nvim
 │   ├── options.lua
 │   └── posthoc.lua
 ├── init.lua
-└── lazy-lock.json
+├── lazy-lock.json
+└── stylua.toml
 
-9 directories, 32 files
+10 directories, 40 files
+tree -a -l --dirsfirst "$DOT_FILES/.config/nvim/"
 ]]
 
 -- [[ Setting options ]]

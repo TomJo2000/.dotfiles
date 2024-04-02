@@ -15,8 +15,14 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-  -- A fully customizable start screen
-  require('plugins.alpha_nvim'),
+  { -- A fully customizable start screen
+    'goolord/alpha-nvim',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+      'nvim-lua/plenary.nvim',
+    },
+    config = require('config.alpha_nvim'),
+  },
 
   -- Session persistence and management
   { 'folke/persistence.nvim', lazy = true },
@@ -69,11 +75,10 @@ require('lazy').setup({
         -- debug = true,
         sources = {
           none.builtins.code_actions.gitrebase, -- inject a code action for fast git rebase interactive mode switching
+          none.builtins.diagnostics.actionlint, -- GitHub Actions linter
+          none.builtins.diagnostics.yamllint, -- YAML linter
           none.builtins.completion.luasnip, -- LuaSnip snippets as completions
           none.builtins.completion.spell, -- Spelling suggestions as completions
-          none.builtins.diagnostics.actionlint, -- GitHub Actions linter
-          none.builtins.diagnostics.editorconfig_checker, -- EC compliance checker
-          none.builtins.diagnostics.yamllint, -- YAML linter
         },
         update_in_insert = true,
         debounce = 150,
