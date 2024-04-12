@@ -18,18 +18,19 @@
     <thead>
       <tr><th>Language</th><th>Files</th><th>Lines</th><th>Blank</th><th>Comment</th><th>Code</th><th>Complexity</th><th>Bytes</th></tr>
     </thead><tbody>
-      <tr><th>Lua</th><th>42</th><th>2373</th><th>188</th><th>376</th><th>1809</th><th>0</th><th>79221</th></tr>
-      <tr><th>Shell</th><th>19</th><th>1464</th><th>191</th><th>402</th><th>871</th><th>0</th><th>59945</th></tr>
+      <tr><th>Lua</th><th>42</th><th>2456</th><th>195</th><th>389</th><th>1872</th><th>0</th><th>81447</th></tr>
+      <tr><th>Shell</th><th>19</th><th>1465</th><th>191</th><th>402</th><th>872</th><th>0</th><th>59994</th></tr>
       <tr><th>TOML</th><th>4</th><th>455</th><th>33</th><th>124</th><th>298</th><th>0</th><th>16901</th></tr>
-      <tr><th>INI</th><th>5</th><th>249</th><th>32</th><th>137</th><th>80</th><th>0</th><th>6343</th></tr>
-      <tr><th>SSH config</th><th>1</th><th>67</th><th>14</th><th>0</th><th>53</th><th>0</th><th>1669</th></tr>
+      <tr><th>INI</th><th>5</th><th>288</th><th>35</th><th>169</th><th>84</th><th>0</th><th>7620</th></tr>
+      <tr><th>SSH config</th><th>1</th><th>74</th><th>15</th><th>0</th><th>59</th><th>0</th><th>1823</th></tr>
       <tr><th>Git config</th><th>1</th><th>62</th><th>15</th><th>0</th><th>47</th><th>0</th><th>1805</th></tr>
       <tr><th>JSON</th><th>1</th><th>41</th><th>0</th><th>0</th><th>41</th><th>0</th><th>3762</th></tr>
       <tr><th>Markdown</th><th>1</th><th>54</th><th>15</th><th>0</th><th>39</th><th>0</th><th>1669</th></tr>
       <tr><th>Systemd Service</th><th>2</th><th>43</th><th>6</th><th>0</th><th>37</th><th>0</th><th>1175</th></tr>
+      <tr><th>Justfile</th><th>1</th><th>33</th><th>11</th><th>0</th><th>22</th><th>0</th><th>744</th></tr>
       <tr><th>License</th><th>1</th><th>21</th><th>4</th><th>0</th><th>17</th><th>0</th><th>1073</th></tr>
     </tbody><tfoot>
-      <tr><th>Total</th><th>77</th><th>4829</th><th>498</th><th>1039</th><th>3292</th><th>0</th><th>173563</th></tr>
+      <tr><th>Total</th><th>78</th><th>4992</th><th>520</th><th>1084</th><th>3388</th><th>0</th><th>178013</th></tr>
     </tfoot>
   </table>
 <!--loc-end-->

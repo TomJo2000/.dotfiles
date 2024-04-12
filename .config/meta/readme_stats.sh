@@ -87,6 +87,7 @@ done < <(git -C "${GIT_ROOT}" ls-files --full-name)
 '# -*- desktopfile -*-':'Desktop file',\
 '# -*- gitconfig -*-':'Git config',\
 '# -*- sshconfig -*-':'SSH config',\
+'# -*- justfile -*-':'Justfile',\
 '# -*- service -*-':'Systemd Service',\
 '# -*- ini -*-':INI,\
 -- "${files[@]}" | awk -- '{ $1=$1; output=output $0 } END { print output }')"

@@ -9,12 +9,14 @@ exclude /.ssh/private/***
 exclude /.ssh/known_hosts*
 exclude /LICENSE
 exclude /README.md
+exclude /justfile
 exclude /lscu.lua
 
 # Under no circumstances ever delete these in the repo
 protect /.git/***
 protect /LICENSE
 protect /README.md
+protect /justfile
 protect /.config/git/***
 protect /.editorconfig
 protect /.config/meta/rsync_ignore
