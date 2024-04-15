@@ -10,20 +10,19 @@ exclude_file := dotfiles / ".config/meta/rsync_ignore"
 default:
     just --list
 
-@deploy: _deploy_preview && _deploy_files # deploy out files
-
-_deploy_preview:
+@deploy: # preview and deploy files
     rsync --dry-run --out-format="%'''-6b/%'''7l %o %B %M %n" --filter=". {{exclude_file}}" -a "{{dotfiles}}/" "{{home}}/"
+    -just deploy_files # it's fine if this "fails" due to negative confirmation
 
-[confirm("Are you sure you want to deploy these files?")]
-_deploy_files:
-    rsync --filter=". {{exclude_file}}" -a "{{dotfiles}}/" "{{home}}/"
+[private, confirm("Are you sure you want to deploy these files? (y/N)")]
+@deploy_files:
+    rsync --progress --filter=". {{exclude_file}}" -a "{{dotfiles}}/" "{{home}}/"
 
-@enroll: # add files to the repo
+@enroll +FILES: # add files to the repo
     echo "enroll"
 
 
-@diff: # diffs directories
+@diff DIRS: # diffs directories
     echo "diff"
 
 @stats: # update the README stats
