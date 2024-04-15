@@ -30,13 +30,13 @@
   news = "!f() { git log -w -p HEAD~"${1:-1}".. "${@:2}"; }; f"
 
   # show information and diffs for staged files with full colorization
-  staged = "!{ git -c color.ui=always status; git -P diff --staged --shortstat ; git -P diff --staged --ignore-space-change; } | delta"
-         #            ^--- In Git versions before 2.20.1 (from Dec. 15, 2018)
-         #                 This needs to be color.status
+  staged = "!f() { git -c color.ui=always status "$@" ; git -P diff --staged --shortstat "$@"; git -P diff --staged --ignore-space-change "$@"; }; f -- "$@" | delta"
+         #              ^--- In Git versions before 2.20.1 (from Dec. 15, 2018)
+         #                   This needs to be color.status
          # Also why the hell are you running such an ancient git version?
 
   # same as above but for unstaged changes
-  unstaged = "!{ git -c color.ui=always status; git -P diff --shortstat ; git -P diff --ignore-space-change; } | delta"
+  unstaged = "!f() { git -c color.ui=always status -u "$@"; git -P diff --shortstat "$@"; git -P diff --ignore-space-change "$@"; }; f -- "$@" | delta"
 
   # Show the <n> (20 by default) most edited files
   # Written by Corey Haines
