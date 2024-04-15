@@ -18,6 +18,7 @@ vim.g.maplocalleader = ' '
 
 --[[ Config layout
 
+tree -a -l --dirsfirst "$DOT_FILES/.config/nvim/"
 ${XDG_CONFIG_HOME}/nvim
 ├── lua
 │   ├── config
@@ -32,33 +33,31 @@ ${XDG_CONFIG_HOME}/nvim
 │   │   │   ├── init.lua
 │   │   │   ├── lua_ls.lua
 │   │   │   └── taplo.lua
-│   │   ├── mini
-│   │   │   ├── map.lua
-│   │   │   └── surround.lua
-│   │   ├── telescope
-│   │   │   ├── binds.lua
-│   │   │   ├── delta.lua
-│   │   │   └── init.lua
 │   │   ├── alpha_nvim.lua
 │   │   ├── breadcrumbs.lua
 │   │   ├── cmp.lua
 │   │   ├── colors.lua
 │   │   ├── delims.lua
+│   │   ├── delta.lua
 │   │   ├── git.lua
 │   │   ├── indents.lua
 │   │   ├── lazy.lua
-│   │   ├── treesitter.lua
-│   │   └── which_key.lua
+│   │   ├── telescope.lua
+│   │   └── treesitter.lua
 │   ├── kickstart
 │   │   ├── autoformat.lua
 │   │   └── debug.lua
 │   ├── plugins
+│   │   ├── mini
+│   │   │   ├── map.lua
+│   │   │   └── surround.lua
 │   │   ├── formatter.lua
 │   │   ├── gitsigns.lua
 │   │   ├── init.lua
 │   │   ├── lualine.lua
 │   │   ├── onedark.lua
-│   │   └── presence.lua
+│   │   ├── presence.lua
+│   │   └── telescope.lua
 │   ├── utils
 │   │   ├── capture.lua
 │   │   └── init.lua
@@ -69,23 +68,21 @@ ${XDG_CONFIG_HOME}/nvim
 ├── lazy-lock.json
 └── stylua.toml
 
-10 directories, 40 files
-tree -a -l --dirsfirst "$DOT_FILES/.config/nvim/"
+9 directories, 39 files
 ]]
 
 -- [[ Setting options ]]
 ---@source ./lua/options.lua
 require('options')
 
--- [[ Configure plugins ]]
----@source ./lua/plugins.lua
-require('plugins')
-
 -- [[ Setup keybindings ]]
 ---@source ./lua/keybinds.lua
 require('keybinds')
 
+-- [[ Configure plugins ]]
+---@source ./lua/plugins.lua
+require('plugins')
+
 -- [[ Posthoc plugin configuration ]]
 ---@source ./lua/posthoc.lua
 require('posthoc')
-

@@ -11,15 +11,12 @@ return {
     untracked    = { text = '┇' },
   },
   on_attach = function(bufnr)
-    -- don't override the built-in and fugitive keymaps
-    local gs = package.loaded.gitsigns
-
     vim.keymap.set({ 'n', 'v' }, ']c', function()
       if vim.wo.diff then
         return ']c'
       end
       vim.schedule(function()
-        gs.next_hunk()
+        package.loaded.gitsigns.next_hunk()
       end)
       return '<Ignore>'
     end, { expr = true, buffer = bufnr, desc = 'Jump to next hunk' })
@@ -29,10 +26,9 @@ return {
         return '[c'
       end
       vim.schedule(function()
-        gs.prev_hunk()
+        package.loaded.gitsigns.prev_hunk()
       end)
       return '<Ignore>'
     end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
-
   end,
 }

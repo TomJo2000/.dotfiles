@@ -5,7 +5,7 @@ vim.opt.listchars = {
   trail = '◦',
   extends = '»',
   precedes = '«',
-  nbsp = '°'
+  nbsp = '°',
 }
 vim.o.list = true
 
@@ -57,5 +57,3 @@ vim.o.confirm = true
 -- Set defaults for splits
 vim.o.splitright = true -- :vs[plit] opens to the right
 vim.o.splitbelow = true -- :sp[lit] opens below
-
-

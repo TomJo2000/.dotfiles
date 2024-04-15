@@ -57,7 +57,7 @@ require('lazy').setup({
   },
 
   { -- More customizable formatters.
-    'mhartington/formatter.nvim',
+    'stevearc/conform.nvim',
     config = require('plugins.formatter'),
   },
 
@@ -73,12 +73,13 @@ require('lazy').setup({
       local none = require('null-ls')
       none.setup({
         -- debug = true,
+        -- stylua: ignore
         sources = {
           none.builtins.code_actions.gitrebase, -- inject a code action for fast git rebase interactive mode switching
           none.builtins.diagnostics.actionlint, -- GitHub Actions linter
-          none.builtins.diagnostics.yamllint, -- YAML linter
-          none.builtins.completion.luasnip, -- LuaSnip snippets as completions
-          none.builtins.completion.spell, -- Spelling suggestions as completions
+          none.builtins.diagnostics.yamllint,   -- YAML linter
+          none.builtins.completion.luasnip,     -- LuaSnip snippets as completions
+          none.builtins.completion.spell,       -- Spelling suggestions as completions
         },
         update_in_insert = true,
         debounce = 150,
@@ -89,13 +90,24 @@ require('lazy').setup({
   { -- Automatically install LSPs to stdpath for Neovim
     'williamboman/mason.nvim',
     config = true,
+    -- stylua: ignore
     dependencies = {
-      'neovim/nvim-lspconfig', -- LSP Configuration & Plugins
+      'neovim/nvim-lspconfig',             -- LSP Configuration & Plugins
       'williamboman/mason-lspconfig.nvim', -- Mason/lspconfig interop
-      -- 'mfussenegger/nvim-lint', -- Linter support
-      'j-hui/fidget.nvim', -- Useful status updates for LSP
-      'folke/neodev.nvim', -- function signatures for nvim's Lua API
-      'onsails/lspkind.nvim', -- icons for LSP suggestions
+      'j-hui/fidget.nvim',                 -- Useful status updates for LSP
+      'folke/neodev.nvim',                 -- function signatures for nvim's Lua API
+      'onsails/lspkind.nvim',              -- icons for LSP suggestions
+      'nvim-telescope/telescope.nvim',     -- used in some of my LSP keybinds
+    },
+  },
+
+  { -- Syntax aware text-objects
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    dependencies = {
+      { -- Highlighters, Querries and Contexts.
+        'nvim-treesitter/nvim-treesitter',
+        build = ':TSUpdate',
+      },
     },
   },
 
@@ -201,18 +213,9 @@ require('lazy').setup({
         cond = function()
           return vim.fn.executable('make') == 1
         end,
-        ---@source config = require('config.telescope')
       },
     },
     lazy = true,
-  },
-
-  { -- Highlight, edit, and navigate code
-    'nvim-treesitter/nvim-treesitter',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
-    },
-    build = ':TSUpdate',
   },
 
   { -- Markdown preview in the browser synced to nvim
@@ -286,6 +289,18 @@ require('lazy').setup({
     opts = { -- This can't be lazy since I use it for a keymap
       keymaps = { disable_defaults = true },
     },
+    -- stylua: ignore
+    keys = { -- Moving windows more better
+      { 'n', '<C-w><C-w>'        , '<Cmd>WinShift swap<CR>'     , { desc = 'Swap [w]indow' }           },
+      { 'n', '<C-w><C-Up>'       , '<Cmd>WinShift up<CR>'       , { desc = 'Swap window <Up>' }        },
+      { 'n', '<C-w><C-Down>'     , '<Cmd>WinShift down<CR>'     , { desc = 'Swap window <Down>' }      },
+      { 'n', '<C-w><C-Left>'     , '<Cmd>WinShift left<CR>'     , { desc = 'Swap window <Left>' }      },
+      { 'n', '<C-w><C-Right>'    , '<Cmd>WinShift right<CR>'    , { desc = 'Swap window <Right>' }     },
+      { 'n', '<C-S-w><C-S-Up>'   , '<Cmd>WinShift far_up<CR>'   , { desc = 'Swap window far <UP>' }    },
+      { 'n', '<C-S-w><C-S-Down>' , '<Cmd>WinShift far_down<CR>' , { desc = 'Swap window far <DOWN>' }  },
+      { 'n', '<C-S-w><C-S-Left>' , '<Cmd>WinShift far_left<CR>' , { desc = 'Swap window far <LEFT>' }  },
+      { 'n', '<C-S-w><C-S-Right>', '<Cmd>WinShift far_right<CR>', { desc = 'Swap window far <RIGHT>' } },
+    },
   },
 
   { -- Discord Rich Presence
@@ -298,5 +313,21 @@ require('lazy').setup({
       require('presence').setup(opts)
     end,
     lazy = true,
+  },
+  { -- yank history
+    'gbprod/yanky.nvim',
+    opts = {
+      ring = { -- yank ring
+        history_length = 100,
+        storage = 'shada',
+        sync_with_numbered_registers = true,
+        cancel_event = 'update',
+        ignore_registers = { '_' },
+        update_register_on_cycle = false,
+      },
+      system_clipboard = {
+        sync_with_ring = true,
+      },
+    },
   },
 }, require('config.lazy'))
