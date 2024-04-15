@@ -366,6 +366,14 @@ timing[path]="-$EPOCHREALTIME"
 (( timing[path] += EPOCHREALTIME ))
 timing[pager]="-$EPOCHREALTIME"
 
+# setup nvim as default EDITOR and DIFF program.
+if command -v 'nvim' &> '/dev/null'; then
+    export EDITOR='nvim'
+    export MANPAGER='nvim -c Man! -o -'
+fi
+
+alias ls='LC_COLLATE=C ls --file-type --color' # colorize ls by default
+
 ### `man` options
 export MANROFFOPT="-P -c" # ** color output doesn't seem to work without this anymore
 
@@ -446,18 +454,6 @@ export MANROFFOPT="-P -c" # ** color output doesn't seem to work without this an
     # export LESSOPEN="|-${XDG_CONFIG_HOME}/less/lessopen.sh %s"
 
 (( timing[pager] += EPOCHREALTIME ))
-
-# setup nvim as default EDITOR and DIFF program.
-export EDITOR="nvim"
-export DIFFPROG="nvim -d"
-
-alias ls='LC_COLLATE=C ls --file-type --color' # colorize ls by default
-
-# (WIP)
-# mkssh-key() {
-#     local key_name=""
-#     ssh-keygen -t rsa -b 4096 -f "$PWD/$key_name" -C "${USER}@${HOST}-$(date -I)"
-# }
 
 # (WIP)
 #function parse_ls_cols(){
