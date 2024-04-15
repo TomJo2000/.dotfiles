@@ -35,15 +35,16 @@ export zsh_script_dir="${HOME}/.local/share/zsh/scripts" # "plugin" script locat
 declare -g update_frequency='7d' # ?? interval between update checks. Format: 1w2d3h4m5s (case insensitive); Default: 7d
 
 declare -gA plugins=( # ?? List plugins you wish to use by repo URL
-                 [col_gen]="${zsh_script_dir}/col_gen/col_gen.sh"           # local
-                 [percode]="${zsh_script_dir}/percode/percode.sh"           # local
-            [shared_agent]="${zsh_script_dir}/shared_agent/shared_agent.sh" # local
-               [shell_pad]="${zsh_script_dir}/shell_pad/shell_pad.zsh"      # local
-                  [synker]="${zsh_script_dir}/synker/synker.sh"             # local
-                  [typeof]="${zsh_script_dir}/typeof/typeof.sh"             # local
-                  [F-Sy-H]='https://github.com/z-shell/F-Sy-H.git'
+              [col_gen]="${zsh_script_dir}/col_gen/col_gen.sh"           # local
+              [percode]="${zsh_script_dir}/percode/percode.sh"           # local
+         [shared_agent]="${zsh_script_dir}/shared_agent/shared_agent.sh" # local
+            [shell_pad]="${zsh_script_dir}/shell_pad/shell_pad.zsh"      # local
+               [synker]="${zsh_script_dir}/synker/synker.sh"             # local
+               [typeof]="${zsh_script_dir}/typeof/typeof.sh"             # local
+               [F-Sy-H]='https://github.com/z-shell/F-Sy-H.git'
+     [zsh-autocomplete]='https://github.com/marlonrichert/zsh-autocomplete.git'
      [zsh-autosuggestions]='https://github.com/zsh-users/zsh-autosuggestions.git'
-         [zsh-completions]='https://github.com/zsh-users/zsh-completions.git'
+      [zsh-completions]='https://github.com/zsh-users/zsh-completions.git'
 )
 ### **================================**
 (( timing[list_plugins] += EPOCHREALTIME ))
@@ -304,15 +305,6 @@ done
 setopt AUTO_CD              # cd can be omitted when typing in a valid file path
 setopt CDABLE_VARS          # expand variable for changing directories
 
-### Keybindings
-bindkey -- '\e[H'    beginning-of-line              # HOME
-bindkey -- '\e[1;2H' beginning-of-buffer-or-history # Shift + HOME
-bindkey -- '\e[F'    end-of-line                    # END
-bindkey -- '\e[1;2F' end-of-buffer-or-history       # Shift + END
-bindkey -- '\e[1;2C' emacs-forward-word             # Shift + ->
-bindkey -- '\e[1;2D' emacs-backward-word            # Shift + <-
-bindkey -- '\e[3~'   delete-char                    # DEL
-
 ### Environment setup.
 printf -v LS_COLORS '%s' \
     "rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:" \
@@ -469,12 +461,24 @@ export MANROFFOPT="-P -c" # ** color output doesn't seem to work without this an
 timing[source]="-$EPOCHREALTIME" # sourcing stuff
 setopt NO_KSH_ARRAYS
 
-timing[completions]="-$EPOCHREALTIME"
+timing[suggestions]="-$EPOCHREALTIME"
+autoload -U compinit
+# <> Zsh-autocomplete customization
+zstyle '*:compinit' arguments -d "$XDG_CACHE_HOME/zsh/zcompdump-${ZSH_VERSION}"  # write completion cache to XDG basedir
+# zstyle ':autocomplete:*' widget-style menu-select                                #
+zstyle ':completion:*:*' matcher-list 'm:{[:lower:]-}={[:upper:]_}' '+r:|[.]=**' #
+
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=${pal[light_grey]}"
+# shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
+source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" 2>> /dev/null # Load autosuggestions
+# source  "$zsh_script_dir/zsh-autocomplete/zsh-autocomplete.plugin.zsh"
+(( timing[suggestions] += EPOCHREALTIME ))
+
 ### Completions
+timing[completions]="-$EPOCHREALTIME"
 [[ "${fpath[*]}" == *"${zsh_script_dir}/zsh-completions/src"* ]] || {
     fpath+=("${zsh_script_dir}/zsh-completions/src") # Zsh Completions does not get sourced, its /src directory containing the completions gets appended to $fpath
 }
-autoload -U compinit # load compinit
 
 # **    :completion:function:completer:command:argument:tag <- Template
 zstyle ':completion:*' menu select=1 # show a selection menu if there's more than 1 possible completion
@@ -484,31 +488,37 @@ zstyle ':completion:*' special-dirs true # complete `.` and `..`
 zstyle ':completion:*' list-colors "$LS_COLORS" # color completion candidates using the same scheme as $LS_COLORS
 zstyle ':completion:*' rehash true # update completions for newly installed packages
 zstyle ':completion:*:options' description 'yes' # provide descriptions for options
+zstyle ':completion:*' keep-prefix true # do not expand variables or expansions
+
 
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters # complete variable subscripts
 zstyle ':completion:*:manuals' separate-sections true # display man completion by section number
 # (WIP) make _fc completions not spew out every history event as an option
-
-compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-${ZSH_VERSION}"
-
+compinit
 (( timing[completions] += EPOCHREALTIME ))
-
-timing[suggestions]="-$EPOCHREALTIME"
-# <> Zsh-autosuggestions customization
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=${pal[light_grey]}"
-
-# shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
-source "$zsh_script_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" 2>> /dev/null # Load autosuggestions
-(( timing[suggestions] += EPOCHREALTIME ))
-
 
 # <> Fast-syntax-highlighting customization
 timing[F-Sy-H]="-$EPOCHREALTIME"
-
 # only source it if we haven't already
 # shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
 (( ${#FAST_HIGHLIGHT} )) || source "$zsh_script_dir/F-Sy-H/F-Sy-H.plugin.zsh"
 (( timing[F-Sy-H] += EPOCHREALTIME ))
+
+### Keybindings
+bindkey -- '\e[H'    beginning-of-line              # HOME
+bindkey -- '\e[1;2H' beginning-of-buffer-or-history # Shift + HOME
+bindkey -- '\e[F'    end-of-line                    # END
+bindkey -- '\e[1;2F' end-of-buffer-or-history       # Shift + END
+bindkey -- '\e[A'    up-line-or-history             # Shift + ->
+bindkey -- '\e[B'    down-line-or-history           # Shift + ->
+bindkey -- '\e[1;2C' emacs-forward-word             # Shift + ->
+bindkey -- '\e[1;2D' emacs-backward-word            # Shift + <-
+bindkey -- '\e[3~'   delete-char                    # DEL
+
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey -- '^w^q' edit-command-line
+bindkey -- '^wq' edit-command-line
 
 # only set KSH_ARRAYS after loading plugins to avoid jank
 setopt KSH_ARRAYS # Make Arrays start at index 0 # !! breaks unpatched zsh-autosuggestions and z-sy-h
@@ -696,8 +706,8 @@ declare -a timing_order=( # ** Order of timing nodes
     'path'
     'pager'
     'source'
-    'completions'
     'suggestions'
+    'completions'
     'F-Sy-H'
   'promises'
 )
@@ -723,8 +733,8 @@ declare -A timing_line=( # ** helper assoc with the same keys as ${timing[@]} co
              [path]="${col[fg_dark_blue]}${nbsp}├╴${col[reset]}Update \${PATH}"
             [pager]="${col[fg_dark_blue]}${nbsp}├╴${col[reset]}Pager options"
            [source]="${col[fg_dark_blue]}${nbsp}└╴${col[reset]}Sourcing Plugins"
-      [completions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Completions"
-      [suggestions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}History based autosuggestions"
+      [suggestions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Setting up autosuggestions"
+      [completions]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Setting up completions"
            [F-Sy-H]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}├╴${col[reset]}Setting up syntax highlighting"
          [promises]="${col[fg_dark_blue]}${nbsp}${nbsp}${nbsp}└╴${col[reset]}Resolving outstanding promises"
 )
