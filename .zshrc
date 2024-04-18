@@ -35,16 +35,16 @@ export zsh_script_dir="${HOME}/.local/share/zsh/scripts" # "plugin" script locat
 declare -g update_frequency='7d' # ?? interval between update checks. Format: 1w2d3h4m5s (case insensitive); Default: 7d
 
 declare -gA plugins=( # ?? List plugins you wish to use by repo URL
-              [col_gen]="${zsh_script_dir}/col_gen/col_gen.sh"           # local
-              [percode]="${zsh_script_dir}/percode/percode.sh"           # local
-         [shared_agent]="${zsh_script_dir}/shared_agent/shared_agent.sh" # local
-            [shell_pad]="${zsh_script_dir}/shell_pad/shell_pad.zsh"      # local
-               [synker]="${zsh_script_dir}/synker/synker.sh"             # local
-               [typeof]="${zsh_script_dir}/typeof/typeof.sh"             # local
-               [F-Sy-H]='https://github.com/z-shell/F-Sy-H.git'
-     [zsh-autocomplete]='https://github.com/marlonrichert/zsh-autocomplete.git'
-     [zsh-autosuggestions]='https://github.com/zsh-users/zsh-autosuggestions.git'
-      [zsh-completions]='https://github.com/zsh-users/zsh-completions.git'
+                  [col_gen]="${zsh_script_dir}/col_gen/col_gen.sh"           # local
+                  [percode]="${zsh_script_dir}/percode/percode.sh"           # local
+             [shared_agent]="${zsh_script_dir}/shared_agent/shared_agent.sh" # local
+                [shell_pad]="${zsh_script_dir}/shell_pad/shell_pad.zsh"      # local
+                   [synker]="${zsh_script_dir}/synker/synker.sh"             # local
+                   [typeof]="${zsh_script_dir}/typeof/typeof.sh"             # local
+ [fast-syntax-highlighting]='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
+         [zsh-autocomplete]='https://github.com/marlonrichert/zsh-autocomplete.git'
+      [zsh-autosuggestions]='https://github.com/zsh-users/zsh-autosuggestions.git'
+          [zsh-completions]='https://github.com/zsh-users/zsh-completions.git'
 )
 ### **================================**
 (( timing[list_plugins] += EPOCHREALTIME ))
@@ -498,11 +498,11 @@ compinit
 (( timing[completions] += EPOCHREALTIME ))
 
 # <> Fast-syntax-highlighting customization
-timing[F-Sy-H]="-$EPOCHREALTIME"
+timing[syntax-highlighting]="-$EPOCHREALTIME"
 # only source it if we haven't already
 # shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
-(( ${#FAST_HIGHLIGHT} )) || source "$zsh_script_dir/F-Sy-H/F-Sy-H.plugin.zsh"
-(( timing[F-Sy-H] += EPOCHREALTIME ))
+(( ${#FAST_HIGHLIGHT} )) || source "$zsh_script_dir/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+(( timing[syntax-highlighting] += EPOCHREALTIME ))
 
 ### Keybindings
 bindkey -- '\e[H'    beginning-of-line              # HOME
@@ -708,7 +708,7 @@ declare -a timing_order=( # ** Order of timing nodes
     'source'
     'suggestions'
     'completions'
-    'F-Sy-H'
+    'syntax-highlighting'
   'promises'
 )
 
