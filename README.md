@@ -18,19 +18,19 @@
     <thead>
       <tr><th>Language</th><th>Files</th><th>Lines</th><th>Blank</th><th>Comment</th><th>Code</th><th>Complexity</th><th>Bytes</th></tr>
     </thead><tbody>
-      <tr><th>Lua</th><th>41</th><th>2458</th><th>196</th><th>393</th><th>1869</th><th>0</th><th>81798</th></tr>
-      <tr><th>Shell</th><th>6</th><th>1100</th><th>126</th><th>187</th><th>787</th><th>0</th><th>49922</th></tr>
+      <tr><th>Lua</th><th>39</th><th>2470</th><th>193</th><th>424</th><th>1853</th><th>0</th><th>81750</th></tr>
+      <tr><th>Shell</th><th>6</th><th>1100</th><th>126</th><th>187</th><th>787</th><th>0</th><th>50119</th></tr>
       <tr><th>TOML</th><th>4</th><th>455</th><th>33</th><th>124</th><th>298</th><th>0</th><th>16901</th></tr>
       <tr><th>INI</th><th>5</th><th>288</th><th>35</th><th>169</th><th>84</th><th>0</th><th>7620</th></tr>
       <tr><th>SSH config</th><th>1</th><th>74</th><th>15</th><th>0</th><th>59</th><th>0</th><th>1823</th></tr>
+      <tr><th>JSON</th><th>1</th><th>53</th><th>0</th><th>0</th><th>53</th><th>0</th><th>4935</th></tr>
       <tr><th>Git config</th><th>1</th><th>62</th><th>15</th><th>0</th><th>47</th><th>0</th><th>1871</th></tr>
-      <tr><th>JSON</th><th>1</th><th>41</th><th>0</th><th>0</th><th>41</th><th>0</th><th>3762</th></tr>
       <tr><th>Markdown</th><th>1</th><th>54</th><th>15</th><th>0</th><th>39</th><th>0</th><th>1669</th></tr>
       <tr><th>Systemd Service</th><th>2</th><th>43</th><th>6</th><th>0</th><th>37</th><th>0</th><th>1175</th></tr>
       <tr><th>Justfile</th><th>1</th><th>32</th><th>10</th><th>0</th><th>22</th><th>0</th><th>819</th></tr>
       <tr><th>License</th><th>1</th><th>21</th><th>4</th><th>0</th><th>17</th><th>0</th><th>1073</th></tr>
     </tbody><tfoot>
-      <tr><th>Total</th><th>64</th><th>4628</th><th>455</th><th>873</th><th>3300</th><th>0</th><th>168433</th></tr>
+      <tr><th>Total</th><th>62</th><th>4652</th><th>452</th><th>904</th><th>3296</th><th>0</th><th>169755</th></tr>
     </tfoot>
   </table>
 <!--loc-end-->
