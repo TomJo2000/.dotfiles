@@ -6,13 +6,13 @@
 ---| editorconfig-checker
 local servers = {
   lsp = {
-    ['lua_ls'] = require('config.lsp.lua_ls'),
-    ['bashls'] = require('config.lsp.bashls'),
-    ['taplo'] = require('config.lsp.taplo'),
+    ['lua_ls'] = require('plugins.lsp.lua_ls'),
+    ['bashls'] = require('plugins.lsp.bashls'),
+    ['taplo'] = require('plugins.lsp.taplo'),
   },
   linters = {
-    -- ['cspell'] = require('config.lsp.cspell'),
-    ['editorconfig-checker'] = require('config.lsp.ec-checker'),
+    -- ['cspell'] = require('plugins.lsp.cspell'),
+    ['editorconfig-checker'] = require('plugins.lsp.ec-checker'),
   },
 }
 

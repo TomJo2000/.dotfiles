@@ -4,7 +4,7 @@
 -- Credit: glepnir
 
 -- Color table for highlights
-local theme = require('config.colors')
+local theme = require('plugins.onedark').colors
 
 local conditions = {
   buffer_not_empty = function()

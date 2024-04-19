@@ -1,13 +1,13 @@
+package.path = package.path .. (';%s'):format(vim.fn.stdpath('data') .. '/lazy/mini.map/lua/mini/map.lua')
 local MiniMap = require('mini.map')
 local M = {}
 
-MiniMap.setup()
-
+-- stylua: ignore
 M.binds = {
-  { 'n', '<Leader>mm', MiniMap.toggle, { desc = '[M]ini.[m]ap toggle' } },
-  { 'n', '<Leader>mo', MiniMap.open, { desc = '[M]ini.map [o]pen' } },
-  { 'n', '<Leader>mc', MiniMap.close, { desc = '[M]ini.map [c]lose' } },
-  { 'n', '<Leader>mr', MiniMap.refresh, { desc = '[M]ini.map [r]efresh' } },
+  { '<Leader>mo', MiniMap.open   , { mode = 'n', desc = '[M]ini.map [o]pen' }    },
+  { '<Leader>mc', MiniMap.close  , { mode = 'n', desc = '[M]ini.map [c]lose' }   },
+  { '<Leader>mm', MiniMap.toggle , { mode = 'n', desc = '[M]ini.[m]ap toggle' }  },
+  { '<Leader>mr', MiniMap.refresh, { mode = 'n', desc = '[M]ini.map [r]efresh' } },
 }
 
 M.config = {
@@ -20,6 +20,7 @@ M.config = {
       info  = 'DiagnosticFloatingInfo',
       hint  = 'DiagnosticFloatingHint',
     }),
+    MiniMap.gen_integration.diff(),
     MiniMap.gen_integration.gitsigns({
       add    = 'GitSignsAdd',
       change = 'GitSignsChange',
@@ -35,7 +36,7 @@ M.config = {
     side = 'right',
     width = math.floor(vim.o.columns / 9),
     winblend = 70, -- This looks about right to me
-    show_integration_count = true,
+    show_integration_count = false,
   },
 }
 

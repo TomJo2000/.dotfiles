@@ -21,7 +21,7 @@ require('lazy').setup({
       'nvim-tree/nvim-web-devicons',
       'nvim-lua/plenary.nvim',
     },
-    config = require('config.alpha_nvim'),
+    config = require('plugins.alpha_nvim'),
   },
 
   -- Session persistence and management
@@ -127,7 +127,7 @@ require('lazy').setup({
   { -- LSP context breadcrumbs
     'SmiteshP/nvim-navic',
     event = 'LspAttach',
-    opts = require('config.breadcrumbs'),
+    opts = require('plugins.breadcrumbs'),
     dependencies = {
       'MunifTanjim/nui.nvim',
       'nvim-tree/nvim-web-devicons', -- NerdFont icons
@@ -143,8 +143,10 @@ require('lazy').setup({
   { -- Theme inspired by Atom
     'navarasu/onedark.nvim',
     priority = 1000, -- make sure the colorscheme is loaded immediately
-    config = function()
-      require('onedark').setup(require('plugins.onedark'))
+    config = function() -- this goes haywire if I pass in the config using the opts key for some reason
+      local opts = require('plugins.onedark').config
+      ---@diagnostic disable: different-requires
+      require('onedark').setup(opts)
       vim.cmd.colorscheme('onedark')
     end,
   },
@@ -161,7 +163,7 @@ require('lazy').setup({
     -- Tree-sitter based bracket pair highlighting
     dependencies = { 'HiPhish/rainbow-delimiters.nvim' },
     main = 'ibl',
-    config = require('config.indents'),
+    config = require('plugins.indents'),
     event = 'BufEnter',
   },
 
@@ -262,18 +264,22 @@ require('lazy').setup({
 
   { -- Code minimap
     'echasnovski/mini.map',
-    -- branch = 'main',
-    config = function()
-      require('mini.map').setup(
-        ---@source ./config/mini.map.lua
-        require('config.mini.map')
-      )
+    event = 'BufEnter',
+    keys = require('plugins.mini.map').binds,
+    dependencies = {
+      'echasnovski/mini.diff', -- diff highlighting
+      'lewis6991/gitsigns.nvim', -- git highlighting
+    },
+    opts = require('plugins.mini.map').config,
+    config = function(opts)
+      ---@diagnostic disable: different-requires
+      require('mini.map').setup(opts)
     end,
   },
 
   { -- Add, delete, replace, find, highlight surrounding characters
     'echasnovski/mini.surround',
-    config = require('config.mini.surround'),
+    config = require('plugins.mini.surround'),
   },
 
   { -- Per project file shortcuts
@@ -286,20 +292,20 @@ require('lazy').setup({
   { -- Ergonomic window movements
     'sindrets/winshift.nvim',
     cmd = 'WinShift',
-    opts = { -- This can't be lazy since I use it for a keymap
+    opts = {
       keymaps = { disable_defaults = true },
     },
     -- stylua: ignore
     keys = { -- Moving windows more better
-      { 'n', '<C-w><C-w>'        , '<Cmd>WinShift swap<CR>'     , { desc = 'Swap [w]indow' }           },
-      { 'n', '<C-w><C-Up>'       , '<Cmd>WinShift up<CR>'       , { desc = 'Swap window <Up>' }        },
-      { 'n', '<C-w><C-Down>'     , '<Cmd>WinShift down<CR>'     , { desc = 'Swap window <Down>' }      },
-      { 'n', '<C-w><C-Left>'     , '<Cmd>WinShift left<CR>'     , { desc = 'Swap window <Left>' }      },
-      { 'n', '<C-w><C-Right>'    , '<Cmd>WinShift right<CR>'    , { desc = 'Swap window <Right>' }     },
-      { 'n', '<C-S-w><C-S-Up>'   , '<Cmd>WinShift far_up<CR>'   , { desc = 'Swap window far <UP>' }    },
-      { 'n', '<C-S-w><C-S-Down>' , '<Cmd>WinShift far_down<CR>' , { desc = 'Swap window far <DOWN>' }  },
-      { 'n', '<C-S-w><C-S-Left>' , '<Cmd>WinShift far_left<CR>' , { desc = 'Swap window far <LEFT>' }  },
-      { 'n', '<C-S-w><C-S-Right>', '<Cmd>WinShift far_right<CR>', { desc = 'Swap window far <RIGHT>' } },
+      { '<C-w><C-w>'        , '<Cmd>WinShift swap<CR>'     , { mode = 'n' , desc = 'Swap [w]indow' }           },
+      { '<C-w><C-Up>'       , '<Cmd>WinShift up<CR>'       , { mode = 'n' , desc = 'Swap window <Up>' }        },
+      { '<C-w><C-Down>'     , '<Cmd>WinShift down<CR>'     , { mode = 'n' , desc = 'Swap window <Down>' }      },
+      { '<C-w><C-Left>'     , '<Cmd>WinShift left<CR>'     , { mode = 'n' , desc = 'Swap window <Left>' }      },
+      { '<C-w><C-Right>'    , '<Cmd>WinShift right<CR>'    , { mode = 'n' , desc = 'Swap window <Right>' }     },
+      { '<C-S-w><C-S-Up>'   , '<Cmd>WinShift far_up<CR>'   , { mode = 'n' , desc = 'Swap window far <UP>' }    },
+      { '<C-S-w><C-S-Down>' , '<Cmd>WinShift far_down<CR>' , { mode = 'n' , desc = 'Swap window far <DOWN>' }  },
+      { '<C-S-w><C-S-Left>' , '<Cmd>WinShift far_left<CR>' , { mode = 'n' , desc = 'Swap window far <LEFT>' }  },
+      { '<C-S-w><C-S-Right>', '<Cmd>WinShift far_right<CR>', { mode = 'n' , desc = 'Swap window far <RIGHT>' } },
     },
   },
 
@@ -310,7 +316,7 @@ require('lazy').setup({
     end,
     opts = require('plugins.presence'),
     config = function(opts)
-      require('presence').setup(opts)
+      require('plugins.presence').setup(opts)
     end,
     lazy = true,
   },
@@ -330,4 +336,5 @@ require('lazy').setup({
       },
     },
   },
-}, require('config.lazy'))
+  ---@diagnostic disable: different-requires
+}, require('plugins.lazy'))

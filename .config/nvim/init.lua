@@ -21,7 +21,10 @@ vim.g.maplocalleader = ' '
 tree -a -l --dirsfirst "$DOT_FILES/.config/nvim/"
 ${XDG_CONFIG_HOME}/nvim
 ├── lua
-│   ├── config
+│   ├── kickstart
+│   │   ├── autoformat.lua
+│   │   └── debug.lua
+│   ├── plugins
 │   │   ├── hydra
 │   │   │   ├── git_hydra.lua
 │   │   │   ├── init.lua
@@ -33,31 +36,25 @@ ${XDG_CONFIG_HOME}/nvim
 │   │   │   ├── init.lua
 │   │   │   ├── lua_ls.lua
 │   │   │   └── taplo.lua
-│   │   ├── alpha_nvim.lua
-│   │   ├── breadcrumbs.lua
-│   │   ├── cmp.lua
-│   │   ├── colors.lua
-│   │   ├── delims.lua
-│   │   ├── delta.lua
-│   │   ├── git.lua
-│   │   ├── indents.lua
-│   │   ├── lazy.lua
-│   │   ├── telescope.lua
-│   │   └── treesitter.lua
-│   ├── kickstart
-│   │   ├── autoformat.lua
-│   │   └── debug.lua
-│   ├── plugins
 │   │   ├── mini
 │   │   │   ├── map.lua
 │   │   │   └── surround.lua
+│   │   ├── alpha_nvim.lua
+│   │   ├── breadcrumbs.lua
+│   │   ├── cmp.lua
+│   │   ├── delims.lua
+│   │   ├── delta.lua
 │   │   ├── formatter.lua
+│   │   ├── git.lua
 │   │   ├── gitsigns.lua
+│   │   ├── indents.lua
 │   │   ├── init.lua
+│   │   ├── lazy.lua
 │   │   ├── lualine.lua
 │   │   ├── onedark.lua
 │   │   ├── presence.lua
-│   │   └── telescope.lua
+│   │   ├── telescope.lua
+│   │   └── treesitter.lua
 │   ├── utils
 │   │   ├── capture.lua
 │   │   └── init.lua
@@ -68,7 +65,7 @@ ${XDG_CONFIG_HOME}/nvim
 ├── lazy-lock.json
 └── stylua.toml
 
-9 directories, 39 files
+8 directories, 37 files
 ]]
 
 -- [[ Setting options ]]

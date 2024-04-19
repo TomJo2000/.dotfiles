@@ -13,7 +13,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- [[ Configure Treesitter ]]
 ---@source ./lua/config/treesitter.lua
-require('config.treesitter').setup({
+require('plugins.treesitter').setup({
       -- stylua: ignore
     ensure_installed = {
       'bash', 'c', 'cpp', 'diff', 'go', 'git_config', 'git_rebase',
@@ -23,7 +23,7 @@ require('config.treesitter').setup({
 })
 
 -- [[ Delimiter colorization ]]
-vim.g.rainbow_delimiters = require('config.delims')
+vim.g.rainbow_delimiters = require('plugins.delims')
 
 -- [[ open MiniMap ]]
 require('mini.map').open()
@@ -64,13 +64,13 @@ require('Comment').setup({
 })
 
 -- [[ Configure LSPs ]]
-require('config.lsp')
+require('plugins.lsp')
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
 require('luasnip.loaders.from_vscode').lazy_load()
 require('luasnip').config.setup()
-require('config.cmp')
+require('plugins.cmp')
 
 --[[ Hydra bindings ]]
-require('config.hydra')
+require('plugins.hydra')
