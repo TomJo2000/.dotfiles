@@ -24,7 +24,7 @@ setopt BASH_RE_MATCH        # Make the =~ operator behave like in Bash, see `man
 setopt RE_MATCH_PCRE        # Make [[ "val" =~ ^pattern$ ]] use PCRE instead of ERE
 setopt INTERACTIVE_COMMENTS # Allow comments in interactive shells
 # >< can cause issues with some plugins, disable before loading problematic plugins then reenable
-setopt KSH_ARRAYS           # Make Arrays 0-indexed like god intended
+setopt KSH_ARRAYS           # Make Arrays 0-indexed like Ken intended
 ### **================================**
 
 declare -gA promises=() # holds a list of pending promises to resolve
