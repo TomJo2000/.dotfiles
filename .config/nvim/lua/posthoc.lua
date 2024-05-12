@@ -50,6 +50,7 @@ require('which-key').register({
 -- [[ Comments ]]
 vim.g.skip_ts_context_commentstring_module = true
 require('ts_context_commentstring').setup({ enable_autocmd = false })
+
 -- stylua: ignore
 require('Comment').setup({
   padding   = true,
@@ -74,3 +75,7 @@ require('plugins.cmp')
 
 --[[ Hydra bindings ]]
 require('plugins.hydra')
+
+vim.api.nvim_create_user_command('Format', function()
+  require('conform').format({}, nil)
+end, {})

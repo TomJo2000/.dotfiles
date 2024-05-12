@@ -1,8 +1,12 @@
-return {
+local M = {}
+
+M.config = {
+  -- stylua: ignore
   formatters_by_ft = {
-    lua = { 'stylua' },
+    lua  = { 'stylua' },
+    just = { 'just' },
+    zig  = { 'zigfmt' },
     -- Use the "*" filetype to run formatters on all filetypes.
-    just = {},
     ['*'] = { 'codespell' },
     -- Use the "_" filetype to run formatters on filetypes that don't
     -- have other formatters configured.
@@ -21,3 +25,5 @@ return {
   -- Conform will notify you when a formatter errors
   notify_on_error = true,
 }
+
+return M

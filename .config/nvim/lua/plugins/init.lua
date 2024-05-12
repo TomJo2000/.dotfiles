@@ -41,7 +41,7 @@ require('lazy').setup({
     disable = {
       buftypes = {
         'terminal', 'lspinfo', 'checkhealth',
-        'help', 'lazy', 'mason',
+        'help', 'lazy'
       },
     },
   },
@@ -58,13 +58,42 @@ require('lazy').setup({
 
   { -- More customizable formatters.
     'stevearc/conform.nvim',
-    config = require('plugins.formatter'),
+    config = require('plugins.formatter').config,
   },
 
   -- Split or join oneliners to multiline statements and vise versa
   { 'AndrewRadev/splitjoin.vim' },
 
   -- [[ LSP ]]
+  { -- LSP Configuration
+    'neovim/nvim-lspconfig',
+    -- stylua: ignore
+    depdencies = {
+      'j-hui/fidget.nvim',    -- Useful status updates for LSP
+      'folke/neodev.nvim',    -- function signatures for nvim's Lua API
+      'onsails/lspkind.nvim', -- icons for LSP suggestions
+    },
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = function()
+      local default_config = require('lspconfig.util').default_config
+      local opts = require('plugins.lsp')
+      for lsp, conf in pairs(opts) do
+        -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
+        local capabilities = vim.lsp.protocol.make_client_capabilities()
+        capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
+        -- Ensure the servers above are installed
+        -- if vim.fn.executable(cmd) ~= 1 then
+        --   vim.print('Could not find', cmd)
+        -- end
+
+        ---@diagnostic disable: redefined-local
+        local conf = vim.tbl_deep_extend('force', default_config, conf)
+        require('lspconfig')[lsp].setup(conf)
+      end
+    end,
+  },
+
   { -- Generic LSP injections via Lua
     'nvimtools/none-ls.nvim',
     event = { 'BufReadPre', 'BufNewFile' },
@@ -72,7 +101,6 @@ require('lazy').setup({
     config = function()
       local none = require('null-ls')
       none.setup({
-        -- debug = true,
         -- stylua: ignore
         sources = {
           none.builtins.code_actions.gitrebase, -- inject a code action for fast git rebase interactive mode switching
@@ -83,22 +111,9 @@ require('lazy').setup({
         },
         update_in_insert = true,
         debounce = 150,
+        -- debug = true,
       })
     end,
-  },
-
-  { -- Automatically install LSPs to stdpath for Neovim
-    'williamboman/mason.nvim',
-    config = true,
-    -- stylua: ignore
-    dependencies = {
-      'neovim/nvim-lspconfig',             -- LSP Configuration & Plugins
-      'williamboman/mason-lspconfig.nvim', -- Mason/lspconfig interop
-      'j-hui/fidget.nvim',                 -- Useful status updates for LSP
-      'folke/neodev.nvim',                 -- function signatures for nvim's Lua API
-      'onsails/lspkind.nvim',              -- icons for LSP suggestions
-      'nvim-telescope/telescope.nvim',     -- used in some of my LSP keybinds
-    },
   },
 
   { -- Syntax aware text-objects
@@ -115,6 +130,7 @@ require('lazy').setup({
     'hrsh7th/nvim-cmp',
     -- stylua: ignore
     dependencies = {
+      'onsails/lspkind.nvim',         -- icons for LSP suggestions
       'L3MON4D3/LuaSnip',             -- Snippet Engine
       'saadparwaiz1/cmp_luasnip',     -- and its associated nvim-cmp source
       'hrsh7th/cmp-nvim-lsp',         -- Adds LSP completion capabilities
@@ -236,7 +252,7 @@ require('lazy').setup({
     opts = {
       disabled_filetypes = {
         'text', 'markdown', 'html', 'lspinfo',
-        'mason', 'help', 'lazy', 'checkhealth',
+        'help', 'lazy', 'checkhealth', 'gitcommit',
       },
       custom_colorcolumn = {
         lua = 160,
@@ -250,10 +266,12 @@ require('lazy').setup({
     'NvChad/nvim-colorizer.lua',
     opts = {
       user_default_options = { names = false },
+      -- stylua: ignore
       buftypes = {
         '*',
-        '!prompt', -- exclude prompt and popup buftypes from highlight
-        '!popup',
+        '!prompt', -- exclude prompts
+        '!popup',  -- exclude popups
+        '!lazy',   -- exclude lazy.nvim
       },
     },
   },
@@ -270,11 +288,7 @@ require('lazy').setup({
       'echasnovski/mini.diff', -- diff highlighting
       'lewis6991/gitsigns.nvim', -- git highlighting
     },
-    opts = require('plugins.mini.map').config,
-    config = function(opts)
-      ---@diagnostic disable: different-requires
-      require('mini.map').setup(opts)
-    end,
+    config = require('mini.map').setup(require('plugins.mini.map').config),
   },
 
   { -- Add, delete, replace, find, highlight surrounding characters
@@ -311,15 +325,16 @@ require('lazy').setup({
 
   { -- Discord Rich Presence
     'andweeb/presence.nvim',
+    event = 'VeryLazy',
     cond = function() -- Only load this plugin if Discord is installed.
-      return vim.fn.executable('discord') == 1
+      return vim.fn.executable('discord') == 1 and true or false
     end,
-    opts = require('plugins.presence'),
-    config = function(opts)
-      require('plugins.presence').setup(opts)
+    config = function()
+      local opts = require('plugins.presence')
+      require('presence').setup(opts)
     end,
-    lazy = true,
   },
+
   { -- yank history
     'gbprod/yanky.nvim',
     opts = {
