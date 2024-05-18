@@ -67,28 +67,30 @@ require('lazy').setup({
   -- [[ LSP ]]
   { -- LSP Configuration
     'neovim/nvim-lspconfig',
+    event = { 'BufReadPre', 'BufNewFile' },
     -- stylua: ignore
     depdencies = {
       'j-hui/fidget.nvim',    -- Useful status updates for LSP
       'folke/neodev.nvim',    -- function signatures for nvim's Lua API
       'onsails/lspkind.nvim', -- icons for LSP suggestions
     },
-    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
-      local default_config = require('lspconfig.util').default_config
       local opts = require('plugins.lsp')
+      -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
       for lsp, conf in pairs(opts) do
-        -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
-        -- Ensure the servers above are installed
-        -- if vim.fn.executable(cmd) ~= 1 then
-        --   vim.print('Could not find', cmd)
-        -- end
-
+        local default_config = require('lspconfig')[lsp].document_config.default_config
         ---@diagnostic disable: redefined-local
         local conf = vim.tbl_deep_extend('force', default_config, conf)
+        -- Ensure the servers above are installed
+        if vim.fn.executable(conf.cmd[1]) ~= 1 then
+          vim.cmd('echohl LspDiagnosticsVirtualTextError')
+          vim.cmd(string.format([[echom "Could not find: %s"]], conf.cmd[1]))
+          vim.cmd('echohl NONE')
+        end
+
         require('lspconfig')[lsp].setup(conf)
       end
     end,
