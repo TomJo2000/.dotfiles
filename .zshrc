@@ -170,7 +170,8 @@ exec {promise}<> <( # promise agent status
 # We need SSH_AUTH_SOCK and SSH_AGENT_PID for `ssh-add` to connect to the SSH Agent
 parse_ssh_add() { # make sense of the `ssh-add -l` output and format the output accordingly
     # Grab the `ssh-agent` PID from our service manager
-    local SSH_AGENT_PID="$(systemctl show --property MainPID --value --user ssh-agent.service)"
+    local SSH_AGENT_PID
+    SSH_AGENT_PID="$(systemctl show --property MainPID --value --user ssh-agent.service)"
     local -a keys=()
     local line
     while read -r line; do
@@ -257,10 +258,10 @@ printf -v col_banner '%b' \
 
 ### Update checking
 timing[plugins]="-$EPOCHREALTIME"
-    exec {promise}<> <( #
-        source "${zsh_script_dir}/update.sh"
-        updates
-    ); promises[plugin_updates]="$promise"; promise=''
+    # exec {promise}<> <( #
+    #     source "${zsh_script_dir}/update.sh"
+    #     updates
+    # ); promises[plugin_updates]="$promise"; promise=''
 (( timing[updates] = timing[plugins] + EPOCHREALTIME ))
 
 ### Evaluate missing plugins
@@ -337,8 +338,9 @@ local -a hist_options=(
 setopt "${hist_options[@]}"
 
 export HISTFILE="$HOME/.histfile"
-export HISTSIZE='4000'
-export SAVEHIST='10000'
+export HISTSIZE='10000'
+export SAVEHIST="$HISTSIZE"
+export HISTDUP='erase'
 
 (( timing[history] += EPOCHREALTIME ))
 timing[path]="-$EPOCHREALTIME"
@@ -528,15 +530,16 @@ setopt KSH_ARRAYS # Make Arrays start at index 0 # !! breaks unpatched zsh-autos
 timing[promises]="-$EPOCHREALTIME"
 # $promise already declared local at the top of main()
 local fd
+# shellcheck disable=SC2296
 for promise in "${(k)promises[@]}"; do
     fd="${promises[$promise]}"
     case "$promise" in
         ('ssh_pid') # resolve SSH Agent PID
-            SSH_AGENT_PID="$(</dev/fd/${fd})"
+            SSH_AGENT_PID="$(</dev/fd/"${fd}")"
         ;;
         ('ssh_agent') # resolve SSH Agent status
-            local agent_status
-            printf '%b\n' "$(</dev/fd/${fd})"
+            # local agent_status
+            printf '%b\n' "$(</dev/fd/"${fd}")"
             export SSH_AUTH_SOCK SSH_AGENT_PID
         ;;
         ('plugin_updates') # resolve plugin updates
@@ -575,6 +578,7 @@ function parse_args() { # (ACK) Based on: https://stackoverflow.com/a/14203146
     done
     }
 
+# shellcheck disable=SC2046
 { # <> Version and dependency information
 local name; name="TomIO's .zshrc"
 local version; version="${col[uline]}${col[fg_zomp]}v2.0.0${col[reset]}"
@@ -671,8 +675,10 @@ parse_args "$@" # parse args
 ### initialize starship prompt, this needs to be done in every nested shell.
 # Sourcing a proc substitution is what `starship init zsh` does anyway,
 # this way we just don't have to eval it.
-if source <(/usr/bin/starship init zsh --print-full-init); then
+# shellcheck source=/dev/null
+if source <(starship init zsh --print-full-init); then
     function prompt_marker() {
+        # shellcheck disable=SC1003 # ?? this \\ is a u+009C string terminator
         printf '\e]133;A\e\\'
     }
     precmd_functions+=('prompt_marker')

@@ -1,8 +1,10 @@
 # -*- justfile -*-
-set ignore-comments
-set quiet
+
+set ignore-comments := true
+set quiet := true
 
 # variables
+
 dotfiles := justfile_directory()
 home := home_directory()
 exclude_file := dotfiles / ".config/meta/rsync_ignore"
@@ -10,23 +12,25 @@ exclude_file := dotfiles / ".config/meta/rsync_ignore"
 default:
     just --list
 
-@deploy: # preview and deploy files
-    rsync --dry-run --out-format="%'''-6b/%'''7l %o %B %M %n" --filter=". {{exclude_file}}" -a "{{dotfiles}}/" "{{home}}/"
+@deploy:
+    rsync --dry-run --out-format="%'''-6b/%'''7l %o %B %M %n" --filter=". {{ exclude_file }}" -a "{{ dotfiles }}/" "{{ home }}/"
     -just deploy_files # it's fine if this "fails" due to negative confirmation
 
-[private, confirm("Are you sure you want to deploy these files? (y/N)")]
+[confirm("Are you sure you want to deploy these files? (y/N)")]
+[private]
 @deploy_files:
-    rsync --progress --filter=". {{exclude_file}}" -a "{{dotfiles}}/" "{{home}}/"
+    rsync --progress --filter=". {{ exclude_file }}" -a "{{ dotfiles }}/" "{{ home }}/"
 
-@enroll +FILES: # add files to the repo
-    echo "enroll"
-
-
-@diff DIRS: # diffs directories
+@diff DIRS:
     echo "diff"
 
-@stats: # update the README stats
-    {{dotfiles}}/.config/meta/readme_stats.sh
+@enroll +FILES:
+    echo "enroll"
+
+@fonts:
+    "{{ dotfiles }}/.config/meta/fetch_fonts.sh"
+
+@stats:
+    "{{ dotfiles }}/.config/meta/readme_stats.sh"
 
 # vim: ft=just
-

@@ -22,4 +22,3 @@ done
 # Output the full font names, and versions then add them to the font cache
 fc-query -f '%{fullname}@%{fontversion}\n' "${XDG_DATA_HOME}/fonts/Hasklig/HaskligNFM_"{Regular,Italic,Bold,BoldItalic}".otf"
 fc-cache -v "${FONT_DIR}"
-
