@@ -42,9 +42,16 @@ return cmp.setup({
     end, { 'i', 's' }),
   }),
   sources = {
-    { name = 'nvim_lsp' },
+    { name = 'calc' },
+    { name = 'commit' },
+    -- { name = 'dynamic' },
+    { name = 'git' },
     { name = 'luasnip' },
+    { name = 'nvim_lsp' },
+    { name = 'nvim_lsp_signature_help' },
+    { name = 'omni' },
     { name = 'path' },
+    { name = 'cmp_yanky' },
   },
   formatting = {
     format = require('lspkind').cmp_format({

@@ -130,16 +130,23 @@ require('lazy').setup({
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
+    lazy = true,
     -- stylua: ignore
     dependencies = {
-      'onsails/lspkind.nvim',         -- icons for LSP suggestions
-      'L3MON4D3/LuaSnip',             -- Snippet Engine
-      'saadparwaiz1/cmp_luasnip',     -- and its associated nvim-cmp source
-      'hrsh7th/cmp-nvim-lsp',         -- Adds LSP completion capabilities
-      'hrsh7th/cmp-path',             -- File path completion
-      'rafamadriz/friendly-snippets', -- Adds a number of user-friendly snippets
+      'hrsh7th/cmp-calc',                    -- Math
+      'Dosx001/cmp-commit',                  -- Repo contents
+      -- 'uga-rosa/cmp-dynamic',             -- Generates suggestions from Lua functions
+      'petertriho/cmp-git',                  -- Git
+      'saadparwaiz1/cmp_luasnip',            -- LuaSnip cmp source
+      'hrsh7th/cmp-nvim-lsp-signature-help', -- LSP powered function signatures
+      'hrsh7th/cmp-nvim-lsp',                -- Adds LSP completion capabilities
+      'hrsh7th/cmp-omni',                    -- Neovim Omnifunc
+      'hrsh7th/cmp-path',                    -- File path completion
+      'chrisgrieser/cmp_yanky',              -- Clipboard/Yank history
+      'rafamadriz/friendly-snippets',        -- Adds a number of user-friendly snippets
+      'onsails/lspkind.nvim',                -- Icons for LSP suggestions
+      'L3MON4D3/LuaSnip',                    -- Snippet Engine
     },
-    lazy = true,
   },
 
   { -- LSP context breadcrumbs
