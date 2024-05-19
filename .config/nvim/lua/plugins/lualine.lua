@@ -53,8 +53,10 @@ local config = {
   },
 }
 
+local focused = {}
+
 -- Add components to left sections
-local left_side = {
+focused.left = {
   { -- Left edge
     function()
       return '▊'
@@ -156,7 +158,7 @@ local left_side = {
 }
 
 -- Add components to right sections
-local right_side = {
+focused.right = {
   { -- LSP diagnostics count
     'diagnostics',
     sources = { 'nvim_diagnostic' },
@@ -206,7 +208,62 @@ local right_side = {
   },
 }
 
-config.sections.lualine_c = left_side
-config.sections.lualine_x = right_side
+local unfocused = {}
+
+unfocused.left = {
+  { -- File name, with changed formatting
+    function()
+      local options = {
+        read_only = '',
+        modified = '⦿',
+        max_len = vim.fn.winwidth(0) / 3,
+      }
+      return ('%s%s%s'):format(
+        vim.bo.modifiable and '' or options.read_only, -- Readonly?
+        vim.fn.expand('%:p:~'), -- file and immediate parent
+        vim.bo.modified and options.modified or '' -- Unsaved changes?
+      )
+    end,
+    color = { fg = theme.green },
+    padding = { right = 1 },
+  },
+}
+unfocused.right = {
+  { -- Lsp server name.
+    function()
+      local msg = 'No Active Lsp'
+      local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+      local clients = vim.lsp.get_active_clients()
+      if next(clients) == nil then
+        return msg
+      end
+      for _, client in ipairs(clients) do
+        local filetypes = client.config.filetypes
+        if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+          return client.name
+        end
+      end
+      return msg
+    end,
+    icon = ' LSP:',
+    color = { fg = '#ffffff', gui = 'bold' },
+  },
+  { -- Git diff
+    'diff',
+    symbols = { added = '', modified = '󰓢', removed = '' },
+    diff_color = {
+      added = { fg = theme.green },
+      modified = { fg = theme.orange },
+      removed = { fg = theme.red },
+    },
+    cond = conditions.hide_in_width,
+    padding = { left = 1 },
+  },
+}
+
+config.sections.lualine_c = focused.left
+config.sections.lualine_x = focused.right
+config.inactive_sections.lualine_c = unfocused.left
+config.inactive_sections.lualine_x = unfocused.right
 
 return config
