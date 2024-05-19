@@ -22,12 +22,6 @@ require('plugins.treesitter').setup({
     },
 })
 
--- [[ Delimiter colorization ]]
-vim.g.rainbow_delimiters = require('plugins.delims')
-
--- [[ open MiniMap ]]
-require('mini.map').open()
-
 -- [[ Telescope ]]
 local binds = require('plugins.telescope').binds
 for _, v in pairs(binds) do

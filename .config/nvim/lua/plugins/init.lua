@@ -185,11 +185,12 @@ require('lazy').setup({
 
   { -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
-    -- Tree-sitter based bracket pair highlighting
-    dependencies = { 'HiPhish/rainbow-delimiters.nvim' },
-    main = 'ibl',
-    config = require('plugins.indents'),
     event = 'BufEnter',
+    config = require('plugins.indents').ibl,
+    dependencies = { -- Taste the rainbow
+      'HiPhish/rainbow-delimiters.nvim',
+      config = require('plugins.indents').rainbow_delimiters,
+    },
   },
 
   { -- Show the current context
@@ -297,7 +298,7 @@ require('lazy').setup({
       'echasnovski/mini.diff', -- diff highlighting
       'lewis6991/gitsigns.nvim', -- git highlighting
     },
-    config = require('mini.map').setup(require('plugins.mini.map').config),
+    config = require('plugins.mini.map').config,
   },
 
   { -- Add, delete, replace, find, highlight surrounding characters
