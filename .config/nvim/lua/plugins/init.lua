@@ -70,6 +70,7 @@ require('lazy').setup({
     event = { 'BufReadPre', 'BufNewFile' },
     -- stylua: ignore
     depdencies = {
+      'hrsh7th/cmp-nvim-lsp', -- CMP integration
       'j-hui/fidget.nvim',    -- Useful status updates for LSP
       'folke/neodev.nvim',    -- function signatures for nvim's Lua API
       'onsails/lspkind.nvim', -- icons for LSP suggestions

@@ -20,25 +20,25 @@ M.settings = {
     ---@see workspace = { checkThirdParty = false },
     workspace = {
       checkThirdParty = false,
-      library = {
-        vim.env.VIMRUNTIME,
-        -- "${3rd}/luv/library"
-        -- "${3rd}/busted/library",
-      },
-      diagnostics = { disable = { 'duplicate-doc-alias' } },
       -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-      -- library = vim.api.nvim_get_runtime_file("", true)
+      library = vim.api.nvim_get_runtime_file('', true),
+      -- library = {
+      --   vim.env.VIMRUNTIME,
+      --   -- "${3rd}/luv/library"
+      --   -- "${3rd}/busted/library",
+      -- },
+      diagnostics = { disable = { 'duplicate-doc-alias' } },
     },
     hover = { enumsLimit = 50 },
     runtime = { version = 'LuaJIT' },
   },
 }
 
-M.on_attach = function(client, bufnr)
-  if client.server_capabilities.documentSymbolProvider then
-    require('nvim-navbuddy').attach(client, bufnr)
-  end
-  require('neodev').setup()
-end
+-- M.on_attach = function(client, bufnr)
+--   if client.server_capabilities.documentSymbolProvider then
+--     require('nvim-navbuddy').attach(client, bufnr)
+--   end
+--   require('neodev').setup()
+-- end
 
 return M
