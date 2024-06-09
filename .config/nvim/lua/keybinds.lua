@@ -47,6 +47,8 @@ local binds = {
       vim.o.relativenumber = state
     end, { desc = 'toggle [h]ybrid line numbers' },
   },
+
+  { 'n', '<leader>tf', require('plugins.custom.tail'), { desc = '`[t]ail -[f] <buf>`' } },
 }
 
 -- setup keybinds

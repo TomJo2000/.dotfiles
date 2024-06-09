@@ -1,25 +1,14 @@
 require('editorconfig')
 
--- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
-vim.api.nvim_create_autocmd('TextYankPost', {
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-  group = highlight_group,
-  pattern = '*',
-})
-
 -- [[ Configure Treesitter ]]
 ---@source ./lua/config/treesitter.lua
 require('plugins.treesitter').setup({
-      -- stylua: ignore
-    ensure_installed = {
-      'bash', 'c', 'cpp', 'diff', 'go', 'git_config', 'git_rebase',
-      'gitcommit', 'gitignore', 'html', 'just', 'ini', 'lua', 'python', 'regex',
-      'rust', 'ssh_config', 'toml', 'typescript', 'vimdoc', 'vim', 'yaml'
-    },
+  -- stylua: ignore
+  ensure_installed = {
+    'bash', 'c', 'cpp', 'diff', 'go', 'git_config', 'git_rebase',
+    'gitcommit', 'gitignore', 'html', 'just', 'ini', 'lua', 'python', 'regex',
+    'rust', 'ssh_config', 'toml', 'typescript', 'vimdoc', 'vim', 'yaml'
+  },
 })
 
 -- [[ Telescope ]]
@@ -43,6 +32,7 @@ require('which-key').register({
 
 -- [[ Comments ]]
 vim.g.skip_ts_context_commentstring_module = true
+---@diagnostic disable-next-line: missing-fields
 require('ts_context_commentstring').setup({ enable_autocmd = false })
 
 -- stylua: ignore
@@ -70,6 +60,25 @@ require('plugins.cmp')
 --[[ Hydra bindings ]]
 require('plugins.hydra')
 
+-- See `:help vim.highlight.on_yank()`
+-- [[ Highlight on yank ]]
+local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+  group = highlight_group,
+  pattern = '*',
+})
+
+-- [[ Ex commands ]]
+
+-- :Tail
+local tail = require('plugins.custom.tail')
+-- partially based on: https://unix.stackexchange.com/a/417939
+vim.api.nvim_create_user_command('Tail', tail, {})
+
+-- :Format
 vim.api.nvim_create_user_command('Format', function()
   require('conform').format({}, nil)
 end, {})

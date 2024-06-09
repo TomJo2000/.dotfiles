@@ -152,8 +152,8 @@ require('lazy').setup({
 
   { -- LSP context breadcrumbs
     'SmiteshP/nvim-navic',
-    event = 'LspAttach',
-    opts = require('plugins.breadcrumbs'),
+    -- event = 'LspAttach',
+    -- config = require('plugins.breadcrumbs'),
     dependencies = {
       'MunifTanjim/nui.nvim',
       'nvim-tree/nvim-web-devicons', -- NerdFont icons
@@ -266,9 +266,9 @@ require('lazy').setup({
         'help', 'lazy', 'checkhealth', 'gitcommit',
       },
       custom_colorcolumn = {
-        lua = 160,
-        sh  = 120,
-        zsh = 120,
+        lua = '160',
+        sh  = '120',
+        zsh = '120',
       },
     },
   },
