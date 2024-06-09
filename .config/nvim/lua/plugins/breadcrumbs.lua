@@ -12,7 +12,7 @@ return {
   },
   lsp = {
     auto_attach = true,
-    preference = nil
+    preference = nil,
   },
   highlight = false,
   separator = '❯',

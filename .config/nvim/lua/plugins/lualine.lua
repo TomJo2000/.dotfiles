@@ -5,6 +5,7 @@
 
 -- Color table for highlights
 local theme = require('plugins.onedark').colors
+local deprecated_in = require('utils.deprecated')
 
 local conditions = {
   buffer_not_empty = function()
@@ -44,6 +45,7 @@ local config = {
     lualine_y = {}, lualine_z = {},
     -- These will be filled later
     lualine_c = {}, lualine_x = {},
+    winbar = {},
   },
   -- stylua: ignore
   inactive_sections = {
@@ -91,7 +93,6 @@ focused.left = {
         ['r?'] = theme.cyan,    -- Confirmation
              r = theme.purple,  -- Hit Enter
             rm = theme.cyan,    -- -- more -- prompt
-          [''] = theme.orange,  -- ???
       }
       return { fg = mode_color[vim.fn.mode()] }
     end,
@@ -139,8 +140,16 @@ focused.left = {
   { -- Lsp server name.
     function()
       local msg = 'No Active Lsp'
-      local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-      local clients = vim.lsp.get_active_clients()
+      local buf_ft
+      local clients
+      if deprecated_in('0.10.0') then
+        buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
+        clients = vim.lsp.get_clients()
+      else
+        buf_ft = vim.api.nvim_buf_get_option(0, 'filetype') ---@diagnostic disable-line deprecated
+        clients = vim.lsp.get_active_clients() ---@diagnostic disable-line deprecated
+      end
+
       if next(clients) == nil then
         return msg
       end
@@ -211,6 +220,12 @@ focused.right = {
 local unfocused = {}
 
 unfocused.left = {
+  { -- File size (also controls save indicator)
+    'filesize',
+    cond = conditions.buffer_not_empty,
+    color = { fg = theme.cyan },
+    padding = { right = 1 },
+  },
   { -- File name, with changed formatting
     function()
       local options = {
@@ -232,8 +247,15 @@ unfocused.right = {
   { -- Lsp server name.
     function()
       local msg = 'No Active Lsp'
-      local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-      local clients = vim.lsp.get_active_clients()
+      local buf_ft
+      local clients
+      if deprecated_in('0.10.0') then
+        buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
+        clients = vim.lsp.get_clients()
+      else
+        buf_ft = vim.api.nvim_buf_get_option(0, 'filetype') ---@diagnostic disable-line deprecated
+        clients = vim.lsp.get_active_clients() ---@diagnostic disable-line deprecated
+      end
       if next(clients) == nil then
         return msg
       end
@@ -261,9 +283,20 @@ unfocused.right = {
   },
 }
 
+local winbar = {
+  lualine_c = {
+    { -- Breadcrumbs
+      'navic',
+      color_correction = nil,
+      navic_opts = nil,
+    },
+  },
+}
+
 config.sections.lualine_c = focused.left
 config.sections.lualine_x = focused.right
 config.inactive_sections.lualine_c = unfocused.left
 config.inactive_sections.lualine_x = unfocused.right
+config.winbar = winbar
 
 return config
