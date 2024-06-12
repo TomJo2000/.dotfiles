@@ -67,6 +67,18 @@ require('lazy').setup({
   -- Split or join oneliners to multiline statements and vise versa
   { 'AndrewRadev/splitjoin.vim' },
 
+  { -- directory navigation
+    'nvim-tree/nvim-tree.lua',
+    lazy = false, -- we want this loaded pretty much immediately
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    -- version = '*',
+    -- config = function()
+    --   require('nvim-tree').setup({})
+    -- end,
+  },
+
   -- [[ LSP ]]
   { -- LSP Configuration
     'neovim/nvim-lspconfig',
