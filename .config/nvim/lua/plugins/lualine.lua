@@ -179,9 +179,15 @@ focused.right = {
     },
     padding = { right = 1 },
   },
+  { -- Unicode codepoint in Hex.
+    function()
+      return ('U+%04X'):format(vim.api.nvim_eval_statusline('%b', {}).str)
+    end, -- tests: 2 digit µ, 3 digit ඞ, 4 digit , 5 digit 󰕰
+    color = { fg = theme.cyan },
+  },
   { -- File encoding
-    'o:encoding', -- option component same as &encoding in viml
-    fmt = string.upper, -- I'm not sure why it's upper case either ;)
+    'o:encoding',
+    fmt = string.upper,
     cond = conditions.hide_in_width,
     color = { fg = theme.green, gui = 'bold' },
     padding = { left = 1 },

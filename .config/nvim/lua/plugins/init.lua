@@ -2,7 +2,10 @@
 ---@see Lazy.nvim https://github.com/folke/lazy.nvim
 -- `:help lazy.nvim.txt` for more info
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
+local deprecated_in = require('utils.deprecated')
+local fs_exists = deprecated_in('0.10.0') and vim.uv.fs_stat or vim.loop.fs_stat
+
+if not fs_exists(lazypath) then
   vim.fn.system({
     'git',
     'clone',
