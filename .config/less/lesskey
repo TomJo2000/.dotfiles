@@ -1,0 +1,15 @@
+# '#env' is a special header marking the start of environment definitions
+# lesskey doesn't deal with escape sequences
+# so setup for LESS and LESS_TERMCAP_xx is done in the shell startup
+# and then exported as an environment variable
+
+#env
+# ** Use UTF-8
+LESSCHARSET    = utf-8
+# ** Private Use Area
+LESSUTFCHARDEF = E000-F8FF:p
+# ** Supplementary Private Use Area-A
+              += ,F0000-FFFFD:p
+# ** Supplementary Private Use Area-B
+              += ,100000-10FFFD:p
+# vim: ft=conf

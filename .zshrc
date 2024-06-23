@@ -360,7 +360,7 @@ timing[path]="-$EPOCHREALTIME"
 (( timing[path] += EPOCHREALTIME ))
 timing[pager]="-$EPOCHREALTIME"
 
-# setup nvim as default EDITOR and DIFF program.
+# setup nvim as default EDITOR and MANPAGER program.
 if command -v 'nvim' &> '/dev/null'; then
     export EDITOR='nvim'
     export MANPAGER='nvim -c Man! -o -'
@@ -368,84 +368,74 @@ fi
 
 alias ls='LC_COLLATE=C ls --file-type --color' # colorize ls by default
 
-### `man` options
-export MANROFFOPT="-P -c" # ** color output doesn't seem to work without this anymore
-
 ### `less` pager stylization and options
-    export LESSCHARSET='utf-8'
-    # |> define the Unicode private use ranges as printable to make NerdFonts work without '-r' which the man page discourages from use
-    export LESSUTFCHARDEF='E000-F8FF:p'       # ** 'Private Use Area'
-           LESSUTFCHARDEF+=',F0000-FFFFD:p'   # ** 'Supplementary Private Use Area-A'
-           LESSUTFCHARDEF+=',100000-10FFFD:p' # ** 'Supplementary Private Use Area-B'
+export LESS_TERMCAP_me; printf -v LESS_TERMCAP_me '%b' "${col[reset]:-\e[m}"
+export LESS_TERMCAP_se; printf -v LESS_TERMCAP_se '%b' "${col[reset]:-\e[m}"
+export LESS_TERMCAP_ue; printf -v LESS_TERMCAP_ue '%b' "${col[reset]:-\e[m}"
+export LESS_TERMCAP_md; printf -v LESS_TERMCAP_md '%b' "${col[fg_blue]:-\e[38;2;7;89;182m}"                       # #0759B6
+export LESS_TERMCAP_so; printf -v LESS_TERMCAP_so '%b' "${col[fg_yellow]:-\e[38;2;237;186;4m}"                    # #EDBA04
+export LESS_TERMCAP_mb; printf -v LESS_TERMCAP_mb '%b' "${col[fg_red]:-\e[38;2;223;13;11m}"                       # #DF0D0B
+export LESS_TERMCAP_us; printf -v LESS_TERMCAP_us '%b' "${col[uline]:-\e[4m}${col[fg_green]:-\e[38;2;10;163;66m}" # #0AA342
 
-    export LESS_TERMCAP_me; printf -v LESS_TERMCAP_me '%b' "${col[reset]:-\e[m}"
-    export LESS_TERMCAP_se; printf -v LESS_TERMCAP_se '%b' "${col[reset]:-\e[m}"
-    export LESS_TERMCAP_ue; printf -v LESS_TERMCAP_ue '%b' "${col[reset]:-\e[m}"
-    export LESS_TERMCAP_md; printf -v LESS_TERMCAP_md '%b' "${col[fg_blue]:-\e[38;2;7;89;182m}"                       # #0759B6
-    export LESS_TERMCAP_so; printf -v LESS_TERMCAP_so '%b' "${col[fg_yellow]:-\e[38;2;237;186;4m}"                    # #EDBA04
-    export LESS_TERMCAP_mb; printf -v LESS_TERMCAP_mb '%b' "${col[fg_red]:-\e[38;2;223;13;11m}"                       # #DF0D0B
-    export LESS_TERMCAP_us; printf -v LESS_TERMCAP_us '%b' "${col[uline]:-\e[4m}${col[fg_green]:-\e[38;2;10;163;66m}" # #0AA342
+local -a less_prompt=( # <> Prompt for `less`
+    '-PM'           # set the '-M' (long) prompt
+    "${col[fg_dark_blue]:-\e[38;2;15;42;159m}${col[inv]:-\e[7m}" # set the color and make it inverted for the powerline
+    '❮?f%F:stdin.❯' # if the input is a standard file, use the file name, otherwise (aka if input is a pipe) use `❮stdin❯` as the string.
+    "${col[bg_dark_blue]:-\e[38;2;15;42;159m}${col[fg_light_green]:-\e[38;2;78;175;38m}${col[bg_reset]:-\e[m}"
+    '['             # opening bracket
+    ''             # Line number power line symbol
+    '%lt'           # top line of the screen
+    '-'             # a dash
+    '%lb'           # bottom line of the screen
+    '/'             # a slash
+    '%L'            # total lines
+    ']'             # closing bracket
+    '┆'             # soft separator
+    '?e%Pb:%Pt.'    # percentage into the file (based on the top most line of the screen), unless we're at the end of the file
+    '\%'            # a (escaped) % sign
+    "${col[no_inv]:-\e[27m}${col[fg_light_green]:-\e[38;2;78;175;38m}${col[reset]:-\e[m}"
+    '%t'            # trim trailing whitespace
+)
 
+local -a less_colors=( # <>
+    # >< "-DB" # binary chars
+    # >< "-DC" # Control char
+    # >< "-DE" # Errors
+    # >< "-DH" # Headers, lines, columns
+    # >< "-DM" # Marks
+    # >< "-DN" # Line numbers
+    # >< "-DP" # Prompts
+    # >< "-DR" # Right scroll, line overflow indicator
+    # >< "-DS" # Search results
+    # >< "-D1" # 1st sub-pattern of the search pattern
+    # >< "-D2" # 2nd sub-pattern of the search pattern
+    # >< "-D3" # 3rd sub-pattern of the search pattern
+    # >< "-D4" # 4th sub-pattern of the search pattern
+    # >< "-D5" # 5th sub-pattern of the search pattern
+    # >< "-DW" # Move highlight unread
+    # >< "-Dd" # Bold text
+    # >< "-Dk" # Blinking text
+    # >< "-Ds" # Standout text
+    # >< "-Du" # Underlined text
+)
 
-    local -a less_prompt=( # <> Prompt for `less`
-        '-PM'           # set the '-M' (long) prompt
-        "${col[fg_dark_blue]:-\e[38;2;15;42;159m}${col[inv]:-\e[7m}" # set the color and make it inverted for the powerline
-        '❮?f%F:stdin.❯' # if the input is a standard file, use the file name, otherwise (aka if input is a pipe) use `❮stdin❯` as the string.
-        "${col[bg_dark_blue]:-\e[38;2;15;42;159m}${col[fg_light_green]:-\e[38;2;78;175;38m}${col[bg_reset]:-\e[m}"
-        '['             # opening bracket
-        ''             # Line number power line symbol
-        '%lt'           # top line of the screen
-        '-'             # a dash
-        '%lb'           # bottom line of the screen
-        '/'             # a slash
-        '%L'            # total lines
-        ']'             # closing bracket
-        '┆'             # soft separator
-        '?e%Pb:%Pt.'    # percentage into the file (based on the top most line of the screen), unless we're at the end of the file
-        '\%'            # a (escaped) % sign
-        "${col[no_inv]:-\e[27m}${col[fg_light_green]:-\e[38;2;78;175;38m}${col[reset]:-\e[m}"
-        '%t'            # trim trailing whitespace
-    )
-
-    local -a less_colors=( # <>
-        # >< "-DB" # binary chars
-        # >< "-DC" # Control char
-        # >< "-DE" # Errors
-        # >< "-DH" # Headers, lines, columns
-        # >< "-DM" # Marks
-        # >< "-DN" # Line numbers
-        # >< "-DP" # Prompts
-        # >< "-DR" # Right scroll, line overflow indicator
-        # >< "-DS" # Search results
-        # >< "-D1" # 1st sub-pattern of the search pattern
-        # >< "-D2" # 2nd sub-pattern of the search pattern
-        # >< "-D3" # 3rd sub-pattern of the search pattern
-        # >< "-D4" # 4th sub-pattern of the search pattern
-        # >< "-D5" # 5th sub-pattern of the search pattern
-        # >< "-DW" # Move highlight unread
-        # >< "-Dd" # Bold text
-        # >< "-Dk" # Blinking text
-        # >< "-Ds" # Standout text
-        # >< "-Du" # Underlined text
-    )
-
-    local -a less_opts=( # <> set default options for `less`
-        '--save-marks' # retain marks across invocations
-        '--file-size'  # determine file size on opening (may take a significant amount of time on pipes)
-        '--mouse'      # enable scrolling with the mouse
-        '-g'           # only highlight last search (bit faster than the default behavior)
-        '-i'           # ignore case when searching as long as the search string is lowercase.
-        '-R'           # display escape sequences for colors, hyperlinks and UTF-8 correctly
-        '-x4'          # set tab width to 4 columns
-        '-J'           # mark selected lines/search hits
-        '-M'           # Use the 'long prompt'
-        '-S'           # split long lines over multiple lines
-        "$( printf '%s' "${less_colors[@]}" )" # colors
-        "$( printf '%b' "${less_prompt[@]}" )" # (Long) prompt # ?? | ❮.zshrc❯[423-456/627]┆69%
-    )
-    export LESS="${less_opts[*]}"
-    # export LESSEDIT='%E -rg %g:?lt+%lt.%t' # implicit LESSEDIT format is: '%E ?lm+%lm. %g'
-    # export LESSOPEN="|-${XDG_CONFIG_HOME}/less/lessopen.sh %s"
+local -a less_opts=( # <> set default options for `less`
+    '--save-marks' # retain marks across invocations
+    '--file-size'  # determine file size on opening (may take a significant amount of time on pipes)
+    '--mouse'      # enable scrolling with the mouse
+    '-g'           # only highlight last search (bit faster than the default behavior)
+    '-i'           # ignore case when searching as long as the search string is lowercase.
+    '-R'           # display escape sequences for colors, hyperlinks and UTF-8 correctly
+    '-x4'          # set tab width to 4 columns
+    '-J'           # mark selected lines/search hits
+    '-M'           # Use the 'long prompt'
+    '-S'           # split long lines over multiple lines
+    "$( printf '%s' "${less_colors[@]}" )" # colors
+    "$( printf '%b' "${less_prompt[@]}" )" # (Long) prompt # ?? | ❮.zshrc❯[423-456/627]┆69%
+)
+export LESS="${less_opts[*]}"
+# export LESSEDIT='%E -rg %g:?lt+%lt.%t' # implicit LESSEDIT format is: '%E ?lm+%lm. %g'
+# export LESSOPEN="|-${XDG_CONFIG_HOME}/less/lessopen.sh %s"
 
 (( timing[pager] += EPOCHREALTIME ))
 
@@ -507,20 +497,19 @@ timing[syntax-highlighting]="-$EPOCHREALTIME"
 (( timing[syntax-highlighting] += EPOCHREALTIME ))
 
 ### Keybindings
-bindkey -- '\e[H'    beginning-of-line              # HOME
-bindkey -- '\e[1;2H' beginning-of-buffer-or-history # Shift + HOME
-bindkey -- '\e[F'    end-of-line                    # END
-bindkey -- '\e[1;2F' end-of-buffer-or-history       # Shift + END
-bindkey -- '\e[A'    up-line-or-history             # Shift + ->
-bindkey -- '\e[B'    down-line-or-history           # Shift + ->
-bindkey -- '\e[1;2C' emacs-forward-word             # Shift + ->
-bindkey -- '\e[1;2D' emacs-backward-word            # Shift + <-
-bindkey -- '\e[3~'   delete-char                    # DEL
-
 autoload -Uz edit-command-line
 zle -N edit-command-line
-bindkey -- '^w^q' edit-command-line
-bindkey -- '^wq' edit-command-line
+bindkey -- '\e[H'    beginning-of-line              # <Home>
+bindkey -- '\e[1;2H' beginning-of-buffer-or-history # <S-Home>
+bindkey -- '\e[F'    end-of-line                    # <End>
+bindkey -- '\e[3~'   delete-char                    # <Del>
+bindkey -- '\e[1;2F' end-of-buffer-or-history       # <S-End>
+bindkey -- '\e[A'    up-line-or-history             # <Up>
+bindkey -- '\e[B'    down-line-or-history           # <Down>
+bindkey -- '\e[1;5C' vi-forward-word                # <C-Right>
+bindkey -- '\e[1;5D' vi-backward-word               # <C-Left>
+bindkey -- '^W^Q'    edit-command-line              # <C-w><C-q>
+bindkey -- '^Wq'     edit-command-line              # <C-w>q
 
 # only set KSH_ARRAYS after loading plugins to avoid jank
 setopt KSH_ARRAYS # Make Arrays start at index 0 # !! breaks unpatched zsh-autosuggestions and z-sy-h
