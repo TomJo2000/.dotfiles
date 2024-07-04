@@ -1,10 +1,18 @@
 local M = {}
 
-M.config = {
+local function retab()
+  local pos = vim.api.nvim_win_get_cursor(0)
+  vim.api.nvim_feedkeys('gg=G', 'n', true)
+  vim.api.nvim_win_set_cursor(0, pos)
+end
+
+M.opts = {
   -- stylua: ignore
   formatters_by_ft = {
-    lua  = { 'stylua' },
+    html = retab(),
     just = { 'just' },
+    lua  = { 'stylua' },
+    markdown = retab(),
     zig  = { 'zigfmt' },
     -- Use the "*" filetype to run formatters on all filetypes.
     ['*'] = { 'codespell' },

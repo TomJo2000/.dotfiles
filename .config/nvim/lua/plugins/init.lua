@@ -61,7 +61,7 @@ require('lazy').setup({
 
   { -- More customizable formatters.
     'stevearc/conform.nvim',
-    config = require('plugins.formatter').config,
+    opts = require('plugins.formatter').opts,
   },
 
   -- Split or join oneliners to multiline statements and vise versa
@@ -85,6 +85,15 @@ require('lazy').setup({
     event = { 'BufReadPre', 'BufNewFile' },
     -- stylua: ignore
     depdencies = {
+      { -- LSP context breadcrumbs
+        'SmiteshP/nvim-navic',
+        event = 'LspAttach',
+        dependencies = {
+          'MunifTanjim/nui.nvim',
+          'nvim-tree/nvim-web-devicons', -- NerdFont icons
+        },
+        config = require('plugins.breadcrumbs'),
+      },
       'hrsh7th/cmp-nvim-lsp', -- CMP integration
       'j-hui/fidget.nvim',    -- Useful status updates for LSP
       'folke/neodev.nvim',    -- function signatures for nvim's Lua API
@@ -102,9 +111,9 @@ require('lazy').setup({
         local conf = vim.tbl_deep_extend('force', default_config, conf)
         -- Ensure the servers above are installed
         if vim.fn.executable(conf.cmd[1]) ~= 1 then
-          vim.cmd('echohl LspDiagnosticsVirtualTextError')
-          vim.cmd(string.format([[echom "Could not find: %s"]], conf.cmd[1]))
-          vim.cmd('echohl NONE')
+          vim.cmd.echohl('LspDiagnosticsVirtualTextError')
+          vim.cmd.echomsg(('"Could not find: %s"'):format(conf.cmd[1]))
+          vim.cmd.echohl('NONE')
         end
 
         require('lspconfig')[lsp].setup(conf)
@@ -162,16 +171,6 @@ require('lazy').setup({
       'rafamadriz/friendly-snippets',        -- Adds a number of user-friendly snippets
       'onsails/lspkind.nvim',                -- Icons for LSP suggestions
       'L3MON4D3/LuaSnip',                    -- Snippet Engine
-    },
-  },
-
-  { -- LSP context breadcrumbs
-    'SmiteshP/nvim-navic',
-    -- event = 'LspAttach',
-    -- config = require('plugins.breadcrumbs'),
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-      'nvim-tree/nvim-web-devicons', -- NerdFont icons
     },
   },
 
@@ -319,7 +318,7 @@ require('lazy').setup({
 
   { -- Add, delete, replace, find, highlight surrounding characters
     'echasnovski/mini.surround',
-    config = require('plugins.mini.surround'),
+    opts = require('plugins.mini.surround').opts,
   },
 
   { -- Per project file shortcuts

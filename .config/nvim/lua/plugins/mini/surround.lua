@@ -1,5 +1,7 @@
+local M = {}
+
 ---@see mini.surround
-return { -- Module mappings. Use `''` (empty string) to disable one.
+M.opts = { -- Module mappings. Use `''` (empty string) to disable one.
   -- stylua: ignore
   mappings = {
     add            = '', -- Add surrounding in Normal and Visual modes
@@ -14,3 +16,5 @@ return { -- Module mappings. Use `''` (empty string) to disable one.
     suffix_next    = '', -- Suffix to search with "next" method
   },
 }
+
+return M
