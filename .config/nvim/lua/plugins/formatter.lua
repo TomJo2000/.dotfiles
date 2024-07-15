@@ -1,9 +1,11 @@
 local M = {}
 
 local function retab()
-  local pos = vim.api.nvim_win_get_cursor(0)
-  vim.api.nvim_feedkeys('gg=G', 'n', true)
-  vim.api.nvim_win_set_cursor(0, pos)
+  return function()
+    local pos = vim.api.nvim_win_get_cursor(0)
+    vim.api.nvim_feedkeys('gg=G', 'n', true)
+    vim.api.nvim_win_set_cursor(0, pos)
+  end
 end
 
 M.opts = {
@@ -19,13 +21,16 @@ M.opts = {
     -- Use the "_" filetype to run formatters on filetypes that don't
     -- have other formatters configured.
     ['_'] = { 'trim_whitespace' },
+    -- no formatting on these
+    diff = nil,
+    gitsendmail = nil,
+    help = nil,
   },
   -- If this is set, Conform will run the formatter on save.
   -- It will pass the table to conform.format().
   -- This can also be a function that returns the table.
   format_on_save = {
-    -- I recommend these options. See :help conform.format for details.
-    lsp_fallback = true,
+    lsp_fallback = false,
     timeout_ms = 500,
   },
   -- Set the log level. Use `:ConformInfo` to see the location of the log file.

@@ -9,6 +9,12 @@ local binds = {
   { 'v', '<M-Down>'  , 'yjp' , { desc = 'Copy selection below' } },
   { 'v', '<M-Up>'    , 'ykp' , { desc = 'Copy selection above' } },
 
+  -- Switching buffers
+  { 'n', '<C-b>'  , vim.cmd.bprevious, { desc = 'Buffer [b]efore' } },
+  { 'n', '<C-n>'  , vim.cmd.bnext    , { desc = '[N]ext buffer' }   },
+  { 'n', '<M-C-b>', vim.cmd.bfirst   , { desc = 'First buffer' }    },
+  { 'n', '<M-C-n>', vim.cmd.blast    , { desc = 'Last buffer' }     },
+
   -- dealing with line wrapping
   { 'n', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, silent = true } },
   { 'n', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, silent = true } },
@@ -20,8 +26,8 @@ local binds = {
   { 'n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' }             },
 
   -- Miscellaneous
-  { { 'n', 'v' }, '<Space>', '<Nop>'     , { silent = true }   },
-  {   'n'       , '<C-s>'  , '<cmd>w<cr>', { desc = '[S]ave' } },
+  { { 'n', 'v' }, '<Space>', '<Nop>'      , { silent = true }   },
+  {   'n'       , '<C-s>'  , vim.cmd.write, { desc = '[S]ave' } },
 
   --[[ Line numbers ]]
   { { 'n', 'v' }, '<leader>ll', function()

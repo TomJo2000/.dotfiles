@@ -5,7 +5,6 @@
 
 -- Color table for highlights
 local theme = require('plugins.onedark').colors
-local deprecated_in = require('utils.deprecated')
 
 local conditions = {
   buffer_not_empty = function()
@@ -102,7 +101,29 @@ focused.left = {
     'filesize',
     cond = conditions.buffer_not_empty,
     color = { fg = theme.cyan },
-    padding = { right = 1 },
+    padding = {},
+  },
+  { -- Show order and number of open buffers
+    function()
+      local buf_list = vim.fn.getbufinfo({ buflisted = 1 })
+      if #buf_list == 1 then -- no need for a buffer count on a single buffer
+        return ' '
+      else -- if we have multiple buffers find the number of buffers and the index of the current one
+        local current_buf = vim.fn.bufnr('%')
+        local index
+        -- Find what index in the buffer list is the current buffer
+        for i = 1, #buf_list do
+          if buf_list[i].bufnr == current_buf then
+            index = i
+            break
+          end
+        end
+        -- return out the index and total number of buffers
+        return (' ❮%s/%s❯ '):format(index, #buf_list)
+      end
+    end,
+    color = { fg = theme.orange },
+    padding = {},
   },
   { -- File name, with changed formatting
     function()
@@ -113,7 +134,7 @@ focused.left = {
       }
       return ('%s%s%s'):format(
         vim.bo.modifiable and '' or options.read_only, -- Readonly?
-        vim.fn.expand('%:p:~'), -- file and immediate parent
+        vim.api.nvim_buf_get_name(0):match('[^/]*/[^/]*$'), -- file and immediate parent
         vim.bo.modified and options.modified or '' -- Unsaved changes?
       )
     end,
@@ -122,14 +143,14 @@ focused.left = {
   },
   { -- combined location and progress component
     function()
-      local line = ('%d:%d┇%d%%%%'):format(
+      return ('%d:%d┇%d%%%%'):format(
         vim.fn.line('.'), -- current line
         vim.fn.virtcol('.'), -- current column
         math.floor(100 * vim.fn.line('.') / vim.fn.line('$')) -- percentage into the file
       )
-      return ('%s'):format(line)
     end,
     color = { fg = theme.bg_blue, gui = 'bold' },
+    padding = {},
   },
   { -- Insert mid section. You can make any number of sections in neovim :)
     -- for lualine it's any number greater than 2
@@ -142,19 +163,14 @@ focused.left = {
       local msg = 'No Active Lsp'
       local buf_ft
       local clients
-      if deprecated_in('0.10.0') then
-        buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
-        clients = vim.lsp.get_clients()
-      else
-        buf_ft = vim.api.nvim_buf_get_option(0, 'filetype') ---@diagnostic disable-line deprecated
-        clients = vim.lsp.get_active_clients() ---@diagnostic disable-line deprecated
-      end
+      buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
+      clients = vim.lsp.get_clients()
 
       if next(clients) == nil then
         return msg
       end
       for _, client in ipairs(clients) do
-        local filetypes = client.config.filetypes
+        local filetypes = client.config['filetypes']
         if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
           return client.name
         end
@@ -241,32 +257,31 @@ unfocused.left = {
       }
       return ('%s%s%s'):format(
         vim.bo.modifiable and '' or options.read_only, -- Readonly?
-        vim.fn.expand('%:p:~'), -- file and immediate parent
+        vim.api.nvim_buf_get_name(0):match('[^/]*/[^/]*$'), -- file and immediate parent
         vim.bo.modified and options.modified or '' -- Unsaved changes?
       )
     end,
     color = { fg = theme.green },
     padding = { right = 1 },
   },
-}
-unfocused.right = {
+  { -- Insert mid section. You can make any number of sections in neovim :)
+    -- for lualine it's any number greater than 2
+    function()
+      return '%='
+    end,
+  },
   { -- Lsp server name.
     function()
       local msg = 'No Active Lsp'
       local buf_ft
       local clients
-      if deprecated_in('0.10.0') then
-        buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
-        clients = vim.lsp.get_clients()
-      else
-        buf_ft = vim.api.nvim_buf_get_option(0, 'filetype') ---@diagnostic disable-line deprecated
-        clients = vim.lsp.get_active_clients() ---@diagnostic disable-line deprecated
-      end
+      buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
+      clients = vim.lsp.get_clients()
       if next(clients) == nil then
         return msg
       end
       for _, client in ipairs(clients) do
-        local filetypes = client.config.filetypes
+        local filetypes = client.config['filetypes']
         if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
           return client.name
         end
@@ -276,6 +291,9 @@ unfocused.right = {
     icon = ' LSP:',
     color = { fg = '#ffffff', gui = 'bold' },
   },
+}
+
+unfocused.right = {
   { -- Git diff
     'diff',
     symbols = { added = '', modified = '󰓢', removed = '' },
