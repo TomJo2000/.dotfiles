@@ -81,7 +81,4 @@ vim.api.nvim_create_user_command('Tail', tail, {})
 -- :Format
 vim.api.nvim_create_user_command('Format', function()
   require('conform').format({}, nil)
-  local pos = vim.api.nvim_win_get_cursor(0)
-  vim.cmd.normal('gg=G')
-  vim.api.nvim_win_set_cursor(0, pos)
 end, {})

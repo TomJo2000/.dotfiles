@@ -47,6 +47,7 @@ require('lazy').setup({
         'help', 'lazy'
       },
     },
+    opts = require('plugins.which-key').opts,
   },
 
   -- Repeatable prefixed bindings
@@ -83,22 +84,13 @@ require('lazy').setup({
   { -- LSP Configuration
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
-    -- stylua: ignore
-    depdencies = {
-      { -- LSP context breadcrumbs
-        'SmiteshP/nvim-navic',
-        event = 'LspAttach',
-        dependencies = {
-          'MunifTanjim/nui.nvim',
-          'nvim-tree/nvim-web-devicons', -- NerdFont icons
-        },
-        config = require('plugins.breadcrumbs'),
+      -- stylua: ignore
+      depdencies = {
+        'hrsh7th/cmp-nvim-lsp', -- CMP integration
+        'j-hui/fidget.nvim',    -- Useful status updates for LSP
+        'folke/neodev.nvim',    -- function signatures for nvim's Lua API
+        'onsails/lspkind.nvim', -- icons for LSP suggestions
       },
-      'hrsh7th/cmp-nvim-lsp', -- CMP integration
-      'j-hui/fidget.nvim',    -- Useful status updates for LSP
-      'folke/neodev.nvim',    -- function signatures for nvim's Lua API
-      'onsails/lspkind.nvim', -- icons for LSP suggestions
-    },
     config = function()
       local opts = require('plugins.lsp')
       -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
@@ -128,19 +120,29 @@ require('lazy').setup({
     config = function()
       local none = require('null-ls')
       none.setup({
-        -- stylua: ignore
-        sources = {
-          none.builtins.code_actions.gitrebase, -- inject a code action for fast git rebase interactive mode switching
-          none.builtins.diagnostics.actionlint, -- GitHub Actions linter
-          none.builtins.diagnostics.yamllint,   -- YAML linter
-          none.builtins.completion.luasnip,     -- LuaSnip snippets as completions
-          none.builtins.completion.spell,       -- Spelling suggestions as completions
-        },
+          -- stylua: ignore
+          sources = {
+            none.builtins.code_actions.gitrebase, -- inject a code action for fast git rebase interactive mode switching
+            none.builtins.diagnostics.actionlint, -- GitHub Actions linter
+            none.builtins.diagnostics.yamllint,   -- YAML linter
+            none.builtins.completion.luasnip,     -- LuaSnip snippets as completions
+            none.builtins.completion.spell,       -- Spelling suggestions as completions
+          },
         update_in_insert = true,
         debounce = 150,
         -- debug = true,
       })
     end,
+  },
+
+  { -- LSP context breadcrumbs
+    'SmiteshP/nvim-navic',
+    event = 'LspAttach',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'nvim-tree/nvim-web-devicons', -- NerdFont icons
+    },
+    config = require('plugins.breadcrumbs'),
   },
 
   { -- Syntax aware text-objects
@@ -156,22 +158,22 @@ require('lazy').setup({
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     lazy = true,
-    -- stylua: ignore
-    dependencies = {
-      'hrsh7th/cmp-calc',                    -- Math
-      'Dosx001/cmp-commit',                  -- Repo contents
-      -- 'uga-rosa/cmp-dynamic',             -- Generates suggestions from Lua functions
-      'petertriho/cmp-git',                  -- Git
-      'saadparwaiz1/cmp_luasnip',            -- LuaSnip cmp source
-      'hrsh7th/cmp-nvim-lsp-signature-help', -- LSP powered function signatures
-      'hrsh7th/cmp-nvim-lsp',                -- Adds LSP completion capabilities
-      'hrsh7th/cmp-omni',                    -- Neovim Omnifunc
-      'hrsh7th/cmp-path',                    -- File path completion
-      'chrisgrieser/cmp_yanky',              -- Clipboard/Yank history
-      'rafamadriz/friendly-snippets',        -- Adds a number of user-friendly snippets
-      'onsails/lspkind.nvim',                -- Icons for LSP suggestions
-      'L3MON4D3/LuaSnip',                    -- Snippet Engine
-    },
+      -- stylua: ignore
+      dependencies = {
+        'hrsh7th/cmp-calc',                    -- Math
+        'Dosx001/cmp-commit',                  -- Repo contents
+        -- 'uga-rosa/cmp-dynamic',             -- Generates suggestions from Lua functions
+        'petertriho/cmp-git',                  -- Git
+        'saadparwaiz1/cmp_luasnip',            -- LuaSnip cmp source
+        'hrsh7th/cmp-nvim-lsp-signature-help', -- LSP powered function signatures
+        'hrsh7th/cmp-nvim-lsp',                -- Adds LSP completion capabilities
+        'hrsh7th/cmp-omni',                    -- Neovim Omnifunc
+        'hrsh7th/cmp-path',                    -- File path completion
+        'chrisgrieser/cmp_yanky',              -- Clipboard/Yank history
+        'rafamadriz/friendly-snippets',        -- Adds a number of user-friendly snippets
+        'onsails/lspkind.nvim',                -- Icons for LSP suggestions
+        'L3MON4D3/LuaSnip',                    -- Snippet Engine
+      },
   },
 
   { -- There are way to many statusline plugins, we're using this one.
@@ -273,31 +275,31 @@ require('lazy').setup({
 
   { -- A reminder for when your lines are getting too long
     'm4xshen/smartcolumn.nvim',
-    -- stylua: ignore
-    opts = {
-      disabled_filetypes = {
-        'text', 'markdown', 'html', 'lspinfo',
-        'help', 'lazy', 'checkhealth', 'gitcommit',
-      },
-      custom_colorcolumn = {
-        lua = '160',
-        sh  = '120',
-        zsh = '120',
-      },
-    },
+        -- stylua: ignore
+        opts = {
+          disabled_filetypes = {
+            'text', 'markdown', 'html', 'lspinfo',
+            'help', 'lazy', 'checkhealth', 'gitcommit',
+          },
+          custom_colorcolumn = {
+            lua = '160',
+            sh  = '120',
+            zsh = '120',
+          },
+        },
   },
 
   { -- Hex color highlighting
     'NvChad/nvim-colorizer.lua',
     opts = {
       user_default_options = { names = false },
-      -- stylua: ignore
-      buftypes = {
-        '*',
-        '!prompt', -- exclude prompts
-        '!popup',  -- exclude popups
-        '!lazy',   -- exclude lazy.nvim
-      },
+          -- stylua: ignore
+          buftypes = {
+            '*',
+            '!prompt', -- exclude prompts
+            '!popup',  -- exclude popups
+            '!lazy',   -- exclude lazy.nvim
+          },
     },
   },
   -- Hex test:
@@ -334,18 +336,18 @@ require('lazy').setup({
     opts = {
       keymaps = { disable_defaults = true },
     },
-    -- stylua: ignore
-    keys = { -- Moving windows more better
-      { '<C-w><C-w>'        , '<Cmd>WinShift swap<CR>'     , { mode = 'n' , desc = 'Swap [w]indow' }           },
-      { '<C-w><C-Up>'       , '<Cmd>WinShift up<CR>'       , { mode = 'n' , desc = 'Swap window <Up>' }        },
-      { '<C-w><C-Down>'     , '<Cmd>WinShift down<CR>'     , { mode = 'n' , desc = 'Swap window <Down>' }      },
-      { '<C-w><C-Left>'     , '<Cmd>WinShift left<CR>'     , { mode = 'n' , desc = 'Swap window <Left>' }      },
-      { '<C-w><C-Right>'    , '<Cmd>WinShift right<CR>'    , { mode = 'n' , desc = 'Swap window <Right>' }     },
-      { '<C-S-w><C-S-Up>'   , '<Cmd>WinShift far_up<CR>'   , { mode = 'n' , desc = 'Swap window far <UP>' }    },
-      { '<C-S-w><C-S-Down>' , '<Cmd>WinShift far_down<CR>' , { mode = 'n' , desc = 'Swap window far <DOWN>' }  },
-      { '<C-S-w><C-S-Left>' , '<Cmd>WinShift far_left<CR>' , { mode = 'n' , desc = 'Swap window far <LEFT>' }  },
-      { '<C-S-w><C-S-Right>', '<Cmd>WinShift far_right<CR>', { mode = 'n' , desc = 'Swap window far <RIGHT>' } },
-    },
+        -- stylua: ignore
+        keys = { -- Moving windows more better
+          { '<C-w><C-w>'        , '<Cmd>WinShift swap<CR>'     , { mode = 'n' , desc = 'Swap [w]indow' }           },
+          { '<C-w><C-Up>'       , '<Cmd>WinShift up<CR>'       , { mode = 'n' , desc = 'Swap window <Up>' }        },
+          { '<C-w><C-Down>'     , '<Cmd>WinShift down<CR>'     , { mode = 'n' , desc = 'Swap window <Down>' }      },
+          { '<C-w><C-Left>'     , '<Cmd>WinShift left<CR>'     , { mode = 'n' , desc = 'Swap window <Left>' }      },
+          { '<C-w><C-Right>'    , '<Cmd>WinShift right<CR>'    , { mode = 'n' , desc = 'Swap window <Right>' }     },
+          { '<C-S-w><C-S-Up>'   , '<Cmd>WinShift far_up<CR>'   , { mode = 'n' , desc = 'Swap window far <UP>' }    },
+          { '<C-S-w><C-S-Down>' , '<Cmd>WinShift far_down<CR>' , { mode = 'n' , desc = 'Swap window far <DOWN>' }  },
+          { '<C-S-w><C-S-Left>' , '<Cmd>WinShift far_left<CR>' , { mode = 'n' , desc = 'Swap window far <LEFT>' }  },
+          { '<C-S-w><C-S-Right>', '<Cmd>WinShift far_right<CR>', { mode = 'n' , desc = 'Swap window far <RIGHT>' } },
+        },
   },
 
   { -- Discord Rich Presence
