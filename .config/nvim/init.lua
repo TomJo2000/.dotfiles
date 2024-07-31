@@ -79,7 +79,3 @@ require('keybinds')
 -- [[ Configure plugins ]]
 ---@source ./lua/plugins.lua
 require('plugins')
-
--- [[ Posthoc plugin configuration ]]
----@source ./lua/posthoc.lua
-require('posthoc')

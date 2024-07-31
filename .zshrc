@@ -101,7 +101,7 @@ declare -agx order=( # 'name' '#RRGGBB'
 function hex2rgb() { # |> helper function to convert #RRGGBB -> rrr;ggg;bbb
 local hex="${1#\#}"
     [[ "$hex" =~ ^[0-9A-Fa-f]{6}$ ]] || {
-        printf 'Invalid hex: \e[31m%s\e[m\n' "$hex"
+        printf 'Invalid hex: \e[31m%s\e[m\n' "$1"
         return 1
     } >&2 # redirect this bracegroups output to stderr
     printf "%d;%d;%d\n" "$(( 0x${hex:0:2} ))" "$(( 0x${hex:2:2} ))" "$(( 0x${hex:4:2} ))"
@@ -369,6 +369,10 @@ fi
 alias ls='LC_COLLATE=C ls --file-type --color' # colorize ls by default
 
 ### `less` pager stylization and options
+export LESSCHARSET='utf-8'
+export LESSUTFCHARDEF='E000-F8FF:p,'
+       LESSUTFCHARDEF+='F0000-FFFFD:p,'
+       LESSUTFCHARDEF+='100000-10FFFD:p'
 export LESS_TERMCAP_me; printf -v LESS_TERMCAP_me '%b' "${col[reset]:-\e[m}"
 export LESS_TERMCAP_se; printf -v LESS_TERMCAP_se '%b' "${col[reset]:-\e[m}"
 export LESS_TERMCAP_ue; printf -v LESS_TERMCAP_ue '%b' "${col[reset]:-\e[m}"
@@ -430,7 +434,7 @@ local -a less_opts=( # <> set default options for `less`
     '-J'           # mark selected lines/search hits
     '-M'           # Use the 'long prompt'
     '-S'           # split long lines over multiple lines
-    "$( printf '%s' "${less_colors[@]}" )" # colors
+    # "$( printf '%s' "${less_colors[@]}" )" # colors
     "$( printf '%b' "${less_prompt[@]}" )" # (Long) prompt # ?? | ❮.zshrc❯[423-456/627]┆69%
 )
 export LESS="${less_opts[*]}"

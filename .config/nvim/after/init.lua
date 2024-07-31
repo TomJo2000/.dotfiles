@@ -1,16 +1,3 @@
-require('editorconfig')
-
--- [[ Configure Treesitter ]]
----@source ./lua/config/treesitter.lua
-require('plugins.treesitter').setup({
-  -- stylua: ignore
-  ensure_installed = {
-    'bash', 'c', 'cpp', 'diff', 'go', 'git_config', 'git_rebase',
-    'gitcommit', 'gitignore', 'html', 'just', 'ini', 'lua', 'python', 'regex',
-    'rust', 'ssh_config', 'toml', 'typescript', 'vimdoc', 'vim', 'yaml'
-  },
-})
-
 -- [[ Telescope ]]
 local binds = require('plugins.telescope').binds
 for _, v in pairs(binds) do
@@ -30,27 +17,6 @@ require('which-key').register({
   ['<leader>o'] = { _ = 'which_key_ignore', name = 'Split/Join [O]neliners' },
 })
 
--- [[ Comments ]]
-vim.g.skip_ts_context_commentstring_module = true
----@diagnostic disable-next-line: missing-fields
-require('ts_context_commentstring').setup({ enable_autocmd = false })
-
--- stylua: ignore
-require('Comment').setup({
-  padding   = true,
-  sticky    = true,
-  mappings  = { basic = true, extra = true },
-  opleader  = { line  = '<leader>c' , block = '<leader>b'  },
-  toggler   = { line  = '<leader>cc', block = '<leader>bb' },
-  extra     = { above = '<leader>cO', below = '<leader>co'  , eol = '<leader>cA' },
-  pre_hook  = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
-  post_hook = nil,
-  ignore    = nil,
-})
-
--- [[ Configure LSPs ]]
-require('plugins.lsp')
-
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
 require('luasnip.loaders.from_vscode').lazy_load()
@@ -60,16 +26,34 @@ require('plugins.cmp')
 --[[ Hydra bindings ]]
 require('plugins.hydra')
 
--- See `:help vim.highlight.on_yank()`
--- [[ Highlight on yank ]]
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+-- See `:h vim.highlight.on_yank()`
+--[[ Highlight on yank ]]
+local hl_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.highlight.on_yank()
   end,
-  group = highlight_group,
+  group = hl_group,
   pattern = '*',
 })
+
+-- See `:h ++p`
+--[[  ]]
+-- vim.api.nvim_create_autocmd({ 'BufWritePre', 'FileWritePre' }, {
+--   callback = function()
+--     local buf_file = vim.fn.getbufinfo()[vim.fn.bufnr('%')].name
+--     local parent_dir = vim.fs.dirname(buf_file)
+--     -- This handles URLs using netrw. See ':help netrw-transparent' for details.
+--     if parent_dir:find('%l+://') == 1 then
+--       return
+--     end
+--
+--     if vim.fn.isdirectory(parent_dir) == 0 then
+--       vim.fn.mkdir(parent_dir, 'p')
+--     end
+--   end,
+--   pattern = '*',
+-- })
 
 -- [[ Ex commands ]]
 
@@ -81,4 +65,7 @@ vim.api.nvim_create_user_command('Tail', tail, {})
 -- :Format
 vim.api.nvim_create_user_command('Format', function()
   require('conform').format({}, nil)
+  local pos = vim.api.nvim_win_get_cursor(0)
+  vim.cmd.normal('gg=G')
+  vim.api.nvim_win_set_cursor(0, pos)
 end, {})

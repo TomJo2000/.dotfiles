@@ -37,7 +37,7 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
-  { -- Useful plugin to show you pending keybinds.
+  { -- Keybind management
     'folke/which-key.nvim',
     event = 'VeryLazy',
     -- stylua: ignore
@@ -145,14 +145,37 @@ require('lazy').setup({
     config = require('plugins.breadcrumbs'),
   },
 
-  { -- Syntax aware text-objects
-    'nvim-treesitter/nvim-treesitter-textobjects',
+  { -- Highlighters, Querries and Contexts.
+    'nvim-treesitter/nvim-treesitter',
+    event = { 'BufReadPre', 'BufNewFile' },
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
+    opts = require('plugins.treesitter').ts,
+  },
+
+  { -- bulk comments
+    'numToStr/Comment.nvim',
     dependencies = {
-      { -- Highlighters, Querries and Contexts.
-        'nvim-treesitter/nvim-treesitter',
-        build = ':TSUpdate',
-      },
+      'nvim-treesitter/nvim-treesitter-textobjects', -- Syntax aware text-objects
+      'JoosepAlviste/nvim-ts-context-commentstring', -- set the commentstring based on the treesitter context
     },
+    opts = {
+      padding = true,
+      sticky = true,
+      mappings = { basic = true, extra = true },
+      opleader = { line = '<leader>c', block = '<leader>b' },
+      toggler = { line = '<leader>cc', block = '<leader>bb' },
+      extra = { above = '<leader>cO', below = '<leader>co', eol = '<leader>cA' },
+      -- pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      post_hook = nil,
+      ignore = nil,
+    },
+  },
+
+  { -- Show the current context
+    'nvim-treesitter/nvim-treesitter-context',
+    event = 'VeryLazy',
+    opts = require('plugins.treesitter').context,
   },
 
   { -- Autocompletion
@@ -178,6 +201,7 @@ require('lazy').setup({
 
   { -- There are way to many statusline plugins, we're using this one.
     'nvim-lualine/lualine.nvim',
+    event = 'VeryLazy',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = require('plugins.lualine'),
   },
@@ -195,6 +219,7 @@ require('lazy').setup({
 
   { -- Git diffs in the status column
     'lewis6991/gitsigns.nvim',
+    event = 'VeryLazy',
     opts = require('plugins.gitsigns'),
   },
 
@@ -202,7 +227,7 @@ require('lazy').setup({
 
   { -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
-    event = 'BufEnter',
+    event = { 'BufReadPre', 'BufNewFile' },
     config = require('plugins.indents').ibl,
     dependencies = { -- Taste the rainbow
       'HiPhish/rainbow-delimiters.nvim',
@@ -210,32 +235,9 @@ require('lazy').setup({
     },
   },
 
-  { -- Show the current context
-    'nvim-treesitter/nvim-treesitter-context',
-    event = 'BufEnter',
-    opts = {
-      enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-      zindex = 20, -- The Z-index of the context window
-      max_lines = 2, -- How many lines the window should span. Values <= 0 mean no limit.
-      min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
-      line_numbers = true,
-      multiline_threshold = 20, -- Maximum number of lines to show for a single context
-      trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
-      mode = 'topline', -- Line used to calculate context. Choices: 'cursor', 'topline'
-      -- Separator between context and content. Should be a single character string, like '-'.
-      -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
-      separator = nil,
-      on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
-    },
-  },
-
-  { -- set the commentstring based on the treesitter context
-    'JoosepAlviste/nvim-ts-context-commentstring',
-    dependencies = { 'numToStr/Comment.nvim' }, -- bulk comments
-  },
-
   { -- Custom comment highlights
     'folke/todo-comments.nvim',
+    event = 'VeryLazy',
     dependencies = { 'nvim-lua/plenary.nvim' },
     -- opts = {
     --
@@ -273,24 +275,9 @@ require('lazy').setup({
     lazy = true,
   },
 
-  { -- A reminder for when your lines are getting too long
-    'm4xshen/smartcolumn.nvim',
-        -- stylua: ignore
-        opts = {
-          disabled_filetypes = {
-            'text', 'markdown', 'html', 'lspinfo',
-            'help', 'lazy', 'checkhealth', 'gitcommit',
-          },
-          custom_colorcolumn = {
-            lua = '160',
-            sh  = '120',
-            zsh = '120',
-          },
-        },
-  },
-
   { -- Hex color highlighting
     'NvChad/nvim-colorizer.lua',
+    event = 'VeryLazy',
     opts = {
       user_default_options = { names = false },
           -- stylua: ignore
@@ -309,7 +296,7 @@ require('lazy').setup({
 
   { -- Code minimap
     'echasnovski/mini.map',
-    event = 'BufEnter',
+    event = 'VeryLazy',
     keys = require('plugins.mini.map').binds,
     dependencies = {
       'echasnovski/mini.diff', -- diff highlighting
@@ -320,6 +307,7 @@ require('lazy').setup({
 
   { -- Add, delete, replace, find, highlight surrounding characters
     'echasnovski/mini.surround',
+    event = 'VeryLazy',
     opts = require('plugins.mini.surround').opts,
   },
 
@@ -350,6 +338,19 @@ require('lazy').setup({
         },
   },
 
+  { -- Incremental renaming
+    'smjonas/inc-rename.nvim',
+    opts = { cmd_name = 'Rename' },
+    cmd = 'Rename',
+    keys = {
+      {
+        '<leader>rn',
+        vim.cmd.Rename,
+        { mode = { 'n', 'v' }, desc = 'Incremental [r]e[n]ame' },
+      },
+    },
+  },
+
   { -- Discord Rich Presence
     'andweeb/presence.nvim',
     event = 'VeryLazy',
@@ -364,6 +365,7 @@ require('lazy').setup({
 
   { -- yank history
     'gbprod/yanky.nvim',
+    event = 'VeryLazy',
     opts = {
       ring = { -- yank ring
         history_length = 100,
