@@ -311,32 +311,35 @@ local winbar = {
   lualine_c = {
     { -- open buffers
       'buffers',
-      max_length = vim.o.columns * 2 / 3, -- Maximum width of buffers component,
+      max_length = 0, -- Maximum width of buffers component,
       show_modified_status = false, -- Shows indicator when the buffer is modified.
       symbols = {
         modified = '', -- Text to show when the buffer is modified
         alternate_file = '#', -- Text to show to identify the alternate file
         directory = '', -- Text to show when the buffer is a directory
       },
-      -- Automatically updates active buffer color to match color of other components (will be overidden if buffers_color is set)
-      use_mode_colors = true,
-      -- buffers_color = {
-      --   -- Same values as the general color option can be used here.
-      --   active = 'lualine_{section}_normal', -- Color for active buffer.
-      --   inactive = 'lualine_{section}_inactive', -- Color for inactive buffer.
-      -- },
+      buffers_color = {
+        -- Same values as the general color option can be used here.
+        active = { fg = theme.bg_blue, bg = theme.bg1 }, -- Color for active buffer.
+        inactive = { fg = theme.grey, bg = theme.bg0 }, -- Color for inactive buffer.
+      },
       filetype_names = {
-        TelescopePrompt = 'Telescope',
-        dashboard = 'Dashboard',
-        packer = 'Packer',
-        fzf = 'FZF',
         alpha = 'Alpha',
+        fzf = 'FZF',
+        TelescopePrompt = 'Telescope',
       }, -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
     },
     { -- Breadcrumbs
       'navic',
       color_correction = nil,
       navic_opts = nil,
+      color = { bg = theme.bg0 },
+    },
+    { -- Insert mid section. You can make any number of sections in neovim :)
+      -- for lualine it's any number greater than 2
+      function()
+        return '%='
+      end,
     },
   },
 }

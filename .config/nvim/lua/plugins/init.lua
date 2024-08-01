@@ -57,10 +57,10 @@ require('lazy').setup({
   { 'anuvyklack/hydra.nvim', event = 'BufEnter' },
 
   { -- proper merge editor
+    event = 'VeryLazy',
     --- @see documentation at https://github.com/sindrets/diffview.nvim
     'sindrets/diffview.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    lazy = true,
   },
 
   { -- More customizable formatters.
@@ -255,6 +255,7 @@ require('lazy').setup({
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
+    event = 'VeryLazy',
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -271,7 +272,6 @@ require('lazy').setup({
         end,
       },
     },
-    lazy = true,
   },
 
   { -- Markdown preview in the browser synced to nvim
@@ -333,18 +333,18 @@ require('lazy').setup({
     opts = {
       keymaps = { disable_defaults = true },
     },
-        -- stylua: ignore
-        keys = { -- Moving windows more better
-          { '<C-w><C-w>'        , '<Cmd>WinShift swap<CR>'     , { mode = 'n' , desc = 'Swap [w]indow' }           },
-          { '<C-w><C-Up>'       , '<Cmd>WinShift up<CR>'       , { mode = 'n' , desc = 'Swap window <Up>' }        },
-          { '<C-w><C-Down>'     , '<Cmd>WinShift down<CR>'     , { mode = 'n' , desc = 'Swap window <Down>' }      },
-          { '<C-w><C-Left>'     , '<Cmd>WinShift left<CR>'     , { mode = 'n' , desc = 'Swap window <Left>' }      },
-          { '<C-w><C-Right>'    , '<Cmd>WinShift right<CR>'    , { mode = 'n' , desc = 'Swap window <Right>' }     },
-          { '<C-S-w><C-S-Up>'   , '<Cmd>WinShift far_up<CR>'   , { mode = 'n' , desc = 'Swap window far <UP>' }    },
-          { '<C-S-w><C-S-Down>' , '<Cmd>WinShift far_down<CR>' , { mode = 'n' , desc = 'Swap window far <DOWN>' }  },
-          { '<C-S-w><C-S-Left>' , '<Cmd>WinShift far_left<CR>' , { mode = 'n' , desc = 'Swap window far <LEFT>' }  },
-          { '<C-S-w><C-S-Right>', '<Cmd>WinShift far_right<CR>', { mode = 'n' , desc = 'Swap window far <RIGHT>' } },
-        },
+    -- stylua: ignore
+    keys = { -- Moving windows more better
+      { '<C-w><C-w>'        , '<Cmd>WinShift swap<CR>'     , { mode = 'n', desc = 'Swap [w]indow' }           },
+      { '<C-w><C-Up>'       , '<Cmd>WinShift up<CR>'       , { mode = 'n', desc = 'Swap window <Up>' }        },
+      { '<C-w><C-Down>'     , '<Cmd>WinShift down<CR>'     , { mode = 'n', desc = 'Swap window <Down>' }      },
+      { '<C-w><C-Left>'     , '<Cmd>WinShift left<CR>'     , { mode = 'n', desc = 'Swap window <Left>' }      },
+      { '<C-w><C-Right>'    , '<Cmd>WinShift right<CR>'    , { mode = 'n', desc = 'Swap window <Right>' }     },
+      { '<C-S-w><C-S-Up>'   , '<Cmd>WinShift far_up<CR>'   , { mode = 'n', desc = 'Swap window far <UP>' }    },
+      { '<C-S-w><C-S-Down>' , '<Cmd>WinShift far_down<CR>' , { mode = 'n', desc = 'Swap window far <DOWN>' }  },
+      { '<C-S-w><C-S-Left>' , '<Cmd>WinShift far_left<CR>' , { mode = 'n', desc = 'Swap window far <LEFT>' }  },
+      { '<C-S-w><C-S-Right>', '<Cmd>WinShift far_right<CR>', { mode = 'n', desc = 'Swap window far <RIGHT>' } },
+    },
   },
 
   { -- Incremental renaming
