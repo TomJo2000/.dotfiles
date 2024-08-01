@@ -27,8 +27,11 @@ require('lazy').setup({
     config = require('plugins.alpha_nvim'),
   },
 
-  -- Session persistence and management
-  { 'folke/persistence.nvim', lazy = true },
+  { -- Session persistence and management
+    'folke/persistence.nvim',
+    event = 'BufReadPre',
+    opts = {},
+  },
 
   -- Git related plugins
   'tpope/vim-fugitive',
@@ -87,7 +90,6 @@ require('lazy').setup({
       -- stylua: ignore
       depdencies = {
         'hrsh7th/cmp-nvim-lsp', -- CMP integration
-        'j-hui/fidget.nvim',    -- Useful status updates for LSP
         'folke/neodev.nvim',    -- function signatures for nvim's Lua API
         'onsails/lspkind.nvim', -- icons for LSP suggestions
       },
@@ -111,6 +113,12 @@ require('lazy').setup({
         require('lspconfig')[lsp].setup(conf)
       end
     end,
+  },
+
+  { -- Useful status updates for LSP
+    'j-hui/fidget.nvim',
+    event = 'LspAttach',
+    opts = {},
   },
 
   { -- Generic LSP injections via Lua
@@ -139,6 +147,7 @@ require('lazy').setup({
     'SmiteshP/nvim-navic',
     event = 'LspAttach',
     dependencies = {
+      'neovim/nvim-lspconfig',
       'MunifTanjim/nui.nvim',
       'nvim-tree/nvim-web-devicons', -- NerdFont icons
     },
@@ -277,7 +286,7 @@ require('lazy').setup({
 
   { -- Hex color highlighting
     'NvChad/nvim-colorizer.lua',
-    event = 'VeryLazy',
+    event = { 'BufReadPre', 'BufNewFile' },
     opts = {
       user_default_options = { names = false },
           -- stylua: ignore

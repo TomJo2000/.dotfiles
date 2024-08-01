@@ -5,6 +5,7 @@ return function(opts)
     ---@diagnostic disable-next-line: redefined-local, unused-local
     local opts = { opts }
   end
+  local opts = opts or {}
   local update_time = opts.update_time or '50'
   -- stylua: ignore
   vim.cmd.setlocal(
