@@ -37,6 +37,19 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
+vim.api.nvim_create_autocmd('BufEnter', {
+  callback = function()
+    local close_map = {
+      help = true,
+      lazy = true,
+      man = true,
+    }
+    require('mini.map')[close_map[vim.bo.filetype] and 'close' or 'open']()
+  end,
+  group = 'MiniMap',
+  pattern = '*',
+})
+
 -- See `:h ++p`
 --[[  ]]
 -- vim.api.nvim_create_autocmd({ 'BufWritePre', 'FileWritePre' }, {
