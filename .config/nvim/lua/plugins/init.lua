@@ -2,10 +2,8 @@
 ---@see Lazy.nvim https://github.com/folke/lazy.nvim
 -- `:help lazy.nvim.txt` for more info
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-local deprecated_in = require('utils.deprecated')
-local fs_exists = deprecated_in('0.10.0') and vim.uv.fs_stat or vim.loop.fs_stat
 
-if not fs_exists(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     'git',
     'clone',
@@ -189,7 +187,7 @@ require('lazy').setup({
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
-    lazy = true,
+    event = 'InsertEnter',
       -- stylua: ignore
       dependencies = {
         'hrsh7th/cmp-calc',                    -- Math
@@ -206,6 +204,7 @@ require('lazy').setup({
         'onsails/lspkind.nvim',                -- Icons for LSP suggestions
         'L3MON4D3/LuaSnip',                    -- Snippet Engine
       },
+    -- config = require('plugins.cmp')
   },
 
   { -- There are way to many statusline plugins, we're using this one.
@@ -276,12 +275,12 @@ require('lazy').setup({
 
   { -- Markdown preview in the browser synced to nvim
     'iamcco/markdown-preview.nvim',
+    event = 'VeryLazy',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
     ft = { 'markdown', 'html' },
     build = function()
       vim.fn['mkdp#util#install']()
     end,
-    lazy = true,
   },
 
   { -- Hex color highlighting

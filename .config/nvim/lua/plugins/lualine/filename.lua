@@ -1,0 +1,30 @@
+return function()
+  local options = {
+    ---@param ft string
+    ---@return string symbol
+    read_only = function(ft)
+      local symbol = { help = '', man = '', ['*'] = '' }
+      return symbol[ft] or symbol['*']
+    end,
+    modified = '⦿',
+    max_len = vim.fn.winwidth(0) / 3,
+  }
+  ---@param ft string
+  ---@return string? name
+  local function file_name(ft)
+    local path_components = 2
+    local bufname = vim.api.nvim_buf_get_name(0)
+    local stack = vim.fn.gettagstack(0)
+    local name = {
+      help = stack.length > 0 and (':h %s'):format((stack.items[stack.length].tagname):match('[^@]*')),
+      man = bufname,
+      ['*'] = bufname:match(('[^/]*'):rep(path_components, '/') .. '$'),
+    }
+    return name[ft] or name['*']
+  end
+  return ('%s%s%s'):format(
+    vim.bo.modifiable and '' or options.read_only(vim.bo.filetype), -- Readonly?
+    file_name(vim.bo.filetype) or '[nofile]', -- get the display string for the name
+    vim.bo.modified and options.modified or '' -- Unsaved changes?
+  )
+end

@@ -1,7 +1,7 @@
 -- (ACK) Based on:
 -- Eviline config for lualine
--- Author: shadmansaleh
 -- Credit: glepnir
+-- Author: shadmansaleh
 
 -- Color table for highlights
 local theme = require('plugins.onedark').colors
@@ -18,6 +18,11 @@ local conditions = {
     local gitdir = vim.fn.finddir('.git', filepath .. ';')
     return gitdir and #gitdir > 0 and #gitdir < #filepath
   end,
+}
+
+local custom = {
+  -- buffers = require('plugins.lualine.buffers'),
+  filename = require('plugins.lualine.filename'),
 }
 
 -- Config
@@ -126,18 +131,7 @@ focused.left = {
     padding = {},
   },
   { -- File name, with changed formatting
-    function()
-      local options = {
-        read_only = '',
-        modified = '⦿',
-        max_len = vim.fn.winwidth(0) / 3,
-      }
-      return ('%s%s%s'):format(
-        vim.bo.modifiable and '' or options.read_only, -- Readonly?
-        vim.api.nvim_buf_get_name(0):match('[^/]*/[^/]*$'), -- file and immediate parent
-        vim.bo.modified and options.modified or '' -- Unsaved changes?
-      )
-    end,
+    custom.filename,
     color = { fg = theme.green },
     padding = { right = 1 },
   },
@@ -249,18 +243,7 @@ unfocused.left = {
     padding = { right = 1 },
   },
   { -- File name, with changed formatting
-    function()
-      local options = {
-        read_only = '',
-        modified = '⦿',
-        max_len = vim.fn.winwidth(0) / 3,
-      }
-      return ('%s%s%s'):format(
-        vim.bo.modifiable and '' or options.read_only, -- Readonly?
-        vim.api.nvim_buf_get_name(0):match('[^/]*/[^/]*$'), -- file and immediate parent
-        vim.bo.modified and options.modified or '' -- Unsaved changes?
-      )
-    end,
+    custom.filename,
     color = { fg = theme.green },
     padding = { right = 1 },
   },

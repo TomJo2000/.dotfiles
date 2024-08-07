@@ -2,7 +2,7 @@ local M = {}
 
 -- stylua: ignore
 M.binds = function()
-  local MiniMap = require('mini.map')
+local MiniMap = require('mini.map')
   return {
     { '<Leader>mo', MiniMap.open   , { mode = 'n', desc = '[M]ini.map [o]pen' }    },
     { '<Leader>mc', MiniMap.close  , { mode = 'n', desc = '[M]ini.map [c]lose' }   },
@@ -40,9 +40,9 @@ M.config = function()
       winblend = 70, -- This looks about right to me
       show_integration_count = false,
       width = math.floor(vim.o.columns / 9),
+      zindex = 10,
     },
   })
-  MiniMap.open()
 end
 
 return M
