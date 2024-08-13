@@ -57,8 +57,8 @@ local binds = {
   { 'n', '<leader>tf', require('plugins.custom.tail'), { desc = '`[t]ail -[f] <buf>`' } },
 }
 
--- setup keybinds
 for _, v in pairs(binds) do
   local mode, lhs, rhs, opts = v[1], v[2], v[3], v[4]
   vim.keymap.set(mode, lhs, rhs, opts)
 end
+

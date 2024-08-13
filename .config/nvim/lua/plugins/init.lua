@@ -18,6 +18,8 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   { -- A fully customizable start screen
     'goolord/alpha-nvim',
+    cond = vim.fn.expand('%') == '',
+    event = 'CmdUndefined',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'nvim-lua/plenary.nvim',
@@ -326,6 +328,7 @@ require('lazy').setup({
   { -- Ergonomic window movements
     'sindrets/winshift.nvim',
     cmd = 'WinShift',
+    event = 'CmdUndefined',
     opts = {
       keymaps = { disable_defaults = true },
     },
@@ -370,7 +373,7 @@ require('lazy').setup({
 
   { -- yank history
     'gbprod/yanky.nvim',
-    event = 'VeryLazy',
+    event = 'SafeState',
     opts = {
       ring = { -- yank ring
         history_length = 100,

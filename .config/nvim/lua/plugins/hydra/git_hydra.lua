@@ -7,16 +7,50 @@ local hint = [[
  _/_: show base file ^ ^ ^ ^ _q_: exit
 ]]
 
-local gitsigns = require('gitsigns')
+local GitSigns = package.loaded['gitsigns'] or nil
 
+--- You're gonna need 'lewis6991/gitsigns.nvim', okay?
+---@diagnostic disable: undefined-field, need-check-nil
 return {
   name = 'Git',
   mode = { 'n', 'x' },
   hint = hint,
+  body = '<leader>g',
+  -- stylua: ignore
+  heads = {
+    { '<Down>', function()
+      if vim.wo.diff then return ']c' end
+      vim.schedule(function() GitSigns.next_hunk() end)
+      return '<Ignore>'
+    end, { expr = true, desc = 'next hunk' }
+    },
+    { '<Up>', function()
+        if vim.wo.diff then return '[c' end
+        vim.schedule(function() GitSigns.prev_hunk() end)
+        return '<Ignore>'
+      end,
+      { expr = true, desc = 'prev hunk' }
+    },
+    { 'B', function()
+      GitSigns.blame_line({ full = true })
+    end, { desc = '[B]lame show full' }
+    },
+    { 'b', GitSigns.blame_line,                    { desc = '[b]lame' } },
+    { 'd', GitSigns.toggle_deleted,                { nowait = true, desc = 'toggle [d]eleted' } },
+    { 'f', require('telescope.builtin').git_files, { desc = '[G]it [F]ile search' } },
+    { 'h', GitSigns.preview_hunk,                  { desc = 'preview [h]unk' } },
+    { 's', GitSigns.stage_hunk,                    { desc = '[s]tage hunk' } },
+    { 'S', GitSigns.stage_buffer,                  { desc = '[S]tage buffer' } },
+    { 't', GitSigns.toggle_current_line_blame,     { desc = '[t]oggle inline git blame' } },
+    { 'u', GitSigns.undo_stage_hunk,               { desc = '[u]ndo last stage' } },
+    { 'v', GitSigns.select_hunk,                   { desc = '[v]isually select hunk' } },
+    { '/', GitSigns.show,                          { exit = true, desc = '[/] show base file' } },
+    { 'q', nil,                                    { exit = true, nowait = true, desc = '[q]uit Git Hydra' } },
+  },
   config = {
-    buffer = true,
     color = 'pink',
     invoke_on_body = true,
+    buffer = true,
     hint = {
       border = 'rounded',
     },
@@ -24,49 +58,12 @@ return {
       vim.cmd.mkview()
       vim.cmd('silent! %foldopen!')
       vim.bo.modifiable = false
-      -- gitsigns.toggle_signs(true)
-      -- gitsigns.toggle_linehl(true)
     end,
     on_exit = function()
       local cursor_pos = vim.api.nvim_win_get_cursor(0)
       vim.cmd.loadview()
       vim.api.nvim_win_set_cursor(0, cursor_pos)
       vim.cmd.normal('zv')
-      -- gitsigns.toggle_signs(false)
-      -- gitsigns.toggle_linehl(false)
-      -- gitsigns.toggle_deleted(false)
     end,
-  },
-  body = '<leader>g',
-  -- stylua: ignore
-  heads = {
-    { '<Down>', function()
-      if vim.wo.diff then return ']c' end
-      vim.schedule(function() gitsigns.next_hunk() end)
-      return '<Ignore>'
-    end, { expr = true, desc = 'next hunk' }
-    },
-    { '<Up>', function()
-        if vim.wo.diff then return '[c' end
-        vim.schedule(function() gitsigns.prev_hunk() end)
-        return '<Ignore>'
-      end,
-      { expr = true, desc = 'prev hunk' }
-    },
-    { 'B', function()
-      gitsigns.blame_line({ full = true })
-    end, { desc = '[B]lame show full' }
-    },
-    { 'b', gitsigns.blame_line,                    { desc = '[b]lame' } },
-    { 'd', gitsigns.toggle_deleted,                { nowait = true, desc = 'toggle [d]eleted' } },
-    { 'f', require('telescope.builtin').git_files, { desc = '[G]it [F]ile search' } },
-    { 'h', gitsigns.preview_hunk,                  { desc = 'preview [h]unk' } },
-    { 's', gitsigns.stage_hunk,                    { desc = '[s]tage hunk' } },
-    { 'S', gitsigns.stage_buffer,                  { desc = '[S]tage buffer' } },
-    { 't', gitsigns.toggle_current_line_blame,     { desc = '[t]oggle inline git blame' } },
-    { 'u', gitsigns.undo_stage_hunk,               { desc = '[u]ndo last stage' } },
-    { 'v', gitsigns.select_hunk,                   { desc = '[v]isually select hunk' } },
-    { '/', gitsigns.show,                          { exit = true, desc = '[/] show base file' } },
-    { 'q', nil,                                    { exit = true, nowait = true, desc = '[q]uit Git Hydra' } },
   },
 }

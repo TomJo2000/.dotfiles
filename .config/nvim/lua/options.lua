@@ -1,3 +1,6 @@
+-- 24Bit color
+vim.o.termguicolors = true
+
 -- Whitespace symbols
 vim.opt.listchars = {
   space = '∙',
@@ -7,13 +10,14 @@ vim.opt.listchars = {
   precedes = '«',
   nbsp = '°',
 }
+
 vim.o.list = true
 
 vim.o.tabstop = 4
 vim.o.expandtab = true
 
--- Set highlight on search
-vim.o.hlsearch = false
+-- Disable highlight on search
+vim.o.hlsearch = true
 
 -- Make (absolute) line numbers default
 vim.wo.number = true
@@ -43,9 +47,6 @@ vim.o.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
-
--- NOTE: You should make sure your terminal supports this
-vim.o.termguicolors = true
 
 -- Enable highlighting the current line
 vim.o.cursorline = true
