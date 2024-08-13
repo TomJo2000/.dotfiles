@@ -1,5 +1,10 @@
 return {
-  filters = { dotfiles = true },
+  filters = {
+    git_ignored = false,
+    custom = {
+      '^\\.git',
+    },
+  },
   disable_netrw = true,
   hijack_cursor = true,
   sync_root_with_cwd = true,
@@ -8,10 +13,13 @@ return {
     update_root = false,
   },
   view = {
-    width = 30,
+    width = function()
+      return math.floor(0.175 * vim.o.columns)
+    end,
     preserve_window_proportions = true,
   },
   renderer = {
+    add_trailing = true,
     root_folder_label = false,
     highlight_git = true,
     indent_markers = { enable = true },
@@ -25,7 +33,15 @@ return {
           open = '',
           symlink = '',
         },
-        git = { unmerged = '' },
+        git = {
+          unstaged = '',
+          staged = '󰸞',
+          unmerged = '',
+          renamed = '󰫍',
+          untracked = '󰏢',
+          deleted = '',
+          ignored = '◌',
+        },
       },
     },
   },

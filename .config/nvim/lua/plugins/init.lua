@@ -76,8 +76,10 @@ require('lazy').setup({
     opts = require('plugins.formatter').opts,
   },
 
-  -- Split or join oneliners to multiline statements and vise versa
-  { 'AndrewRadev/splitjoin.vim' },
+  { -- Split or join oneliners to multiline statements and vise versa
+    'AndrewRadev/splitjoin.vim',
+    event = 'InsertEnter',
+  },
 
   -- [[ LSP ]]
   { -- LSP Configuration
@@ -88,9 +90,11 @@ require('lazy').setup({
         'hrsh7th/cmp-nvim-lsp', -- CMP integration
         'folke/neodev.nvim',    -- function signatures for nvim's Lua API
         'onsails/lspkind.nvim', -- icons for LSP suggestions
+        'j-hui/fidget.nvim',    -- notification
       },
     config = function()
       local opts = require('plugins.lsp')
+      local notify = require('fidget').notify
       -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
@@ -101,9 +105,16 @@ require('lazy').setup({
         local conf = vim.tbl_deep_extend('force', default_config, conf)
         -- Ensure the servers above are installed
         if vim.fn.executable(conf.cmd[1]) ~= 1 then
-          vim.cmd.echohl('LspDiagnosticsVirtualTextError')
-          vim.cmd.echomsg(('"Could not find: %s"'):format(conf.cmd[1]))
-          vim.cmd.echohl('NONE')
+          notify(
+            ('"Could not find: %s"'):format(conf.cmd[1]), -- msg
+            'WARN', -- level
+            { -- opts
+              annotate = 'LSP not found:',
+              group = 'LspNotFound',
+              skip_history = true,
+              ttl = 30,
+            }
+          )
         end
 
         require('lspconfig')[lsp].setup(conf)
@@ -160,6 +171,7 @@ require('lazy').setup({
 
   { -- bulk comments
     'numToStr/Comment.nvim',
+    event = 'VeryLazy',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects', -- Syntax aware text-objects
       'JoosepAlviste/nvim-ts-context-commentstring', -- set the commentstring based on the treesitter context
