@@ -31,6 +31,15 @@ require('lazy').setup({
     opts = {},
   },
 
+  { -- directory navigation
+    'nvim-tree/nvim-tree.lua',
+    priority = 900, -- we want this loaded pretty much immediately
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    opts = require('plugins.nvim-tree'),
+  },
+
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -68,18 +77,6 @@ require('lazy').setup({
 
   -- Split or join oneliners to multiline statements and vise versa
   { 'AndrewRadev/splitjoin.vim' },
-
-  { -- directory navigation
-    'nvim-tree/nvim-tree.lua',
-    lazy = false, -- we want this loaded pretty much immediately
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-    },
-    -- version = '*',
-    -- config = function()
-    --   require('nvim-tree').setup({})
-    -- end,
-  },
 
   -- [[ LSP ]]
   { -- LSP Configuration
