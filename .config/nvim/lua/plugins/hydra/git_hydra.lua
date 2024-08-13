@@ -1,13 +1,13 @@
 -- A Hydra for common Git operations
 
 local hint = [[
- _<Down>_: next hunk     _s_: stage hunk        _d_: show deleted   _b_: blame line
- _<Up>_: prev hunk     _u_: undo last stage   _h_: preview hunk   _B_: blame show full
- _v_: select hunk   _S_: stage buffer      _f_: file search    _t_: toggle inline blame
- _/_: show base file ^ ^ ^ ^ _q_: exit
+ _<Down>_: next hunk     _s_: stage hunk      _d_: show deleted _b_: blame line
+   _<Up>_: prev hunk     _u_: undo last stage _h_: preview hunk _B_: blame show full
+      _v_: select hunk   _S_: stage buffer    _f_: file search  _t_: toggle inline blame
+      _q_: exit          ^                    ^               _/_: show base file
 ]]
 
-local GitSigns = package.loaded['gitsigns'] or nil
+local GitSigns = package.loaded['gitsigns'] or {}
 
 --- You're gonna need 'lewis6991/gitsigns.nvim', okay?
 ---@diagnostic disable: undefined-field, need-check-nil
@@ -50,9 +50,14 @@ return {
   config = {
     color = 'pink',
     invoke_on_body = true,
-    buffer = true,
     hint = {
-      border = 'rounded',
+      ---@see api-win_config
+      float_opts = {
+        style = 'minimal',
+        border = 'single',
+        focusable = false,
+        noautocmd = true,
+      },
     },
     on_enter = function()
       vim.cmd.mkview()

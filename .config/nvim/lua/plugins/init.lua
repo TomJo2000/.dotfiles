@@ -1,25 +1,24 @@
 --[[ Bootstrap `lazy.nvim` plugin manager ]]
 ---@see Lazy.nvim https://github.com/folke/lazy.nvim
 -- `:help lazy.nvim.txt` for more info
-local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
+local lazydir = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
-if not vim.uv.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazydir) then
   vim.fn.system({
     'git',
     'clone',
     '--filter=blob:none',
     'https://github.com/folke/lazy.nvim.git',
     '--branch=stable', -- latest stable release
-    lazypath,
+    lazydir,
   })
 end
-vim.opt.rtp:prepend(lazypath)
+vim.opt.rtp:prepend(lazydir)
 
 require('lazy').setup({
   { -- A fully customizable start screen
     'goolord/alpha-nvim',
     cond = vim.fn.expand('%') == '',
-    event = 'CmdUndefined',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'nvim-lua/plenary.nvim',
@@ -63,7 +62,7 @@ require('lazy').setup({
   },
 
   -- Repeatable prefixed bindings
-  { 'anuvyklack/hydra.nvim', event = 'BufEnter' },
+  { 'nvimtools/hydra.nvim', event = 'BufEnter' },
 
   { -- proper merge editor
     event = 'VeryLazy',
@@ -274,10 +273,11 @@ require('lazy').setup({
 
   { -- Markdown preview in the browser synced to nvim
     'iamcco/markdown-preview.nvim',
-    event = 'VeryLazy',
+    event = 'CmdUndefined',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
     ft = { 'markdown', 'html' },
     build = function()
+      require('lazy').load({ plugins = { 'markdown-preview.nvim' } })
       vim.fn['mkdp#util#install']()
     end,
   },
@@ -348,8 +348,9 @@ require('lazy').setup({
 
   { -- Incremental renaming
     'smjonas/inc-rename.nvim',
-    opts = { cmd_name = 'Rename' },
+    event = 'CmdUndefined',
     cmd = 'Rename',
+    opts = { cmd_name = 'Rename' },
     keys = {
       {
         '<leader>rn',
