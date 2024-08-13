@@ -1,31 +1,3 @@
--- [[ Telescope ]]
-local binds = require('plugins.telescope').binds
-for _, v in pairs(binds) do
-  local mode, lhs, rhs, opts = v[1], v[2], v[3], v[4]
-  vim.keymap.set(mode, lhs, rhs, opts)
-end
-
--- [[ which-key ]]
-require('which-key').register({
-  ['<leader>c'] = { _ = 'which_key_ignore', name = '[C]ode' },
-  ['<leader>d'] = { _ = 'which_key_ignore', name = '[D]ocument' },
-  ['<leader>r'] = { _ = 'which_key_ignore', name = '[R]eplace' },
-  ['<leader>s'] = { _ = 'which_key_ignore', name = '[S]earch' },
-  ['<leader>w'] = { _ = 'which_key_ignore', name = '[W]orkspace' },
-  ['<leader>l'] = { _ = 'which_key_ignore', name = '[L]ine numbers' },
-  ['<leader>m'] = { _ = 'which_key_ignore', name = '[M]ini.map' },
-  ['<leader>o'] = { _ = 'which_key_ignore', name = 'Split/Join [O]neliners' },
-})
-
--- [[ Configure nvim-cmp ]]
--- See `:help cmp`
-require('luasnip.loaders.from_vscode').lazy_load()
-require('luasnip').config.setup()
-require('plugins.cmp')
-
---[[ Hydra bindings ]]
-require('plugins.hydra')
-
 -- See `:h vim.highlight.on_yank()`
 --[[ Highlight on yank ]]
 local hl_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -51,7 +23,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
 })
 
 -- See `:h ++p`
---[[  ]]
+--[[ Create missing directories ]]
 -- vim.api.nvim_create_autocmd({ 'BufWritePre', 'FileWritePre' }, {
 --   callback = function()
 --     local buf_file = vim.fn.getbufinfo()[vim.fn.bufnr('%')].name

@@ -204,7 +204,7 @@ require('lazy').setup({
         'onsails/lspkind.nvim',                -- Icons for LSP suggestions
         'L3MON4D3/LuaSnip',                    -- Snippet Engine
       },
-    -- config = require('plugins.cmp')
+    config = require('plugins.cmp'),
   },
 
   { -- There are way to many statusline plugins, we're using this one.
