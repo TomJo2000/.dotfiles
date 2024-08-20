@@ -30,6 +30,7 @@ local config = {
   options = {
     theme = 'onedark',
     always_divide_middle = false,
+    globalstatus = true, -- one statusline to rule them all.
     component_separators = '',
     section_separators = '',
     icons_enabled = true,
@@ -72,7 +73,7 @@ focused.left = {
   },
   { -- Vim mode indicator
     function()
-      return ''
+      return '' .. (vim.fn.mode()):upper()
     end,
     color = function()
       -- auto change color according to neovims mode
@@ -111,10 +112,8 @@ focused.left = {
   { -- Show order and number of open buffers
     function()
       local buf_list = vim.fn.getbufinfo({ buflisted = 1 })
-      if #buf_list == 1 then -- no need for a buffer count on a single buffer
-        return ' '
-      else -- if we have multiple buffers find the number of buffers and the index of the current one
-        local current_buf = vim.fn.bufnr('%')
+      if #buf_list > 1 then -- if we have multiple buffers find the number of buffers and the index of the current one
+        local current_buf = vim.api.nvim_get_current_buf()
         local index
         -- Find what index in the buffer list is the current buffer
         for i = 1, #buf_list do
@@ -126,6 +125,8 @@ focused.left = {
         -- return out the index and total number of buffers
         return (' ❮%s/%s❯ '):format(index, #buf_list)
       end
+      -- no need for a buffer count on a single buffer
+      return ' '
     end,
     color = { fg = theme.orange },
     padding = {},
@@ -178,6 +179,18 @@ focused.left = {
 
 -- Add components to right sections
 focused.right = {
+  { -- search count with working total
+    function()
+      local count = vim.fn.searchcount({ maxcount = 0 })
+      return count.incomplete > 0 and '[?/?]' or count.total > 0 and ('[%s/%s]'):format(count.current, count.total) or ''
+    end,
+    cond = function()
+      return vim.o.hlsearch == true
+    end,
+    timeout = 500,
+    color = { fg = theme.yellow },
+    padding = { right = 1 },
+  },
   { -- LSP diagnostics count
     'diagnostics',
     sources = { 'nvim_diagnostic' },
@@ -294,6 +307,9 @@ local winbar = {
   lualine_c = {
     { -- open buffers
       'buffers',
+      fmt = function(str, context)
+        return str .. context.icon
+      end,
       max_length = 0, -- Maximum width of buffers component,
       show_modified_status = false, -- Shows indicator when the buffer is modified.
       symbols = {
@@ -311,6 +327,7 @@ local winbar = {
         fzf = 'FZF',
         TelescopePrompt = 'Telescope',
       }, -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
+      padding = {},
     },
     { -- Breadcrumbs
       'navic',

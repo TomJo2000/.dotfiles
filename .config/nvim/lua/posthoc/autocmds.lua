@@ -9,6 +9,27 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
+vim.api.nvim_create_autocmd('ModeChanged', {
+  pattern = '*:c', -- any to command
+  callback = function()
+    vim.o.hlsearch = true
+  end,
+})
+
+vim.api.nvim_create_autocmd('ModeChanged', {
+  pattern = 'c:*', -- command to any
+  callback = function()
+    vim.o.hlsearch = false
+  end,
+})
+
+-- vim.api.nvim_create_autocmd('WinResized', {
+--   callback = function()
+--     -- adjust minimap width
+--   end,
+--   group = 'MiniMap',
+-- })
+
 vim.api.nvim_create_autocmd('BufEnter', {
   callback = function()
     local close_map = {
