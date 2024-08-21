@@ -14,7 +14,7 @@ M.opts = {
     html = retab(),
     just = { 'just' },
     lua  = { 'stylua' },
-    markdown = retab(),
+    -- markdown = retab(),
     zig  = { 'zigfmt' },
     -- Use the "*" filetype to run formatters on all filetypes.
     ['*'] = { 'codespell' },

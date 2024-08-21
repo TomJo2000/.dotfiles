@@ -1,11 +1,11 @@
 -- A Hydra for interactive rename/replace operations
 return {
   name = 'Replace',
-  mode = {'n', 'v'},
+  mode = { 'n', 'v' },
   -- hint = [[ ]],
   config = {
     buffer = true,
-    color  = 'teal',
+    color = 'teal',
     invoke_on_body = true,
   },
   body = '<leader>r',

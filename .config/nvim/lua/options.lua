@@ -1,6 +1,9 @@
 -- 24Bit color
 vim.o.termguicolors = true
 
+-- Set the window title
+vim.o.title = true
+
 -- Whitespace symbols
 vim.opt.listchars = {
   space = '∙',
@@ -16,8 +19,9 @@ vim.o.list = true
 vim.o.tabstop = 4
 vim.o.expandtab = true
 
--- Disable highlight on search
-vim.o.hlsearch = true
+-- Don't show search count message,
+-- it's capped at 99 so we do it in lualine instead
+vim.o.shortmess = vim.o.shortmess .. 'S'
 
 -- Make (absolute) line numbers default
 vim.wo.number = true

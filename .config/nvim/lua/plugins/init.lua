@@ -3,7 +3,7 @@
 -- `:help lazy.nvim.txt` for more info
 local lazydir = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
-if not vim.uv.fs_stat(lazydir) then
+if not (vim.uv or vim.loop).fs_stat(lazydir) then
   vim.fn.system({
     'git',
     'clone',
@@ -42,14 +42,28 @@ require('lazy').setup({
   },
 
   -- Git related plugins
-  'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
+  { 'tpope/vim-fugitive', event = 'SafeState' },
+
+  { 'tpope/vim-rhubarb', event = 'SafeState' },
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  { 'tpope/vim-sleuth', event = 'BufEnter' },
 
   { -- Keybind management
     'folke/which-key.nvim',
+    priority = 800, -- we want this loaded pretty much immediately
+    opts = require('plugins.which-key').opts,
+    -- keys = {
+    --   {
+    --     '<leader>?',
+    --     function()
+    --       require('which-key').show({ global = false })
+    --     end,
+    --     desc = 'Buffer Local Keymaps (which-key)',
+    --   },
+    -- },
+  },
+  --[[   'folke/which-key.nvim',
     event = 'VeryLazy',
     -- stylua: ignore
     disable = {
@@ -59,13 +73,13 @@ require('lazy').setup({
       },
     },
     opts = require('plugins.which-key').opts,
-  },
+  }, --]]
 
   -- Repeatable prefixed bindings
   { 'nvimtools/hydra.nvim', event = 'BufEnter' },
 
   { -- proper merge editor
-    event = 'VeryLazy',
+    event = 'SafeState',
     --- @see documentation at https://github.com/sindrets/diffview.nvim
     'sindrets/diffview.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -73,13 +87,12 @@ require('lazy').setup({
 
   { -- More customizable formatters.
     'stevearc/conform.nvim',
+    event = 'BufEnter',
     opts = require('plugins.formatter').opts,
   },
 
-  { -- Split or join oneliners to multiline statements and vise versa
-    'AndrewRadev/splitjoin.vim',
-    event = 'InsertEnter',
-  },
+  -- Split or join oneliners to multiline statements and vise versa
+  { 'AndrewRadev/splitjoin.vim', event = 'InsertEnter' },
 
   -- [[ LSP ]]
   { -- LSP Configuration
@@ -88,7 +101,7 @@ require('lazy').setup({
       -- stylua: ignore
       depdencies = {
         'hrsh7th/cmp-nvim-lsp', -- CMP integration
-        'folke/neodev.nvim',    -- function signatures for nvim's Lua API
+        'folke/lazydev.nvim',   -- function signatures for nvim's Lua API
         'onsails/lspkind.nvim', -- icons for LSP suggestions
         'j-hui/fidget.nvim',    -- notification
       },
@@ -122,6 +135,19 @@ require('lazy').setup({
     end,
   },
 
+  { -- function signatures for nvim's Lua API
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    dependencies = { 'Bilal2453/luvit-meta' }, -- optional `vim.uv` typings
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
+      },
+    },
+  },
+
   { -- Useful status updates for LSP
     'j-hui/fidget.nvim',
     event = 'LspAttach',
@@ -140,7 +166,7 @@ require('lazy').setup({
             none.builtins.code_actions.gitrebase, -- inject a code action for fast git rebase interactive mode switching
             none.builtins.diagnostics.actionlint, -- GitHub Actions linter
             none.builtins.diagnostics.yamllint,   -- YAML linter
-            none.builtins.completion.luasnip,     -- LuaSnip snippets as completions
+            -- none.builtins.completion.luasnip,     -- LuaSnip snippets as completions
             none.builtins.completion.spell,       -- Spelling suggestions as completions
           },
         update_in_insert = true,
@@ -163,8 +189,7 @@ require('lazy').setup({
 
   { -- Highlighters, Querries and Contexts.
     'nvim-treesitter/nvim-treesitter',
-    event = { 'BufReadPre', 'BufNewFile' },
-    'nvim-treesitter/nvim-treesitter',
+    event = 'BufEnter',
     build = ':TSUpdate',
     opts = require('plugins.treesitter').ts,
   },
@@ -212,9 +237,18 @@ require('lazy').setup({
         'chrisgrieser/cmp_yanky',              -- Clipboard/Yank history
         'rafamadriz/friendly-snippets',        -- Adds a number of user-friendly snippets
         'onsails/lspkind.nvim',                -- Icons for LSP suggestions
-        'L3MON4D3/LuaSnip',                    -- Snippet Engine
+        -- 'L3MON4D3/LuaSnip',                    -- Snippet Engine
       },
     config = require('plugins.cmp'),
+  },
+
+  { -- Snippet engine
+    'L3MON4D3/LuaSnip',
+    -- install jsregexp (optional!).
+    build = 'make install_jsregexp',
+    cond = function()
+      return false -- vim.fn.executable('make') == 1
+    end,
   },
 
   { -- There are way to many statusline plugins, we're using this one.

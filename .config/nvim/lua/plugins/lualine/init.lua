@@ -184,9 +184,6 @@ focused.right = {
       local count = vim.fn.searchcount({ maxcount = 0 })
       return count.incomplete > 0 and '[?/?]' or count.total > 0 and ('[%s/%s]'):format(count.current, count.total) or ''
     end,
-    cond = function()
-      return vim.o.hlsearch == true
-    end,
     timeout = 500,
     color = { fg = theme.yellow },
     padding = { right = 1 },

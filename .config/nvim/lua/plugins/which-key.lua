@@ -17,6 +17,10 @@ M.opts = {
 
     -- stylua: ignore
     { --[[ Moving lines ]]
+      { mode = 'v',
+        { '<M-Down>', 'yjp', desc = 'Copy selection below' },
+        { '<M-Up>'  , 'ykp', desc = 'Copy selection above' },
+      },
       { mode = 'n',
         { '<M-Down>'  , 'ddp' , desc = 'Swap line down'  },
         { '<M-Up>'    , 'ddkP', desc = 'Swap line up'    },
@@ -24,13 +28,17 @@ M.opts = {
         { '<M-C-Up>'  , 'yyP' , desc = 'Copy line above' },
         --[[ dealing with line wrapping ]]
         { expr = true, silent = true,
-          { 'j', [[v:count == 0 ? 'gj' : 'j']] },
-          { 'k', [[v:count == 0 ? 'gk' : 'k']] },
+          { desc = 'Down, accounting for linewrap',
+            'j', function()
+            return vim.v.count == 0 and 'gj' or 'j'
+            end,
+          },
+          { desc = 'Up, accounting for linewrap',
+            'k', function()
+            return vim.v.count == 0 and 'gk' or 'k'
+            end,
+          },
         },
-      },
-      { mode = 'v',
-        { '<M-Down>', 'yjp', desc = 'Copy selection below' },
-        { '<M-Up>'  , 'ykp', desc = 'Copy selection above' },
       },
       group = 'movement',
     },
@@ -60,7 +68,7 @@ M.opts = {
         { '<Space>', '<Nop>', { silent = true } },
       },
       { mode = 'n',
-        { '<C-s>', vim.cmd.write, desc = '[S]ave' },
+        { '<C-s>', '<Cmd>w ++p<CR>', desc = '[S]ave' },
         { '<leader>tf', require('plugins.custom.tail'), desc = '`[t]ail -[f] <buf>`' },
       },
     },
