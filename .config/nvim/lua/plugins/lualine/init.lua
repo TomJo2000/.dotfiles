@@ -304,18 +304,14 @@ local winbar = {
   lualine_c = {
     { -- open buffers
       'buffers',
-      fmt = function(str, context)
-        return str .. context.icon
+      icons_enabled = false,
+      show_modified_status = false,
+      fmt = function(str, context) -- icons always have a space by default, if we add them ourselves, we can change that.
+        local icon, _ = require('nvim-web-devicons').get_icon(context.filetype)
+        return ('%s%s'):format(icon, str)
       end,
       max_length = 0, -- Maximum width of buffers component,
-      show_modified_status = false, -- Shows indicator when the buffer is modified.
-      symbols = {
-        modified = '', -- Text to show when the buffer is modified
-        alternate_file = '#', -- Text to show to identify the alternate file
-        directory = '', -- Text to show when the buffer is a directory
-      },
       buffers_color = {
-        -- Same values as the general color option can be used here.
         active = { fg = theme.bg_blue, bg = theme.bg1 }, -- Color for active buffer.
         inactive = { fg = theme.grey, bg = theme.bg0 }, -- Color for inactive buffer.
       },
