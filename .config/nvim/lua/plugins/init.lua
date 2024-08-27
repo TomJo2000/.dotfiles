@@ -51,20 +51,8 @@ require('lazy').setup({
 
   { -- Keybind management
     'folke/which-key.nvim',
-    priority = 800, -- we want this loaded pretty much immediately
+    event = 'BufEnter',
     opts = require('plugins.which-key').opts,
-    -- keys = {
-    --   {
-    --     '<leader>?',
-    --     function()
-    --       require('which-key').show({ global = false })
-    --     end,
-    --     desc = 'Buffer Local Keymaps (which-key)',
-    --   },
-    -- },
-  },
-  --[[   'folke/which-key.nvim',
-    event = 'VeryLazy',
     -- stylua: ignore
     disable = {
       buftypes = {
@@ -72,16 +60,15 @@ require('lazy').setup({
         'help', 'lazy'
       },
     },
-    opts = require('plugins.which-key').opts,
-  }, --]]
+  },
 
   -- Repeatable prefixed bindings
   { 'nvimtools/hydra.nvim', event = 'BufEnter' },
 
   { -- proper merge editor
-    event = 'SafeState',
     --- @see documentation at https://github.com/sindrets/diffview.nvim
     'sindrets/diffview.nvim',
+    event = 'SafeState',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
 
@@ -93,6 +80,20 @@ require('lazy').setup({
 
   -- Split or join oneliners to multiline statements and vise versa
   { 'AndrewRadev/splitjoin.vim', event = 'InsertEnter' },
+
+  { -- Less obtrusive notifications
+    'j-hui/fidget.nvim',
+    lazy = true,
+    opts = {
+      notification = { override_vim_notify = true },
+      integration = {
+        ['nvim-tree'] = {
+          enable = true, -- Integrate with nvim-tree/nvim-tree.lua (if installed)
+        },
+      },
+      -- window = { zindex = 45 },
+    },
+  },
 
   -- [[ LSP ]]
   { -- LSP Configuration
@@ -120,7 +121,7 @@ require('lazy').setup({
         if vim.fn.executable(conf.cmd[1]) ~= 1 then
           notify(
             ('"Could not find: %s"'):format(conf.cmd[1]), -- msg
-            'WARN', -- level
+            vim.log.levels.WARN, -- level
             { -- opts
               annotate = 'LSP not found:',
               group = 'LspNotFound',
@@ -315,6 +316,12 @@ require('lazy').setup({
         end,
       },
     },
+  },
+
+  { -- nicer looking Markdown
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+    opts = {},
   },
 
   { -- Markdown preview in the browser synced to nvim

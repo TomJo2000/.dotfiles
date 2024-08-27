@@ -40,7 +40,7 @@ M.config = function()
       winblend = 70, -- This looks about right to me
       show_integration_count = false,
       width = math.floor(vim.o.columns / 9),
-      zindex = 10,
+      zindex = 1,
     },
   })
 end
