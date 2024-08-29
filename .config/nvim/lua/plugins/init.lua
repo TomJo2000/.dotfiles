@@ -252,6 +252,9 @@ require('lazy').setup({
     end,
   },
 
+  -- automatically close tags in HTML, XML or embedded in Markdown
+  { 'windwp/nvim-ts-autotag' },
+
   { -- There are way to many statusline plugins, we're using this one.
     'nvim-lualine/lualine.nvim',
     event = 'VeryLazy',
@@ -410,6 +413,18 @@ require('lazy').setup({
         vim.cmd.Rename,
         { mode = { 'n', 'v' }, desc = 'Incremental [r]e[n]ame' },
       },
+    },
+  },
+
+  { -- Preview :{number} jumps
+    'nacro90/numb.nvim',
+    event = 'VeryLazy',
+    opts = {
+      show_numbers = true, -- Enable 'number' for the window while peeking
+      show_cursorline = true, -- Enable 'cursorline' for the window while peeking
+      hide_relativenumbers = true, -- Enable turning off 'relativenumber' for the window while peeking
+      number_only = false, -- Peek only when the command is only a number instead of when it starts with a number
+      centered_peeking = true, -- Peeked line will be centered relative to window
     },
   },
 
