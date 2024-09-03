@@ -265,9 +265,8 @@ require('lazy').setup({
   { -- Theme inspired by Atom
     'navarasu/onedark.nvim',
     priority = 1000, -- make sure the colorscheme is loaded immediately
-    config = function() -- this goes haywire if I pass in the config using the opts key for some reason
-      local opts = require('plugins.onedark').config
-      ---@diagnostic disable: different-requires
+    config = function()
+      local opts = require('plugins.onedark').opts
       require('onedark').setup(opts)
       vim.cmd.colorscheme('onedark')
     end,
