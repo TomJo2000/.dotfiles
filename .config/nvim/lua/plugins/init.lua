@@ -18,12 +18,14 @@ vim.opt.rtp:prepend(lazydir)
 require('lazy').setup({
   { -- A fully customizable start screen
     'goolord/alpha-nvim',
-    cond = vim.fn.expand('%') == '',
+    event = 'BufEnter',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'nvim-lua/plenary.nvim',
     },
-    config = require('plugins.alpha_nvim'),
+    config = function()
+      require('alpha').setup(require('alpha.themes.theta').config)
+    end,
   },
 
   { -- Session persistence and management
