@@ -10,6 +10,14 @@ return {
     changedelete = { text = '⦿' },
     untracked    = { text = '┇' },
   },
+  -- stylua: ignore
+  signs_staged = {
+    add          = { text = '┃' },
+    change       = { text = '┃' },
+    changedelete = { text = '┃' },
+    delete       = { text = '┃' },
+    topdelete    = { text = '┃' },
+  },
   on_attach = function(bufnr)
     vim.keymap.set({ 'n', 'v' }, ']c', function()
       if vim.wo.diff then

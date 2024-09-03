@@ -182,7 +182,9 @@ focused.right = {
   { -- search count with working total
     function()
       local count = vim.fn.searchcount({ maxcount = 0 })
-      return count.incomplete > 0 and '[?/?]' or count.total > 0 and ('[%s/%s]'):format(count.current, count.total) or ''
+      return count.incomplete > 0 and '?/?' -- unfinished search
+        or count.total > 0 and ('%s/%s'):format(count.current, count.total) -- has results
+        or ''
     end,
     timeout = 500,
     color = { fg = theme.yellow },
