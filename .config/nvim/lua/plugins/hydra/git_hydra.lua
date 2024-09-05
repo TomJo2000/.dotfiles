@@ -1,10 +1,10 @@
 -- A Hydra for common Git operations
 
 local hint = [[
- _<Down>_: next hunk     _s_: stage hunk      _d_: show deleted _b_: blame line
-   _<Up>_: prev hunk     _u_: undo last stage _h_: preview hunk _B_: blame show full
-      _v_: select hunk   _S_: stage buffer    _f_: file search  _t_: toggle inline blame
-      _q_: exit          ^                    ^               _/_: show base file
+ _<Down>_: next hunk   _s_: stage hunk      _d_: show deleted _b_: blame line
+   _<Up>_: prev hunk   _S_: stage buffer    _h_: preview hunk _B_: blame show full
+      _f_: file search _u_: undo last stage _v_: select hunk  _t_: toggle inline blame
+      _q_: exit        _U_: unstage buffer  ^                 ^
 ]]
 
 local GitSigns = package.loaded['gitsigns'] or {}
@@ -20,16 +20,15 @@ return {
   heads = {
     { '<Down>', function()
       if vim.wo.diff then return ']c' end
-      vim.schedule(function() GitSigns.next_hunk() end)
+      vim.schedule(function() GitSigns.nav_hunk('next', { target = 'all' }) end)
       return '<Ignore>'
     end, { expr = true, desc = 'next hunk' }
     },
     { '<Up>', function()
         if vim.wo.diff then return '[c' end
-        vim.schedule(function() GitSigns.prev_hunk() end)
+        vim.schedule(function() GitSigns.nav_hunk('prev', { target = 'all' }) end)
         return '<Ignore>'
-      end,
-      { expr = true, desc = 'prev hunk' }
+      end, { expr = true, desc = 'prev hunk' }
     },
     { 'B', function()
       GitSigns.blame_line({ full = true })
@@ -43,8 +42,12 @@ return {
     { 'S', GitSigns.stage_buffer,                  { desc = '[S]tage buffer' } },
     { 't', GitSigns.toggle_current_line_blame,     { desc = '[t]oggle inline git blame' } },
     { 'u', GitSigns.undo_stage_hunk,               { desc = '[u]ndo last stage' } },
+    { 'U', function()
+      local filename = vim.api.nvim_buf_get_name(0)
+      vim.fn.system({ 'git', 'restore', '--staged', filename })
+      end, { desc = '[U]nstage buffer' },
+    },
     { 'v', GitSigns.select_hunk,                   { desc = '[v]isually select hunk' } },
-    { '/', GitSigns.show,                          { exit = true, desc = '[/] show base file' } },
     { 'q', nil,                                    { exit = true, nowait = true, desc = '[q]uit Git Hydra' } },
   },
   config = {
