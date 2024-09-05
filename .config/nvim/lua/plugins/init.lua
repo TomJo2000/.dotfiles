@@ -307,13 +307,8 @@ require('lazy').setup({
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-      -- Only load if `make` is available. Make sure you have the system
-      -- requirements installed.
-      {
+      { -- native fzf extension for telescope
         'nvim-telescope/telescope-fzf-native.nvim',
-        -- NOTE: If you are having trouble with this installation,
-        --       refer to the README for telescope-fzf-native for more instructions.
         build = 'make',
         cond = function()
           return vim.fn.executable('make') == 1
@@ -324,8 +319,10 @@ require('lazy').setup({
 
   { -- nicer looking Markdown
     'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
-    opts = {},
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons',
+    },
   },
 
   { -- Markdown preview in the browser synced to nvim
@@ -377,9 +374,9 @@ require('lazy').setup({
 
   { -- Per project file shortcuts
     'ThePrimeagen/harpoon',
+    lazy = true,
     branch = 'harpoon2',
     dependencies = { 'nvim-lua/plenary.nvim' },
-    lazy = true,
   },
 
   { -- Ergonomic window movements
@@ -435,10 +432,7 @@ require('lazy').setup({
     cond = function() -- Only load this plugin if Discord is installed.
       return vim.fn.executable('discord') == 1 and true or false
     end,
-    config = function()
-      local opts = require('plugins.presence')
-      require('presence').setup(opts)
-    end,
+    opts = require('plugins.presence'),
   },
 
   { -- yank history

@@ -104,7 +104,7 @@ local hex="${1#\#}"
         printf 'Invalid hex: \e[31m%s\e[m\n' "$1"
         return 1
     } >&2 # redirect this bracegroups output to stderr
-    printf "%d;%d;%d\n" "$(( 0x${hex:0:2} ))" "$(( 0x${hex:2:2} ))" "$(( 0x${hex:4:2} ))"
+    printf '%d;%d;%d\n' "$(( 0x${hex:0:2} ))" "$(( 0x${hex:2:2} ))" "$(( 0x${hex:4:2} ))"
 return
 }
 

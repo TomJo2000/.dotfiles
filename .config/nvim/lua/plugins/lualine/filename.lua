@@ -9,11 +9,13 @@ return function()
     modified = '⦿',
     max_len = vim.fn.winwidth(0) / 3,
   }
+
   local function check_git_workspace()
     local filepath = vim.fn.expand('%:p:h')
     local gitdir = vim.fn.finddir('.git', filepath .. ';')
     return gitdir and #gitdir > 0 and #gitdir < #filepath
   end
+
   ---@param ft string
   ---@return string? name
   local function file_name(ft)
@@ -41,6 +43,7 @@ return function()
     }
     return name[ft] or name['*']
   end
+
   return ('%s%s%s'):format(
     vim.bo.modifiable and '' or options.read_only(vim.bo.filetype), -- readonly?
     file_name(vim.bo.filetype) or '[nofile]', -- get the display string for the name
