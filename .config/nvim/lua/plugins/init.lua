@@ -41,6 +41,9 @@ require('lazy').setup({
       'nvim-tree/nvim-web-devicons',
     },
     opts = require('plugins.nvim-tree'),
+    keys = {
+      { '<leader>ee', '<Cmd>NvimTreeToggle<CR>', { mode = 'n', desc = 'Toggle file tr[ee]' } },
+    },
   },
 
   -- Git related plugins
@@ -86,9 +89,11 @@ require('lazy').setup({
   { -- Less obtrusive notifications
     'j-hui/fidget.nvim',
     lazy = true,
+    dependencies = { 'nvim-tree/nvim-tree.lua' },
     opts = {
       notification = { override_vim_notify = true },
       integration = {
+        ---@see fidget.option.integration.nvim-tree
         ['nvim-tree'] = {
           enable = true, -- Integrate with nvim-tree/nvim-tree.lua (if installed)
         },
@@ -149,12 +154,6 @@ require('lazy').setup({
         { path = 'luvit-meta/library', words = { 'vim%.uv' } },
       },
     },
-  },
-
-  { -- Useful status updates for LSP
-    'j-hui/fidget.nvim',
-    event = 'LspAttach',
-    opts = {},
   },
 
   { -- Generic LSP injections via Lua
