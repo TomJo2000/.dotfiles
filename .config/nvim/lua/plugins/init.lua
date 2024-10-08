@@ -194,7 +194,8 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     event = 'BufEnter',
     build = ':TSUpdate',
-    opts = require('plugins.treesitter').ts,
+    main = 'nvim-treesitter.configs',
+    opts = require('plugins.treesitter'),
   },
 
   { -- bulk comments
@@ -215,12 +216,6 @@ require('lazy').setup({
       post_hook = nil,
       ignore = nil,
     },
-  },
-
-  { -- Show the current context
-    'nvim-treesitter/nvim-treesitter-context',
-    event = 'VeryLazy',
-    opts = require('plugins.treesitter').context,
   },
 
   { -- Autocompletion
