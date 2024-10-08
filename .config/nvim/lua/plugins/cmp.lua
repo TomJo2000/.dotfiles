@@ -48,7 +48,6 @@ return function()
     }),
     sources = {
       { name = 'calc' },
-      { name = 'commit' },
       -- { name = 'dynamic' },
       { name = 'git' },
       -- { name = 'luasnip' },
@@ -58,6 +57,7 @@ return function()
       { name = 'path' },
       { name = 'cmp_yanky' },
     },
+    ---@diagnostic disable:missing-fields
     formatting = {
       format = require('lspkind').cmp_format({
         mode = 'symbol', -- show only symbol annotations

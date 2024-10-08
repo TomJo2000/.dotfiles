@@ -229,7 +229,6 @@ require('lazy').setup({
       -- stylua: ignore
       dependencies = {
         'hrsh7th/cmp-calc',                    -- Math
-        'Dosx001/cmp-commit',                  -- Repo contents
         -- 'uga-rosa/cmp-dynamic',             -- Generates suggestions from Lua functions
         'petertriho/cmp-git',                  -- Git
         'saadparwaiz1/cmp_luasnip',            -- LuaSnip cmp source
