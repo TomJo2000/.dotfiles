@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# License: BSD Zero Clause
+# Copyright (c) 2024 TomIO
 man() {
     # try the local man pages first
     command man "$@" || {

@@ -291,7 +291,7 @@ palette = "24Bit" # !! This feature depends on `starship` >= v1.11.0
   conflicted = "${count}"
   ahead = "󰞙${count}"
   behind = "󰞖${count}"
-  diverged = "󰓢${ahead_count} ${behind_count}"
+  diverged = " ${ahead_count}󰓢${behind_count}"
   format = "[($stashed$staged$modified$renamed$untracked$deleted$conflicted$ahead_behind)]($style)"
 
 [hostname] # system hostname, with indicator if logged in via SSH session.

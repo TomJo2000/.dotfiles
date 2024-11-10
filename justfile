@@ -12,27 +12,6 @@ exclude_file := dotfiles / ".config/meta/rsync_ignore"
 default:
     just --list
 
-@check set='all':
-    -just 'check_{{ set }}'
-
-[private]
-@check_all:
-    -just check_git
-    -just check_nvim
-    -just check_zsh
-
-[private]
-@check_git:
-    echo "checking git"
-
-[private]
-@check_nvim:
-    echo "checking nvim"
-
-[private]
-@check_zsh:
-    echo "checking zsh"
-
 @deploy:
     rsync --dry-run --out-format="%'''-6b/%'''7l %o %B %M %n" --filter=". {{ exclude_file }}" -a "{{ dotfiles }}/" "{{ home }}/"
     -just deploy_files # it's fine if this "fails" due to negative confirmation
@@ -45,9 +24,6 @@ default:
 @diff DIRS:
     echo "diff"
 
-@enroll +FILES:
-    echo "enroll"
-
 @fonts:
     "{{ dotfiles }}/.config/meta/fetch_fonts.sh"
 
@@ -59,4 +35,4 @@ default:
 @has:
     error("Missing {{ home }}")
 
-# vim: ft=just
+# vim: ft=make

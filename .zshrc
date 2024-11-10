@@ -147,6 +147,8 @@ col+=( # ** append the following sequences to the `col[]` array
 }; setup
 (( timing[setup] = timing[all] + EPOCHREALTIME ))
 
+#shellcheck disable=SC2079
+echo $(( $timing + 1.0 + 7.5))
 
 ### XDG base-directories
 : "${XDG_CONFIG_HOME:="${HOME}/.config"}" \
