@@ -1,4 +1,5 @@
 return function()
+  ---@enum Lualine.custom.filename.options
   local options = {
     ---@param ft string
     ---@return string symbol

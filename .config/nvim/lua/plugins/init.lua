@@ -186,7 +186,7 @@ require('lazy').setup({
       'MunifTanjim/nui.nvim',
       'nvim-tree/nvim-web-devicons', -- NerdFont icons
     },
-    config = require('plugins.breadcrumbs'),
+    opts = require('plugins.breadcrumbs'),
   },
 
   { -- Highlighters, Querries and Contexts.

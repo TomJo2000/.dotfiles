@@ -4,15 +4,19 @@
 -- Author: shadmansaleh
 
 -- Color table for highlights
+---@type onedark.colors
 local theme = require('plugins.onedark').colors
 
 local conditions = {
+  ---@return boolean
   buffer_not_empty = function()
     return vim.fn.empty(vim.fn.expand('%:t')) ~= 1
   end,
+  ---@return boolean
   hide_in_width = function()
     return vim.fn.winwidth(0) > 80
   end,
+  ---@return boolean
   check_git_workspace = function()
     local filepath = vim.fn.expand('%:p:h')
     local gitdir = vim.fn.finddir('.git', filepath .. ';')
@@ -147,32 +151,37 @@ focused.left = {
     color = { fg = theme.bg_blue, gui = 'bold' },
     padding = {},
   },
-  { -- Insert mid section. You can make any number of sections in neovim :)
-    -- for lualine it's any number greater than 2
+  { -- Insert mid section.
     function()
       return '%='
     end,
   },
+  { -- Treesitter parser
+    function()
+      local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
+      local ts_parser = vim.treesitter.language.get_lang(buf_ft)
+      if ts_parser ~= nil then
+        return (' %s'):format(ts_parser)
+      end
+    end,
+    color = { fg = '#ffffff', gui = 'bold' },
+  },
   { -- Lsp server name.
     function()
-      local msg = 'No Active Lsp'
-      local buf_ft
-      local clients
-      buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
-      clients = vim.lsp.get_clients()
+      local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
+      local clients = vim.lsp.get_clients()
 
       if next(clients) == nil then
-        return msg
+        return ''
       end
       for _, client in ipairs(clients) do
         local filetypes = client.config['filetypes']
         if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-          return client.name
+          return ('/%s '):format(client.name)
         end
       end
-      return msg
+      return ''
     end,
-    icon = ' LSP:',
     color = { fg = '#ffffff', gui = 'bold' },
   },
 }
@@ -330,8 +339,8 @@ local winbar = {
       navic_opts = nil,
       color = { bg = theme.bg0 },
     },
-    { -- Insert mid section. You can make any number of sections in neovim :)
-      -- for lualine it's any number greater than 2
+    { -- If there is nothing after the navic module the backgound color doesn't work on it.
+      -- I don't know why, and I frankly don't care.
       function()
         return '%='
       end,
