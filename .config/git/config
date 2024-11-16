@@ -68,5 +68,4 @@
   # Delta config
   path = ~/.config/delta.conf
 
-# vim: set ft=gitconfig et tw=2 sw=2 ff=unix
-
+# vim: set ft=gitconfig et ts=2 sw=2 ff=unix

@@ -65,5 +65,5 @@ Main configuration file for [Starship Prompt](https://starship.rs/)
 
 <h2 align="center">🚧🚧🚧 (Readme content under construction) 🚧🚧🚧</h2>
 
-<!-- vim: set ft=markdown et ff=unix tw=2 sw=2  -->
+<!-- vim: set ft=markdown et ff=unix ts=2 sw=2  -->
 
