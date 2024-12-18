@@ -11,7 +11,7 @@ function fetch-pr() {
     read -rd' ' merged state origin_url origin_branch < <(curl -sL \
         -H "X-GitHub-Api-Version: 2022-11-28" \
         -H "Accept: application/vnd.github+json" \
-        "https://api.github.com/repos/termux/termux-packages/pulls/${pr}" \
+        "https://api.github.com/repos/${upstream}/pulls/${pr}" \
         | jq -r '.merged, .state, .head.repo.ssh_url, .head.ref'
     )
 
@@ -81,6 +81,12 @@ git remote get-url upstream &> /dev/null || {
 # check API rate limits.
 gh_api_limits "$#"
 
+: "$(git remote get-url upstream)"
+: "${_#*.com[:/]}"
+upstream="${_%.git}"
+
 for num in "$@"; do
     fetch-pr "$num"
 done
+
+unset upstream
