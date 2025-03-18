@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
+# vim: set ft=bash et ts=4 sw=4 ff=unix
+# SPDX-License-Identifier: 0BSD
 
-# License: BSD Zero Clause
-# Copyright (c) 2024 TomIO
 man() {
     # try the local man pages first
     command man "$@" || {
@@ -29,4 +29,17 @@ man() {
 }
 
 man "$@"
-# vim: set ft=bash et ts=4 sw=4 ff=unix
+# BSD Zero Clause License
+#
+# Copyright (c) 2025 tom@termux.dev
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
