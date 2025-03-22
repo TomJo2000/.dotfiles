@@ -1,5 +1,4 @@
 # -*- ini -*-
-# vim: set ft=ini
 
 # Do not put these in the repo, nor delete them
 exclude /.git/***
@@ -24,4 +23,4 @@ protect /.config/meta/rsync_include
 protect /.config/meta/backup_dotfiles.sh
 protect /.zlogout
 protect /.zshrc
-
+# vim: set ft=ini
