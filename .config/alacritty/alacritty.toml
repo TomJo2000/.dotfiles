@@ -1,48 +1,44 @@
 [window]
 dynamic_padding = true
-decorations = 'None'
 
 [font]
-normal      = { family = 'Hasklug Nerd Font Mono', style = 'Regular' }
-bold_italic = { style  = 'Bold Italic' }
-italic      = { style  = 'Italic' }
-bold        = { style  = 'Bold' }
-size        = 11
+normal = { family = 'Hasklug Nerd Font Mono', style = 'Regular' }
+bold_italic = { style = 'Bold Italic' }
+italic = { style = 'Italic' }
+bold = { style = 'Bold' }
+size = 11
 
 [colors]
-  ## Normal/regular colors (color palette 0-7)
-  normal.black   = '#0A0400' # #0A0400 black
-  normal.red     = '#D61E1C' # #D61E1C red
-  normal.green   = '#1DA65A' # #1DA65A green
-  normal.yellow  = '#EDBC00' # #EDBC00 yellow
-  normal.blue    = '#0A75AD' # #0A75AD blue
-  normal.magenta = '#FF33B8' # #FF33B8 magenta
-  normal.cyan    = '#00CEF1' # #00CEF1 cyan
-  normal.white   = '#B0B2B4' # #B0B2B4 white
-  ## Bright colors (color palette 8-15)
-  bright.black   = '#4F4D4B' # #4F4D4B bright black
-  bright.red     = '#E03C31' # #E03C31 bright red
-  bright.green   = '#64B141' # #64B141 bright green
-  bright.yellow  = '#E26D0E' # #E26D0E bright yellow
-  bright.blue    = '#2952B2' # #2952B2 bright blue
-  bright.magenta = '#9010F0' # #9010F0 bright magenta
-  bright.cyan    = '#39A78E' # #39A78E bright cyan
-  bright.white   = '#F5FBFD' # #F5FBFD bright white
+## Normal/regular colors (color palette 0-7)
+normal.black = '#0A0400'   # #0A0400 black
+normal.red = '#D61E1C'     # #D61E1C red
+normal.green = '#1DA65A'   # #1DA65A green
+normal.yellow = '#EDBC00'  # #EDBC00 yellow
+normal.blue = '#0A75AD'    # #0A75AD blue
+normal.magenta = '#FF33B8' # #FF33B8 magenta
+normal.cyan = '#00CEF1'    # #00CEF1 cyan
+normal.white = '#B0B2B4'   # #B0B2B4 white
+## Bright colors (color palette 8-15)
+bright.black = '#4F4D4B'   # #4F4D4B bright black
+bright.red = '#E03C31'     # #E03C31 bright red
+bright.green = '#64B141'   # #64B141 bright green
+bright.yellow = '#E26D0E'  # #E26D0E bright yellow
+bright.blue = '#2952B2'    # #2952B2 bright blue
+bright.magenta = '#9010F0' # #9010F0 bright magenta
+bright.cyan = '#39A78E'    # #39A78E bright cyan
+bright.white = '#F5FBFD'   # #F5FBFD bright white
 
-  # cursor.text        = '#002635'
-  # cursor.cursor      = '#ffcc1b'
-  primary.background = '#0A0400' # #0A0400
-  primary.foreground = '#F5FBFD' # #F5FBFD
+# cursor.text        = '#002635'
+# cursor.cursor      = '#ffcc1b'
+primary.background = '#0A0400' # #0A0400
+primary.foreground = '#F5FBFD' # #F5FBFD
 
 [cursor]
-  style = { shape = 'underline' }
-  unfocused_hollow = false
+style = { shape = 'underline' }
+unfocused_hollow = false
 
 [keyboard]
-  bindings = [
-    {key = 'N', mods = 'Control|Shift', action = 'CreateNewWindow'},
-  ]
+bindings = [{ key = 'N', mods = 'Control|Shift', action = 'CreateNewWindow' }]
 
 # [debug]
 # highlight_damage = true
-
