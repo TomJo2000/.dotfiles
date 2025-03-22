@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Assign XDG_DATA_DIR and FONT_DIR unless already assigned
+# Assign XDG_DATA_HOME and FONT_DIR unless already assigned
 : "${XDG_DATA_HOME:="${HOME}/.local/share"}"
 : "${FONT_DIR:="${XDG_DATA_HOME}/fonts"}"
 
