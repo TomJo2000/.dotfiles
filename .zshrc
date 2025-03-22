@@ -147,15 +147,15 @@ col+=( # ** append the following sequences to the `col[]` array
 }; setup
 (( timing[setup] = timing[all] + EPOCHREALTIME ))
 
-#shellcheck disable=SC2079
-echo $(( $timing + 1.0 + 7.5))
-
-### XDG base-directories
+### Setup XDG base-directories if they aren't already
 : "${XDG_CONFIG_HOME:="${HOME}/.config"}" \
   "${XDG_CACHE_HOME:="${HOME}/.cache"}" \
   "${XDG_DATA_HOME:="${HOME}/.local/share"}" \
   "${XDG_STATE_HOME:="${HOME}/.local/state"}" \
   "${XDG_RUNTIME_DIR:="/run/user/${UID}"}"
+
+(( TERMUX_APP_PID )) && XDG_RUNTIME_DIR="${PREFIX}/var/run/user"
+
 export XDG_CONFIG_HOME XDG_CACHE_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_RUNTIME_DIR
 
 
@@ -176,11 +176,13 @@ parse_args "$@" # parse args
 # this way we just don't have to eval it.
 # shellcheck source=/dev/null
 if source <(starship init zsh --print-full-init); then
-    function prompt_marker() {
-        # shellcheck disable=SC1003 # ?? this \\ is a u+009C string terminator
-        printf '\e]133;A\e\\'
+    [[ "$TERM" == 'foot' ]] && {
+        function prompt_marker() {
+            # shellcheck disable=SC1003 # ?? this \\ is a u+009C string terminator
+            printf '\e]133;A\e\\'
+        }
+        precmd_functions+=('prompt_marker')
     }
-    precmd_functions+=('prompt_marker')
 else
     printf '%s\n' "Error: failed to initialize starship prompt" # Print error message if starship failed to initialize
 fi

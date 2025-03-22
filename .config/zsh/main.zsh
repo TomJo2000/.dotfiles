@@ -50,15 +50,13 @@ parse_ssh_add() { # make sense of the `ssh-add -l` output and format the output 
 
 
 timing[env_specifics]="-$EPOCHREALTIME"
-[[ -e '/mnt/c/Users/Josh/Desktop' ]] && { # |> If we are in WSL add a env var for quicker access to the Windows Desktop location
-    export WSL_DESKTOP='/mnt/c/Users/Josh/Desktop'
-    alias mpv=mpv.exe # alias the Windows version of MPV to `mpv`
-}
-
 [[ -e "$HOME/git/.dotfiles/.config/starship.toml" ]] && { # |> check if we have a DOT_FILES repo in the usual spot
     export DOT_FILES="$HOME/git/.dotfiles"
     export STARSHIP_CONFIG="${DOT_FILES}/.config/starship.toml"
 }
+
+# Set up Golang dependency storage in a sensible place.
+export GOPATH="${XDG_CACHE_HOME}/go"
 (( timing[env_specifics] += EPOCHREALTIME ))
 
 timing[printouts]="-$EPOCHREALTIME"
@@ -276,14 +274,19 @@ local -a less_opts=( # <> set default options for `less`
     '-R'           # display escape sequences for colors, hyperlinks and UTF-8 correctly
     '-x4'          # set tab width to 4 columns
     '-J'           # mark selected lines/search hits
+    '-K'           # Close on ctrl-c
     '-M'           # Use the 'long prompt'
     '-S'           # split long lines over multiple lines
     # "$( printf '%s' "${less_colors[@]}" )" # colors
     "$( printf '%b' "${less_prompt[@]}" )" # (Long) prompt # ?? | ❮.zshrc❯[423-456/627]┆69%
 )
+# Set all the options we set up
 export LESS="${less_opts[*]}"
+
+export LESSOPEN='|lesspipe.sh %s'
+# Use these for the Systemd pager as well
+export SYSTEMD_LESS="-F ${LESS}"
 # export LESSEDIT='%E -rg %g:?lt+%lt.%t' # implicit LESSEDIT format is: '%E ?lm+%lm. %g'
-# export LESSOPEN="|-${XDG_CONFIG_HOME}/less/lessopen.sh %s"
 
 (( timing[pager] += EPOCHREALTIME ))
 
