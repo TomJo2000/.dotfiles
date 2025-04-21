@@ -28,8 +28,8 @@ format = """\
     $shell\
     $directory\
     $git_branch\
-    $git_metrics\
     $git_commit\
+    $git_metrics\
     $git_status\
     $git_state\
     $cmd_duration\
@@ -158,20 +158,18 @@ style = "fg:col_abort bg:col_success"
 format = "[$symbol]($style)"
 
 [directory] # current directory
-style = "fg:col_attention bg:col_text_dark"
-read_only_style = "fg:col_attention bg:col_text_dark"
-repo_root_style = "fg:col_abort bg:col_text_dark"
-# maximum path depth before truncation
+# Don't truncate
 truncation_length = 255
-read_only = ""
 truncation_symbol = ""
-# '/' for Linux/MacOS or other UNIX based systems; '\' for Windows
 use_os_path_sep = true
 use_logical_path = true
-# change this if you prefer only showing the repo
+read_only = ""
+read_only_style = "fg:col_attention bg:col_text_dark"
 truncate_to_repo = false
-format = "([$read_only]($read_only_style))[$path]($style)"
 repo_root_format = "[$before_root_path](fg:col_text_light bg:col_text_dark)[$read_only]($read_only_style)[\n󰊢$repo_root]($repo_root_style)[$path](fg:col_text_light bg:col_text_dark)"
+repo_root_style = "fg:col_abort bg:col_text_dark"
+style = "fg:col_attention bg:col_text_dark"
+format = "([$read_only]($read_only_style))[$path]($style)"
 
 [directory.substitutions] # Differential coloring for certain directories
 # ANSI escape sequence rituals for
@@ -246,26 +244,30 @@ format = "[\u001B\\]8;;file://$env_value\u001B\\\\]($style)"
 disabled = false
 symbol = ""
 style = "fg:col_info bg:col_text_dark"
+only_attached = true
 # truncation_length = 4
 # truncation_symbol = ""
 format = "[$symbol$branch]($style)"
 
-[git_commit] # current commit hash on detached branch
+[git_commit] # current commit hash
 disabled = false
 tag_disabled = false
-tag_symbol = "v"
-style = "fg:col_info bg:col_text_dark"
+tag_symbol = ""
+style = "fg:col_text_light bg:col_text_dark"
 commit_hash_length = 7
-# Don't show Hash when on regular main branch
-only_detached = true
-format = "([$tag#$hash]($style))"
+only_detached = false
+format = """\
+    ([ $tag](fg:col_info bg:col_text_dark)\
+    [\n](fg:col_abort bg:col_text_dark))\
+    [#$hash]($style)\
+"""
 
 [git_metrics] # show additions and deletions since last push
 disabled = false
 # set false for testing purposes
 only_nonzero_diffs = true
-added_style = "fg:col_success bg:col_text_dark"
-deleted_style = "fg:col_attention bg:col_text_dark"
+added_style = "fg:#64B141 bg:col_text_dark"
+deleted_style = "fg:#E03C31 bg:col_text_dark"
 format = "([](fg:col_info bg:col_text_dark)[$added]($added_style)[⥮](fg:col_text_light bg:col_text_dark)[$deleted]($deleted_style))"
 
 
@@ -284,18 +286,23 @@ format = "[$state(❮$progress_current/$progress_total❯)]($style)"
 [git_status]
 disabled = false
 style = "fg:col_info bg:col_text_dark"
-stashed = "${count}"
-staged = "󰸞${count}"
-modified = "󰑕${count}"
-typechanged = "󰶻${count}"
-renamed = "󰗧${count}"
-untracked = "󰏢${count}"
-deleted = "${count}"
-conflicted = "${count}"
-ahead = "󰞙${count}"
-behind = "󰞖${count}"
-diverged = " ${ahead_count}󰓢${behind_count}"
-format = "[($stashed$staged$modified$renamed$untracked$deleted$conflicted$ahead_behind)]($style)"
+stashed = "[${count}](fg:col_special bg:col_text_dark)"
+staged = "[󰸞${count}](fg:col_success bg:col_text_dark)"
+modified = "[󰑕${count}](fg:col_info bg:col_text_dark)"
+typechanged = "[󰶻${count}](fg:col_text_light bg:col_text_dark)"
+renamed = "[󰗧${count}](fg:col_text_light bg:col_text_dark)"
+untracked = "[󰏢${count}](fg:col_text_light bg:col_text_dark)"
+deleted = "[${count}](fg:col_attention bg:col_text_dark)"
+conflicted = "[${count}](fg:col_abort bg:col_text_dark)"
+ahead = "[󰞙${count}](fg:col_success bg:col_text_dark)"
+behind = "[󰞖${count}](fg:col_attention bg:col_text_dark)"
+diverged = """\
+    [󰽜](fg:col_abort bg:col_text_dark)\
+    [${ahead_count}](fg:#64B141 bg:col_text_dark)\
+    [󰓢](fg:col_text_light bg:col_text_dark)\
+    [${behind_count}](fg:#E03C31 bg:col_text_dark)\
+"""
+format = "[(($stashed$staged$untracked$modified$renamed$deleted$conflicted)( $ahead_behind))]($style)"
 
 [hostname] # system hostname, with indicator if logged in via SSH session.
 disabled = false
@@ -353,7 +360,7 @@ format = "[$indicator]($style)[](fg:col_info bg:col_text_dark)"
 disabled = false
 symbol = ""
 style = "bold fg:col_info bg:col_user"
-threshold = 2
+threshold = 3
 format = "[$symbol$shlvl]($style)"
 
 [status] # customized end segments for the prompt based on exit code
