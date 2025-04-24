@@ -298,15 +298,16 @@ renamed = "[󰗧${count}](fg:col_text_light bg:col_text_dark)"
 untracked = "[󰏢${count}](fg:col_text_light bg:col_text_dark)"
 deleted = "[${count}](fg:col_attention bg:col_text_dark)"
 conflicted = "[${count}](fg:col_abort bg:col_text_dark)"
-ahead = "[󰞙${count}](fg:col_success bg:col_text_dark)"
-behind = "[󰞖${count}](fg:col_attention bg:col_text_dark)"
+ahead = "[󰞙${count}](fg:#64B141 bg:col_text_dark)"
+behind = "[󰞖${count}](fg:#E03C31 bg:col_text_dark)"
+up_to_date = "[󰜝](fg:col_abort bg:col_text_dark)"
 diverged = """\
-    [󰽜](fg:col_abort bg:col_text_dark)\
+    [ 󰽜](fg:col_abort bg:col_text_dark)\
     [${ahead_count}](fg:#64B141 bg:col_text_dark)\
     [󰓢](fg:col_text_light bg:col_text_dark)\
     [${behind_count}](fg:#E03C31 bg:col_text_dark)\
 """
-format = "[(($stashed$staged$untracked$modified$renamed$deleted$conflicted)( $ahead_behind))]($style)"
+format = "[($stashed$staged$untracked$modified$renamed$deleted$conflicted)($ahead_behind)]($style)"
 
 [hostname] # system hostname, with indicator if logged in via SSH session.
 disabled = false
