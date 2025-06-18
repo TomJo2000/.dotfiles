@@ -10,6 +10,15 @@
 	name       = TomIO
 	signingkey = ~/.ssh/keys/external/ed25519_GitHub.pub
 
+[gpg]
+	format = ssh
+
+[help]
+	autocorrect = prompt
+
+[log]
+	abbrevCommit = 7
+
 [init]
 	defaultbranch = main
 
@@ -17,28 +26,32 @@
 	autosetupmerge  = true
 	autosetuprebase = always
 
-[push]
-	autosetupremote = true
-
 [fetch]
+	parallel = 0
 	writecommitgraph = true
 
-[help]
-	autocorrect = prompt
-[log]
-	abbrevCommit = 7
+[push]
+	autosetupremote = true
 
 [pull]
 	rebase = true
 
+[merge]
+	tool = nvimdiff
+
+[mergetool]
+	keepBackup = false
+	writeToTemp = true
+
+[mergetool "nvimdiff"]
+	layout = "(BASE / REMOTE), MERGED"
+
 [rebase]
 	autostash = true
 
-[gpg]
-	format = ssh
-
 [commit]
 	gpgsign = true
+	verbose = true
 
 [alias]
 	# Advanced aliases with full (POSIX) /bin/sh syntax.
@@ -75,6 +88,12 @@
 	}; f"
 
 	history = log -p --
+
+[includeIf "hasconfig:remote.*.url:https://github.com/termux/**"]
+	path = termux.gitconfig
+
+[includeIf "hasconfig:remote.*.url:git@github.com:termux/**"]
+	path = termux.gitconfig
 
 [include]
 	# Delta config

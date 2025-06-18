@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 (( $# )) || { # did we get any args?
-    printf 'Usage: %s\n' "git pr-fetch int [...]"
+    printf 'Usage: %s\n' "git pr-fetch <int> [...]"
     exit 1
 }
 
