@@ -106,40 +106,62 @@ require('lazy').setup({
   { -- LSP Configuration
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
-      -- stylua: ignore
-      depdencies = {
-        'hrsh7th/cmp-nvim-lsp', -- CMP integration
-        'folke/lazydev.nvim',   -- function signatures for nvim's Lua API
-        'onsails/lspkind.nvim', -- icons for LSP suggestions
-        'j-hui/fidget.nvim',    -- notification
-      },
+    -- stylua: ignore
+    dependencies = {
+      'folke/lazydev.nvim',   -- function signatures for nvim's Lua API
+      'onsails/lspkind.nvim', -- icons for LSP suggestions
+      'j-hui/fidget.nvim',    -- notification
+    },
     config = function()
-      local opts = require('plugins.lsp')
       local notify = require('fidget').notify
-      -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
-      for lsp, conf in pairs(opts) do
-        local default_config = require('lspconfig')[lsp].document_config.default_config
-        ---@diagnostic disable: redefined-local
-        local conf = vim.tbl_deep_extend('force', default_config, conf)
-        -- Ensure the servers above are installed
-        if vim.fn.executable(conf.cmd[1]) ~= 1 then
-          notify(
-            ('"Could not find: %s"'):format(conf.cmd[1]), -- msg
-            vim.log.levels.WARN, -- level
-            { -- opts
-              annotate = 'LSP not found:',
-              group = 'LspNotFound',
-              skip_history = true,
-              ttl = 30,
-            }
-          )
+      local LSPs = {
+        'bashls',
+        'clangd',
+        'gopls',
+        'jsonls',
+        'lua_ls',
+        'marksman',
+        'systemd_ls',
+        'taplo',
+        'zls',
+      }
+      local available = vim.tbl_map(function(lsp)
+        -- Get the executable for this LSP
+        local prog = vim.lsp.config[lsp].cmd[1]
+        -- Check that it's available
+        if vim.fn.executable(prog) == 1 then
+          return lsp
         end
+        notify(
+          ('"Could not find: %s"'):format(prog), -- msg
+          vim.log.levels.WARN, -- level
+          { -- opts
+            annotate = 'LSP not found:',
+            group = 'Lsp',
+            skip_history = false,
+            ttl = 30,
+          }
+        )
+      end, LSPs)
 
-        require('lspconfig')[lsp].setup(conf)
-      end
+      notify(
+        (function(tbl) -- Use an IIFE to make this tidier
+          local ret = ' \nAvailable LSPs:'
+          for _, v in pairs(tbl) do
+            ret = ('%s\n%s'):format(ret, v)
+          end
+          return ret
+        end)(available),
+        vim.log.levels.INFO, -- level
+        { -- opts
+          annotate = 'Available LSPs:',
+          group = 'Lsp',
+          skip_history = true,
+          ttl = 15,
+        }
+      )
+      -- Enable all available and configured LSPs
+      vim.lsp.enable(available)
     end,
   },
 

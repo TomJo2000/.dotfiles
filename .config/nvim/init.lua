@@ -18,66 +18,75 @@ vim.g.maplocalleader = ' '
 
 --[[ Config layout
 
-tree -a -l --dirsfirst "$DOT_FILES/.config/nvim/"
+tree -a -l --dirsfirst "$DOT_FILES/.config/nvim/" | tr $'\u00A0' ' '
 ${XDG_CONFIG_HOME}/nvim
+├── after
+│     ├── ftplugin
+│     │     ├── just.lua
+│     │     └── zsh.lua
+│     ├── lsp
+│     │     ├── bashls.lua
+│     │     ├── gopls.lua
+│     │     ├── lua_ls.lua
+│     │     ├── taplo.lua
+│     │     └── zls.lua
+│     └── plugin
+│         ├── autocmds.lua
+│         ├── init.lua
+│         ├── keybinds.lua
+│         └── mason.lua
 ├── lua
-│   ├── kickstart
-│   │   ├── autoformat.lua
-│   │   └── debug.lua
-│   ├── plugins
-│   │   ├── hydra
-│   │   │   ├── git_hydra.lua
-│   │   │   ├── init.lua
-│   │   │   ├── replace.lua
-│   │   │   ├── resize_split.lua
-│   │   │   └── side_scroll.lua
-│   │   ├── lsp
-│   │   │   ├── bashls.lua
-│   │   │   ├── init.lua
-│   │   │   ├── lua_ls.lua
-│   │   │   └── taplo.lua
-│   │   ├── mini
-│   │   │   ├── map.lua
-│   │   │   └── surround.lua
-│   │   ├── alpha_nvim.lua
-│   │   ├── breadcrumbs.lua
-│   │   ├── cmp.lua
-│   │   ├── delims.lua
-│   │   ├── delta.lua
-│   │   ├── formatter.lua
-│   │   ├── git.lua
-│   │   ├── gitsigns.lua
-│   │   ├── indents.lua
-│   │   ├── init.lua
-│   │   ├── lazy.lua
-│   │   ├── lualine.lua
-│   │   ├── onedark.lua
-│   │   ├── presence.lua
-│   │   ├── telescope.lua
-│   │   └── treesitter.lua
-│   ├── utils
-│   │   ├── capture.lua
-│   │   └── init.lua
-│   ├── keybinds.lua
-│   ├── options.lua
-│   └── posthoc.lua
-├── init.lua
-├── lazy-lock.json
-└── stylua.toml
+│     ├── plugins
+│     │     ├── alpha
+│     │     │     ├── themes
+│     │     │     │     ├── logo.txt
+│     │     │     │     └── mask.txt
+│     │     │     ├── alpha_colored_animation.lua
+│     │     │     └── init.lua
+│     │     ├── custom
+│     │     │     ├── git.lua
+│     │     │     └── tail.lua
+│     │     ├── hydra
+│     │     │     ├── git_hydra.lua
+│     │     │     ├── init.lua
+│     │     │     ├── replace.lua
+│     │     │     ├── resize_split.lua
+│     │     │     └── side_scroll.lua
+│     │     ├── lualine
+│     │     │     ├── filename.lua
+│     │     │     └── init.lua
+│     │     ├── mini
+│     │     │     ├── map.lua
+│     │     │     └── surround.lua
+│     │     ├── breadcrumbs.lua
+│     │     ├── comments.lua
+│     │     ├── formatter.lua
+│     │     ├── gitsigns.lua
+│     │     ├── indents.lua
+│     │     ├── init.lua
+│     │     ├── lazy.lua
+│     │     ├── nvim-tree.lua
+│     │     ├── onedark.lua
+│     │     ├── presence.lua
+│     │     ├── telescope.lua
+│     │     ├── treesitter.lua
+│     │     └── which-key.lua
+│     ├── utils
+│     │     ├── capture.lua
+│     │     ├── deprecated.lua
+│     │     ├── init.lua
+│     │     ├── memoize.lua
+│     │     └── spawn.lua
+│     └── options.lua
+└── init.lua
 
-8 directories, 37 files
+14 directories, 46 files
 ]]
 
 -- [[ Setting options ]]
 ---@source ./lua/options.lua
 require('options')
 
--- [[ Setup keybindings ]]
----@source ./lua/keybinds.lua
-require('keybinds')
-
 -- [[ Configure plugins ]]
 ---@source ./lua/plugins.lua
 require('plugins')
-
-require('posthoc')

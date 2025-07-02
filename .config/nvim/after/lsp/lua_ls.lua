@@ -1,7 +1,7 @@
 local M = {}
 
-M.filetypes = { 'lua' }
-
+---@see settings
+---|https://luals.github.io/wiki/settings/
 M.settings = {
   Lua = {
     completion = {
@@ -33,12 +33,5 @@ M.settings = {
     runtime = { version = 'LuaJIT' },
   },
 }
-
--- M.on_attach = function(client, bufnr)
---   if client.server_capabilities.documentSymbolProvider then
---     require('nvim-navbuddy').attach(client, bufnr)
---   end
---   require('neodev').setup()
--- end
 
 return M
