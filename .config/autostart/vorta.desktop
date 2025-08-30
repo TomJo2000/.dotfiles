@@ -1,0 +1,13 @@
+# -*- desktopfile -*-
+[Desktop Entry]
+Name=Vorta
+GenericName=Backup Software
+Exec=vorta --daemonize
+Type=Application
+Icon=com.borgbase.Vorta
+Categories=Utility;Archiving;Qt;
+Keywords=borg;
+StartupWMClass=python3
+StartupNotify=false
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Delay=20

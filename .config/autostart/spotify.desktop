@@ -1,0 +1,12 @@
+# -*- desktopfile -*-
+[Desktop Entry]
+Categories=Audio;Music;Player;AudioVideo;
+Exec=spotify --uri=%U
+GenericName=Music Player
+Icon=spotify-client
+MimeType=x-scheme-handler/spotify;
+Name=Spotify
+StartupWMClass=spotify
+Terminal=false
+TryExec=spotify
+Type=Application

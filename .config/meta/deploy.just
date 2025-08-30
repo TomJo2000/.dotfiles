@@ -108,7 +108,10 @@ target_misc:
     just has 'mpv'                   && files+=('.config/mpv/')
     just has 'neofetch'              && files+=('.config/neofetch/config.conf')
     just has 'paru'                  && files+=('.config/paru/paru.conf')
+    just has 'nheko' 'keepassxc'     && files+=('.config/autostart/nheko.desktop') # Needs DBus Secret provider
+    just has 'spotify'               && files+=('.config/autostart/spotify.desktop')
     just has 'thunderbird'           && files+=('.config/autostart/org.mozilla.Thunderbird.desktop')
+    just has 'vorta' 'borg'          && files+=('.config/autostart/vorta.desktop')
     just has 'tmux'                  && files+=('.config/tmux/tmux.conf')
     just has 'kwallet-query'         && files+=(
         '.config/kwalletrc'
@@ -153,9 +156,9 @@ target_wg: (has 'wg-quick' 'resolvconf')
 target_zsh: (has 'zsh' 'git')
     #!/usr/bin/env bash
     declare -a files=(
-        '.zshrc'            # Shell setup file
-        '.zlogout'          # Shell logout file
-        '.config/zsh/'      # Config dir
+        '.zshrc'       # Shell setup file
+        '.zlogout'     # Shell logout file
+        '.config/zsh/' # Config dir
     )
     # Starship prompt config
     just has 'starship' && files+=('.config/starship.toml')
