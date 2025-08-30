@@ -1,0 +1,49 @@
+MenuBar=Disabled
+
+[$Version]
+update_info=dolphin_detailsmodesettings.upd:rename-leading-padding,dolphin_detailsmodesettings.upd:move-content-display
+
+[Baloo KEditCommentDialog]
+2 screens: Height=252
+2 screens: Width=276
+
+[ContentDisplay]
+DirectorySizeCount=false
+DirectorySizeMode=ContentSize
+RecursiveDirectorySizeLimit=20
+UsePermissionsFormat=CombinedFormat
+UseShortRelativeDates=false
+
+[DetailsMode]
+IconSize=112
+PreviewSize=80
+SidePadding=0
+
+[ExtractDialog]
+2 screens: Height=480
+2 screens: Width=858
+
+[General]
+BrowseThroughArchives=true
+EditableUrl=true
+ShowFullPath=true
+ShowFullPathInTitlebar=true
+Version=202
+ViewPropsTimestamp=2024,2,10,15,24,44.175
+
+[IconsMode]
+PreviewSize=256
+
+[KFileDialog Settings]
+Places Icons Auto-resize=false
+Places Icons Static Size=22
+
+[KPropertiesDialog]
+2 screens: Height=616
+2 screens: Width=438
+
+[MainWindow]
+MenuBar=Disabled
+
+[PreviewSettings]
+Plugins=appimagethumbnail,audiothumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,opendocumentthumbnail,gsthumbnail,svgthumbnail,ffmpegthumbs

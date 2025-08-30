@@ -1,0 +1,10 @@
+[PlasmaRunnerManager]
+migrated=true
+
+[Plugins]
+baloosearchEnabled=true
+krunner_katesessionsEnabled=false
+krunner_konsoleprofilesEnabled=false
+
+[Plugins][Favorites]
+plugins=krunner_services

@@ -11,6 +11,7 @@ deploy *targets='all':
     #!/usr/bin/env bash
     declare -a TARGETS=(
         'git'  # Git/Delta
+        'kde'  # KDE programs
         'misc' # Various one-off configuration files
         'nvim' # Neovim
         'ssh'  # SSH and SSH Agent service
@@ -23,24 +24,23 @@ deploy *targets='all':
     just  run_deploy "$@"
     just post_deploy "$@"
 
-
 [private]
 [positional-arguments]
 deploy_preview +files:
     #!/usr/bin/env bash
     declare -a args=(
-    '--dry-run'                                 # Just simulate
-    '--archive'                                 # Preserve: symlinks, permissions, times, group, owner, special files
-    '--recursive'                               # Include subdirectories recursively
-    "--out-format=%'''7l %o %B %M %n"           # <sent>/<size> <operation> <Permission bits> <mtime> <filename>
-    '--filter=. {{ exclude_file }}'             # Ignore the files listed in the exclude file
-    '--from0'                                   # Use NUL delimiters for the file list
-    '--files-from=-'                            # Take a file list from stdin
-    '{{ dotfiles }}/'                           # Source directory
-    '{{ home }}/'                               # Destination directory
+    '--dry-run'                       # Just simulate
+    '--archive'                       # Preserve: symlinks, permissions, times, group, owner, special files
+    '--recursive'                     # Include subdirectories recursively
+    "--out-format=%'''7l %o %B %M %n" # <sent>/<size> <operation> <Permission bits> <mtime> <filename>
+    '--filter=. {{ exclude_file }}'   # Ignore the files listed in the exclude file
+    '--from0'                         # Use NUL delimiters for the file list
+    '--files-from=-'                  # Take a file list from stdin
+    '{{ dotfiles }}/'                 # Source directory
+    '{{ home }}/'                     # Destination directory
     )
     rsync "${args[@]}" < <( printf '%s\0' "$@")
-    printf '\e[33mPREVIEW: Deploying to \e[1;34m%s\e[m\n' "{{ home }}"
+    printf '\n\e[33m[PREVIEW]: Deploying to \e[1;34m%s\e[m\n' "{{ home }}"
 
 [private]
 [positional-arguments]
@@ -48,18 +48,18 @@ deploy_preview +files:
 deploy_files +files:
     #!/usr/bin/env bash
     declare -a args=(
-    '--archive'                                 # Preserve: symlinks, permissions, times, group, owner, special files
-    '--recursive'                               # Include subdirectories recursively
-    "--out-format=%'''6b/%'''7l %o %B %M %n"           # <sent>/<size> <operation> <Permission bits> <mtime> <filename>
-    '--filter=. {{ exclude_file }}'             # Ignore the files listed in the exclude file
-    '--from0'                                   # Use NUL delimiters for the file list
-    '--files-from=-'                            # Take a file list from stdin
-    '{{ dotfiles }}/'                           # Source directory
-    '{{ home }}/'                               # Destination directory
+    '--archive'                              # Preserve: symlinks, permissions, times, group, owner, special files
+    '--recursive'                            # Include subdirectories recursively
+    "--out-format=%'''6b/%'''7l %o %B %M %n" # <sent>/<size> <operation> <Permission bits> <mtime> <filename>
+    '--filter=. {{ exclude_file }}'          # Ignore the files listed in the exclude file
+    '--from0'                                # Use NUL delimiters for the file list
+    '--files-from=-'                         # Take a file list from stdin
+    '{{ dotfiles }}/'                        # Source directory
+    '{{ home }}/'                            # Destination directory
     )
     rsync "${args[@]}" < <( printf '%s\0' "$@")
 
-# check if the given depedencies are available in the $PATH
+# check if the given dependencies are available in the $PATH
 [unix]
 [private]
 [positional-arguments]
@@ -96,6 +96,22 @@ target_git: (has 'git')
 
 [private]
 [group('targets')]
+[doc('KDE related.')]
+target_kde: (has 'plasmashell')
+    #!/usr/bin/env bash
+    declare -a files=(
+        '.config/dolphinrc'
+        '.local/share/kxmlgui5/dolphin/dolphinui.rc'
+        '.config/kglobalshortcutsrc'
+        '.config/klipperrc'
+        '.config/krunnerrc'
+        '.config/kscreenlockerrc'
+        '.config/plasma-localerc'
+    )
+    printf '%s\n' "${files[@]}"
+
+[private]
+[group('targets')]
 [doc('Random one-offs.')]
 target_misc:
     #!/usr/bin/env bash
@@ -108,6 +124,7 @@ target_misc:
     just has 'mpv'                   && files+=('.config/mpv/')
     just has 'neofetch'              && files+=('.config/neofetch/config.conf')
     just has 'paru'                  && files+=('.config/paru/paru.conf')
+    just has 'qdirstat'              && files+=('.config/QDirStat/')
     just has 'nheko' 'keepassxc'     && files+=('.config/autostart/nheko.desktop') # Needs DBus Secret provider
     just has 'spotify'               && files+=('.config/autostart/spotify.desktop')
     just has 'thunderbird'           && files+=('.config/autostart/org.mozilla.Thunderbird.desktop')
