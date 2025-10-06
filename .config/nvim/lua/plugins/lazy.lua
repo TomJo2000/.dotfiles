@@ -35,4 +35,5 @@ return {
     -- require = true,
     require = false,
   },
+  headless = { colors = true }
 }

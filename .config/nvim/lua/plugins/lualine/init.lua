@@ -83,25 +83,25 @@ focused.left = {
       -- auto change color according to neovims mode
       -- stylua: ignore
       local mode_color = {
-             n = theme.green,   -- Normal mode
-            no = theme.red,     -- Normal mode (operator pending)
-          [''] = theme.blue,    -- ???
-             i = theme.red,     -- Insert mode
-            ic = theme.yellow,  -- Insert mode (completion)
-             v = theme.blue,    -- Visual mode
-             V = theme.blue,    -- Visual line mode
-             R = theme.purple,  -- Replace mode
-            Rv = theme.purple,  -- Replace mode (virtual)
-             s = theme.orange,  -- Select mode (charwise)
-             S = theme.orange,  -- Select mode (linewise)
+             n = theme.green,  -- Normal mode
+            no = theme.red,    -- Normal mode (operator pending)
+          [''] = theme.blue,   -- ???
+             i = theme.red,    -- Insert mode
+            ic = theme.yellow, -- Insert mode (completion)
+             v = theme.blue,   -- Visual mode
+             V = theme.blue,   -- Visual line mode
+             R = theme.purple, -- Replace mode
+            Rv = theme.purple, -- Replace mode (virtual)
+             s = theme.orange, -- Select mode (charwise)
+             S = theme.orange, -- Select mode (linewise)
              c = theme.purple, -- Command mode
-            ce = theme.red,     -- ???
-            cv = theme.red,     -- Ex mode
-             t = theme.red,     -- Terminal mode
-         ['!'] = theme.red,     -- External command is executing
-        ['r?'] = theme.cyan,    -- Confirmation
-             r = theme.purple,  -- Hit Enter
-            rm = theme.cyan,    -- -- more -- prompt
+            ce = theme.red,    -- ???
+            cv = theme.red,    -- Ex mode
+             t = theme.red,    -- Terminal mode
+         ['!'] = theme.red,    -- External command is executing
+        ['r?'] = theme.cyan,   -- Confirmation
+             r = theme.purple, -- Hit Enter
+            rm = theme.cyan,   -- -- more -- prompt
       }
       return { fg = mode_color[vim.fn.mode()] }
     end,
@@ -152,37 +152,56 @@ focused.left = {
     padding = {},
   },
   { -- Insert mid section.
-    function()
-      return '%='
-    end,
+    '%=',
   },
   { -- Treesitter parser
     function()
-      local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
-      local ts_parser = vim.treesitter.language.get_lang(buf_ft)
+      local buf_ft = vim.bo[0].ft
+      local ts_parser = vim.treesitter.get_parser():lang()
+      local ft_icon, _ = require('nvim-web-devicons').get_icon_color_by_filetype(buf_ft)
+      local ret = ('%s %s'):format(ft_icon and ft_icon .. ' ' or '', buf_ft)
       if ts_parser ~= nil then
-        return (' %s'):format(ts_parser)
+        local parser_info = vim.treesitter.language.inspect(ts_parser)
+        -- Starting at ABI version 15 TS parsers include version metadata
+        -- Display it if available.
+        local parser_version = ''
+        if parser_info.abi_version > 14 then
+          parser_version = ('(%d:%d.%d.%d)'):format(
+            parser_info.abi_version,
+            parser_info.metadata.major_version or '?',
+            parser_info.metadata.minor_version or '?',
+            parser_info.metadata.patch_version or '?'
+          )
+        end
+        ret = ('%s %s%s'):format(ft_icon or '', ts_parser, parser_version)
       end
+      return ret
     end,
-    color = { fg = '#ffffff', gui = 'bold' },
+    color = function()
+      -- auto change color according to the filetype
+      local _, ft_color = require('nvim-web-devicons').get_icon_color_by_filetype(vim.bo[0].ft)
+      return { fg = ft_color or '#FFFFFF', gui = 'bold' }
+    end,
   },
   { -- Lsp server name.
     function()
-      local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
-      local clients = vim.lsp.get_clients()
+      local clients = vim.lsp.get_clients({ bufnr = 0 })
 
-      if next(clients) == nil then
+      if vim.tbl_isempty(clients) then
         return ''
       end
       for _, client in ipairs(clients) do
-        local filetypes = client.config['filetypes']
-        if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+        if vim.tbl_contains(client.config['filetypes'], vim.bo[0].ft) then
           return ('/%s '):format(client.name)
         end
       end
       return ''
     end,
-    color = { fg = '#ffffff', gui = 'bold' },
+    color = function()
+      -- auto change color according to the filetype
+      local _, ft_color = require('nvim-web-devicons').get_icon_color_by_filetype(vim.bo[0].ft)
+      return { fg = ft_color or '#FFFFFF', gui = 'bold' }
+    end,
   },
 }
 
@@ -203,12 +222,25 @@ focused.right = {
     'diagnostics',
     sources = { 'nvim_diagnostic' },
     symbols = { error = '', warn = '', info = '' },
+    on_click = function(count, button, mods)
+      local _ = count -- ignored
+      local _ = mods -- ignored
+      if button == 'l' then
+        vim.diagnostic.setloclist({})
+      end
+    end,
     diagnostics_color = {
       color_error = { fg = theme.red },
       color_warn = { fg = theme.yellow },
       color_info = { fg = theme.cyan },
     },
     padding = { right = 1 },
+  },
+  { -- Showcmd
+    function()
+      return ('%s'):format(vim.api.nvim_eval_statusline('%S', {}).str)
+    end,
+    color = { fg = theme.diff_text },
   },
   { -- Unicode codepoint in Hex.
     function()
@@ -270,29 +302,34 @@ unfocused.left = {
   },
   { -- Insert mid section. You can make any number of sections in neovim :)
     -- for lualine it's any number greater than 2
+    '%=',
+  },
+  { -- Treesitter parser
     function()
-      return '%='
+      local buf_ft = vim.bo[0].ft
+      local ts_parser = vim.treesitter.language.get_lang(buf_ft)
+      if ts_parser ~= nil then
+        return (' %s'):format(ts_parser)
+      end
     end,
+    color = { fg = '#ffffff', gui = 'bold' },
   },
   { -- Lsp server name.
     function()
-      local msg = 'No Active Lsp'
-      local buf_ft
-      local clients
-      buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
-      clients = vim.lsp.get_clients()
+      local buf_ft = vim.bo[0].ft
+      local clients = vim.lsp.get_clients()
+
       if next(clients) == nil then
-        return msg
+        return ''
       end
       for _, client in ipairs(clients) do
         local filetypes = client.config['filetypes']
         if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-          return client.name
+          return ('/%s '):format(client.name)
         end
       end
-      return msg
+      return ''
     end,
-    icon = ' LSP:',
     color = { fg = '#ffffff', gui = 'bold' },
   },
 }
@@ -319,7 +356,7 @@ local winbar = {
       show_modified_status = false,
       fmt = function(str, context) -- icons always have a space by default, if we add them ourselves, we can change that.
         local icon, _ = require('nvim-web-devicons').get_icon(context.filetype)
-        return ('%s%s'):format(icon, str)
+        return ('%s%s'):format(icon or '', str)
       end,
       max_length = 0, -- Maximum width of buffers component,
       buffers_color = {
@@ -330,20 +367,16 @@ local winbar = {
         alpha = 'Alpha',
         fzf = 'FZF',
         TelescopePrompt = 'Telescope',
-      }, -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
+      },
       padding = {},
     },
     { -- Breadcrumbs
       'navic',
-      color_correction = nil,
-      navic_opts = nil,
-      color = { bg = theme.bg0 },
+      color_correction = 'static',
     },
-    { -- If there is nothing after the navic module the backgound color doesn't work on it.
+    { -- If there is nothing after the navic module the background color doesn't work on it.
       -- I don't know why, and I frankly don't care.
-      function()
-        return '%='
-      end,
+      '%=',
     },
   },
 }

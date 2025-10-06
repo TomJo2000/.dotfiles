@@ -26,12 +26,33 @@ vim.api.nvim_create_autocmd('ModeChanged', {
   end,
 })
 
+vim.api.nvim_create_autocmd('VimEnter', {
+  once = true,
+  callback = function()
+    vim.keymap.set('n', 'q', '<CMD>q<CR>', { desc = '[Q]uit' })
+  end,
+})
+
+vim.api.nvim_create_autocmd('ModeChanged', {
+  once = true,
+  pattern = 'n:*', -- Normal to any
+  callback = function()
+    vim.keymap.del('n', 'q')
+  end,
+})
+
 -- vim.api.nvim_create_autocmd('WinResized', {
 --   callback = function()
 --     -- adjust minimap width
 --   end,
 --   group = 'MiniMap',
 -- })
+
+-- Make `help` and `man` buffers open to the right (used HJKL for arg)
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'help', 'man' },
+  command = 'wincmd L',
+})
 
 vim.api.nvim_create_autocmd('BufEnter', {
   callback = function()
@@ -71,23 +92,47 @@ vim.api.nvim_create_autocmd('QuitPre', {
   end,
 })
 
+vim.api.nvim_create_autocmd('BufEnter', {
+  -- group = 'Title',
+  pattern = '*',
+  callback = function()
+    ---returns *`git_root`* or `nil` if not in a git repository
+    ---@param file string|number
+    ---@return string git_root
+    local function isGit(file)
+      return vim.fs.root(file, '.git') or ''
+    end
+    ---returns *`num`* directory components
+    ---@param self string
+    ---@param num integer
+    ---@return string
+    local function split_dir(self, num)
+      return self:match(('[^/]*'):rep(num, '/') .. '$')
+    end
+    local netrw = vim.fn.getbufvar('%', 'netrw_curdir') ---@type string
+    local bufname = vim.api.nvim_buf_get_name(0)
+    local stack = vim.fn.gettagstack(0)
+    local name = {
+      help = stack.length > 0 and (':h %s'):format((stack.items[stack.length].tagname):match('[^@]*')),
+      man = bufname,
+      netrw = split_dir(netrw:gsub(isGit(netrw), ''), 3) or split_dir(bufname, 3),
+      ['*'] = split_dir(bufname, 2),
+    }
+    return name[vim.o.ft] or name['*']
+  end,
+})
+
 -- See `:h ++p`
---[[ Create missing directories ]]
--- vim.api.nvim_create_autocmd({ 'BufWritePre', 'FileWritePre' }, {
---   callback = function()
---     local buf_file = vim.fn.getbufinfo()[vim.fn.bufnr('%')].name
---     local parent_dir = vim.fs.dirname(buf_file)
---     -- This handles URLs using netrw. See ':help netrw-transparent' for details.
---     if parent_dir:find('%l+://') == 1 then
---       return
---     end
---
---     if vim.fn.isdirectory(parent_dir) == 0 then
---       vim.fn.mkdir(parent_dir, 'p')
---     end
---   end,
---   pattern = '*',
--- })
+-- Automatically create directories before saving a file
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*',
+  callback = function()
+    local file_path = vim.fn.expand('<afile>:p:h')
+    if vim.fn.isdirectory(file_path) == 0 then
+      vim.fn.mkdir(file_path, 'p')
+    end
+  end,
+})
 
 -- [[ Ex commands ]]
 

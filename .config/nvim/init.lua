@@ -1,14 +1,6 @@
---[[
-TomIO's neovim config.
-Based on Kickstarter.nvim
---]]
----@see forked_at
+---@forked from kickstart.nvim
 ---|#ee9790b (Nov 24 2023)
 ---| https://github.com/nvim-lua/kickstart.nvim/tree/ee9790b381416781063d0de6653b303f10ed89b0
-
----@see tracking_to
----|#2510c29 upstream commit (Jan 10 2024)
----| https://github.com/nvim-lua/kickstart.nvim/tree/2510c29d62d39d63bb75f1a613d2ae628a2af4ee
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -16,12 +8,17 @@ Based on Kickstarter.nvim
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- [[ Configure plugins ]]
+---@source ./lua/plugins.lua
+require('plugins')
+
 --[[ Config layout
 
 tree -a -l --dirsfirst "$DOT_FILES/.config/nvim/" | tr $'\u00A0' ' '
 ${XDG_CONFIG_HOME}/nvim
 ├── after
 │     ├── ftplugin
+│     │     ├── gitcommit.lua
 │     │     ├── just.lua
 │     │     └── zsh.lua
 │     ├── lsp
@@ -30,21 +27,17 @@ ${XDG_CONFIG_HOME}/nvim
 │     │     ├── lua_ls.lua
 │     │     ├── taplo.lua
 │     │     └── zls.lua
-│     └── plugin
-│         ├── autocmds.lua
-│         ├── init.lua
-│         ├── keybinds.lua
-│         └── mason.lua
+│     ├── plugin
+│     │     ├── autocmds.lua
+│     │     ├── init.lua
+│     │     ├── keybinds.lua
+│     │     └── mason.lua
+│     └── queries
+│         └── editorconfig
+│             └── highlights.scm
 ├── lua
 │     ├── plugins
-│     │     ├── alpha
-│     │     │     ├── themes
-│     │     │     │     ├── logo.txt
-│     │     │     │     └── mask.txt
-│     │     │     ├── alpha_colored_animation.lua
-│     │     │     └── init.lua
 │     │     ├── custom
-│     │     │     ├── git.lua
 │     │     │     └── tail.lua
 │     │     ├── hydra
 │     │     │     ├── git_hydra.lua
@@ -58,6 +51,11 @@ ${XDG_CONFIG_HOME}/nvim
 │     │     ├── mini
 │     │     │     ├── map.lua
 │     │     │     └── surround.lua
+│     │     ├── snacks
+│     │     │     ├── dashboard.lua
+│     │     │     ├── gitbrowse.lua
+│     │     │     ├── input.lua
+│     │     │     └── scratch.lua
 │     │     ├── breadcrumbs.lua
 │     │     ├── comments.lua
 │     │     ├── formatter.lua
@@ -71,22 +69,8 @@ ${XDG_CONFIG_HOME}/nvim
 │     │     ├── telescope.lua
 │     │     ├── treesitter.lua
 │     │     └── which-key.lua
-│     ├── utils
-│     │     ├── capture.lua
-│     │     ├── deprecated.lua
-│     │     ├── init.lua
-│     │     ├── memoize.lua
-│     │     └── spawn.lua
 │     └── options.lua
 └── init.lua
 
-14 directories, 46 files
+14 directories, 42 files
 ]]
-
--- [[ Setting options ]]
----@source ./lua/options.lua
-require('options')
-
--- [[ Configure plugins ]]
----@source ./lua/plugins.lua
-require('plugins')

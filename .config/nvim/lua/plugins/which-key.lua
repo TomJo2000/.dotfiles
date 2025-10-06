@@ -1,5 +1,16 @@
 local M = {}
 
+M.opts = {
+  win = {
+    border = 'single',
+    padding = { 0, 0 }, -- extra window padding [top/bottom, right/left]
+  },
+  keys = {
+    scroll_up = '<ScrollWheelUp>', -- binding to scroll up inside the popup
+    scroll_down = '<ScrollWheelDown>', -- binding to scroll down inside the popup
+  },
+}
+
 M.spec = {
   -- prefixes
   -- stylua: ignore

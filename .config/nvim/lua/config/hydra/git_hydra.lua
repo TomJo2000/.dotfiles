@@ -1,10 +1,10 @@
 -- A Hydra for common Git operations
 
 local hint = [[
- _<Down>_: next hunk   _s_: stage hunk      _d_: show deleted _b_: blame line
-   _<Up>_: prev hunk   _S_: stage buffer    _h_: preview hunk _B_: blame show full
-      _f_: file search _u_: undo last stage _v_: select hunk  _t_: toggle inline blame
-      _q_: exit        _U_: unstage buffer  ^                 ^
+ _<Down>_: next hunk   _r_: reset hunk      _d_: show deleted _b_: blame line
+   _<Up>_: prev hunk   _R_: reset buffer    _h_: preview hunk _B_: blame show full
+      _f_: file search _s_: stage hunk      _v_: select hunk  _t_: toggle inline blame
+      _q_: exit        _S_: stage buffer    _U_: unstage buffer  ^
 ]]
 
 local GitSigns = package.loaded['gitsigns'] or {}
@@ -38,10 +38,11 @@ return {
     { 'd', GitSigns.toggle_deleted,                { nowait = true, desc = 'toggle [d]eleted' } },
     { 'f', require('telescope.builtin').git_files, { desc = '[G]it [F]ile search' } },
     { 'h', GitSigns.preview_hunk,                  { desc = 'preview [h]unk' } },
-    { 's', GitSigns.stage_hunk,                    { desc = '[s]tage hunk' } },
+    { 'r', GitSigns.reset_hunk,                    { desc = '[r]estore hunk' } },
+    { 'R', GitSigns.reset_buffer,                  { desc = '[R]estore buffer' } },
+    { 's', GitSigns.stage_hunk,                    { desc = 'toggle [s]taging for hunk' } },
     { 'S', GitSigns.stage_buffer,                  { desc = '[S]tage buffer' } },
     { 't', GitSigns.toggle_current_line_blame,     { desc = '[t]oggle inline git blame' } },
-    { 'u', GitSigns.undo_stage_hunk,               { desc = '[u]ndo last stage' } },
     { 'U', function()
       local filename = vim.api.nvim_buf_get_name(0)
       vim.fn.system({ 'git', 'restore', '--staged', filename })

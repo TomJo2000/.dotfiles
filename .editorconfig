@@ -7,8 +7,24 @@ indent_size = 4
 tab_width   = 4
 end_of_line = lf
 indent_style = space
+spelling_language = en-US
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+[*.go]
+indent_style = tab
+
 [*.lua]
 indent_size = 2
+
+[{.config/git/config,.git/config,.gitconfig}]
+indent_style = tab
+
+# Trailing whitespace is relevant in diffs
+[*.{diff,patch,patch32,patch64}]
+trim_trailing_whitespace = false
+
+# Since I enable `commit.verbose` in my git/config
+# I also get a diff of changes in the commit message file.
+[COMMIT_EDITMSG]
+trim_trailing_whitespace = false

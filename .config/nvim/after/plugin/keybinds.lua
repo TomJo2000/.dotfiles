@@ -16,18 +16,22 @@ local binds = {
   { 'n', '<M-C-n>', vim.cmd.blast    , { desc = 'Last buffer' }     },
 
   -- dealing with line wrapping
-  { 'n', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, silent = true } },
-  { 'n', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, silent = true } },
+  { { 'n', 'v' } , 'k'     , [[v:count == 0 ? 'gk' : 'k']], { expr = true, silent = true } },
+  { { 'n', 'v' } , 'j'     , [[v:count == 0 ? 'gj' : 'j']], { expr = true, silent = true } },
+  { { 'n', 'v' } , '<Up>'  , [[v:count == 0 ? 'gk' : 'k']], { expr = true, silent = true } },
+  { { 'n', 'v' } , '<Down>', [[v:count == 0 ? 'gj' : 'j']], { expr = true, silent = true } },
+  { 'i', '<Up>'  , [[v:count == 0 ? '<C-o>gk' : '<C-o>k']], { expr = true, silent = true } },
+  { 'i', '<Down>', [[v:count == 0 ? '<C-o>gj' : '<C-o>j']], { expr = true, silent = true } },
 
   -- Diagnostic keymaps
-  { 'n', '[d'       , vim.diagnostic.goto_prev , { desc = 'Go to previous diagnostic message' } },
-  { 'n', ']d'       , vim.diagnostic.goto_next , { desc = 'Go to next diagnostic message' }     },
-  { 'n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' }  },
-  { 'n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' }             },
+  { 'n', '<S-Up>'   , function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = 'Go to previous diagnostic message' } },
+  { 'n', '<S-Down>' , function() vim.diagnostic.jump({ count =  1, float = true }) end, { desc = 'Go to next diagnostic message' }     },
+  { 'n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' } },
+  { 'n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' }            },
 
   -- Miscellaneous
   { { 'n', 'v' }, '<Space>', '<Nop>'      , { silent = true }   },
-  {   'n'       , '<C-s>'  , vim.cmd.write, { desc = '[S]ave' } },
+  { 'n'         , '<C-s>'  , vim.cmd.write, { desc = '[S]ave' } },
 
   --[[ Line numbers ]]
   { { 'n', 'v' }, '<leader>ll', function()
@@ -55,9 +59,14 @@ local binds = {
   },
 
   { 'n', '<leader>tf', require('plugins.custom.tail'), { desc = '`[t]ail -[f] <buf>`' } },
+  { 'n', '<C-.>.', function()
+    vim.notify( ('U+%04X'):format(vim.api.nvim_eval_statusline('%S', {}).str), vim.log.levels.WARN, {ttl=30} )
+  end, { desc = 'amongus' } },
+
+  { { 'n', 'v' }, '<C-CR>', function() vim.cmd.normal('o') end, { desc='Insert newline below'} },
+  { { 'n', 'v' }, '<S-C-CR>', function() vim.cmd.normal('O') end, { desc= 'Insert newline above' } },
 }
 
-for _, v in pairs(binds) do
-  local mode, lhs, rhs, opts = v[1], v[2], v[3], v[4]
-  vim.keymap.set(mode, lhs, rhs, opts)
-end
+vim.tbl_map(function(bind)
+  vim.keymap.set(unpack(bind))
+end, binds)

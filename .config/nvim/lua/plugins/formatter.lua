@@ -1,30 +1,40 @@
 local M = {}
 
-local function retab()
-  return function()
-    local pos = vim.api.nvim_win_get_cursor(0)
-    vim.api.nvim_feedkeys('gg=G', 'n', true)
-    vim.api.nvim_win_set_cursor(0, pos)
-  end
-end
-
 M.opts = {
-  -- stylua: ignore
+  formatters = {
+    trim_whitespace = {
+      inherit = true,
+      condition = function(self, ctx)
+        local ret = {
+          diff = false,
+          gitcommit = false,
+          gitsendemail = false,
+          help = false,
+        }
+        return ret[vim.bo[0].ft] == nil
+      end,
+    },
+    retab = {
+      meta = { description = 'Redo tabs' },
+      format = function(self, ctx, lines, callback)
+        local pos = vim.fn.winsaveview()
+        vim.api.nvim_feedkeys('gg=G', 'n', true)
+        vim.fn.winrestview(pos)
+        vim.notify('Retabbed')
+      end,
+    },
+  },
   formatters_by_ft = {
-    html = retab(),
+    go = { 'gofmt' },
+    html = { 'retab' },
     just = { 'just' },
-    lua  = { 'stylua' },
-    -- markdown = retab(),
-    zig  = { 'zigfmt' },
+    lua = { 'stylua' },
+    markdown = { 'retab' },
+    query = { 'format-queries' },
+    toml = { 'taplo' },
+    zig = { 'zigfmt' },
     -- Use the "*" filetype to run formatters on all filetypes.
-    ['*'] = { 'codespell' },
-    -- Use the "_" filetype to run formatters on filetypes that don't
-    -- have other formatters configured.
-    ['_'] = { 'trim_whitespace' },
-    -- no formatting on these
-    diff = nil,
-    gitsendmail = nil,
-    help = nil,
+    ['*'] = { 'codespell', 'trim_whitespace' },
   },
   -- If this is set, Conform will run the formatter on save.
   -- It will pass the table to conform.format().

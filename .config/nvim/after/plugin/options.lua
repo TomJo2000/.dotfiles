@@ -4,6 +4,9 @@ vim.o.termguicolors = true
 -- Set the window title
 vim.o.title = true
 
+-- Show whitespace using the characters in listchars
+vim.wo.list = true
+
 -- Whitespace symbols
 vim.opt.listchars = {
   space = '∙',
@@ -13,8 +16,6 @@ vim.opt.listchars = {
   precedes = '«',
   nbsp = '°',
 }
-
-vim.o.list = true
 
 vim.o.tabstop = 4
 vim.o.expandtab = true
@@ -26,13 +27,17 @@ vim.o.shortmess = vim.o.shortmess .. 'S'
 -- Make (absolute) line numbers default
 vim.wo.number = true
 
+-- We handle these in lualine instead of an extra line under the statusline
+vim.o.showmode = false -- Don't show the mode
+vim.o.showcmd = true -- Show commands
+
 -- Enable mouse mode
 vim.o.mouse = 'a'
 
 -- Sync clipboard between OS and Neovim.
 vim.o.clipboard = 'unnamedplus'
 
--- Enable break indent
+-- Indent wrapped lines to the same level as the start of the line
 vim.o.breakindent = true
 
 -- Save undo history
@@ -56,7 +61,7 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.cursorline = true
 vim.o.cursorlineopt = 'screenline'
 
--- Ask for confirmation when quiting an unsaved buffer instead of refusing
+-- Ask for confirmation when quitting an unsaved buffer instead of refusing
 vim.o.confirm = true
 
 -- Set defaults for splits

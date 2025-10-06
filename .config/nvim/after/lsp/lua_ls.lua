@@ -21,11 +21,11 @@ M.settings = {
     workspace = {
       checkThirdParty = false,
       -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-      library = vim.api.nvim_get_runtime_file('', true),
       -- library = {
+      --   vim.api.nvim_get_runtime_file('', true),
       --   vim.env.VIMRUNTIME,
-      --   -- "${3rd}/luv/library"
-      --   -- "${3rd}/busted/library",
+      --   "${3rd}/luv/library"
+      --   "${3rd}/busted/library",
       -- },
       diagnostics = { disable = { 'duplicate-doc-alias' } },
     },

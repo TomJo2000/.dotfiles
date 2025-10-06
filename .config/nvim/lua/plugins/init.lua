@@ -16,16 +16,19 @@ end
 vim.opt.rtp:prepend(lazydir)
 
 require('lazy').setup({
-  { -- A fully customizable start screen
-    'goolord/alpha-nvim',
-    event = 'BufEnter',
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-      'nvim-lua/plenary.nvim',
+  { -- A collection of QoL plugins
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+    -- stylua: ignore
+    ---@type snacks.Config
+    opts = {
+      -- I want to gradually opt into the modules I actually want.
+      dashboard = require('plugins.snacks.dashboard'),
+      gitbrowse = require('plugins.snacks.gitbrowse'),
+          input = require('plugins.snacks.input'),
+        scratch = require('plugins.snacks.scratch'),
     },
-    config = function()
-      require('alpha').setup(require('alpha.themes.theta').config)
-    end,
   },
 
   { -- Session persistence and management
@@ -36,7 +39,7 @@ require('lazy').setup({
 
   { -- directory navigation
     'nvim-tree/nvim-tree.lua',
-    priority = 900, -- we want this loaded pretty much immediately
+    event = 'VeryLazy',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
     },
@@ -47,9 +50,9 @@ require('lazy').setup({
   },
 
   -- Git related plugins
-  { 'tpope/vim-fugitive', event = 'SafeState' },
+  { 'tpope/vim-fugitive', event = 'VeryLazy' },
 
-  { 'tpope/vim-rhubarb', event = 'SafeState' },
+  { 'tpope/vim-rhubarb', event = 'VeryLazy' },
 
   -- Detect tabstop and shiftwidth automatically
   { 'tpope/vim-sleuth', event = 'BufEnter' },
@@ -61,8 +64,8 @@ require('lazy').setup({
     -- stylua: ignore
     disable = {
       buftypes = {
-        'terminal', 'lspinfo', 'checkhealth',
-        'help', 'lazy'
+        'alpha', 'checkhealth', 'help',
+        'lazy', 'lspinfo', 'terminal',
       },
     },
   },
@@ -73,107 +76,74 @@ require('lazy').setup({
   { -- proper merge editor
     --- @see documentation at https://github.com/sindrets/diffview.nvim
     'sindrets/diffview.nvim',
-    event = 'SafeState',
+    event = 'VeryLazy',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
 
   { -- More customizable formatters.
     'stevearc/conform.nvim',
     event = 'BufEnter',
+    dir = '/home/tom/git/conform.nvim/',
     opts = require('plugins.formatter').opts,
   },
 
-  -- Split or join oneliners to multiline statements and vise versa
+  -- Split or join one-liners to multiline statements and vice versa
   { 'AndrewRadev/splitjoin.vim', event = 'InsertEnter' },
+
+  { 'kevinhwang91/nvim-bqf', ft = 'qf' },
 
   { -- Less obtrusive notifications
     'j-hui/fidget.nvim',
-    lazy = true,
-    dependencies = { 'nvim-tree/nvim-tree.lua' },
+    event = 'VeryLazy',
     opts = {
-      notification = { override_vim_notify = true },
-      integration = {
-        ---@see fidget.option.integration.nvim-tree
-        ['nvim-tree'] = {
-          enable = true, -- Integrate with nvim-tree/nvim-tree.lua (if installed)
-        },
+      notification = {
+        override_vim_notify = true,
+        window = { avoid = { 'NvimTree' } },
       },
       -- window = { zindex = 45 },
     },
   },
 
   -- [[ LSP ]]
-  { -- LSP Configuration
-    'neovim/nvim-lspconfig',
-    event = { 'BufReadPre', 'BufNewFile' },
-    -- stylua: ignore
-    dependencies = {
-      'folke/lazydev.nvim',   -- function signatures for nvim's Lua API
-      'onsails/lspkind.nvim', -- icons for LSP suggestions
-      'j-hui/fidget.nvim',    -- notification
+  { -- LSP management
+    'mason-org/mason.nvim',
+    lazy = true,
+    opts = {
+      install_root_dir = vim.fn.stdpath('state') .. '/lsp',
+      PATH = 'append',
     },
-    config = function()
-      local notify = require('fidget').notify
-      local LSPs = {
-        'bashls',
-        'clangd',
-        'gopls',
-        'jsonls',
-        'lua_ls',
-        'marksman',
-        'systemd_ls',
-        'taplo',
-        'zls',
-      }
-      local available = vim.tbl_map(function(lsp)
-        -- Get the executable for this LSP
-        local prog = vim.lsp.config[lsp].cmd[1]
-        -- Check that it's available
-        if vim.fn.executable(prog) == 1 then
-          return lsp
-        end
-        notify(
-          ('"Could not find: %s"'):format(prog), -- msg
-          vim.log.levels.WARN, -- level
-          { -- opts
-            annotate = 'LSP not found:',
-            group = 'Lsp',
-            skip_history = false,
-            ttl = 30,
-          }
-        )
-      end, LSPs)
+  },
 
-      notify(
-        (function(tbl) -- Use an IIFE to make this tidier
-          local ret = ' \nAvailable LSPs:'
-          for _, v in pairs(tbl) do
-            ret = ('%s\n%s'):format(ret, v)
-          end
-          return ret
-        end)(available),
-        vim.log.levels.INFO, -- level
-        { -- opts
-          annotate = 'Available LSPs:',
-          group = 'Lsp',
-          skip_history = true,
-          ttl = 15,
-        }
-      )
-      -- Enable all available and configured LSPs
-      vim.lsp.enable(available)
-    end,
+  {
+    'mason-org/mason-lspconfig.nvim',
+    -- event = { 'BufReadPre', 'BufNewFile' },
+    lazy = true,
+    dependencies = {
+      'mason-org/mason.nvim',
+      { -- LSP Configuration
+        'neovim/nvim-lspconfig',
+        -- stylua: ignore
+        dependencies = {
+          'folke/lazydev.nvim',   -- Function signatures for nvim's Lua API
+          'onsails/lspkind.nvim', -- Icons for LSP suggestions
+          'j-hui/fidget.nvim',    -- vim.notify replacement
+        },
+      },
+    },
   },
 
   { -- function signatures for nvim's Lua API
     'folke/lazydev.nvim',
     ft = 'lua',
-    dependencies = { 'Bilal2453/luvit-meta' }, -- optional `vim.uv` typings
+    dependencies = { 'DrKJeff16/wezterm-types' },
     opts = {
       library = {
         -- See the configuration section for more details
         -- Load luvit types when the `vim.uv` word is found
-        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+        -- Load the wezterm types when the `wezterm` module is required
+        -- Needs `DrKJeff16/wezterm-types` to be installed
+        { path = 'wezterm-types', mods = { 'wezterm' } },
       },
     },
   },
@@ -185,14 +155,12 @@ require('lazy').setup({
     config = function()
       local none = require('null-ls')
       none.setup({
-          -- stylua: ignore
-          sources = {
-            none.builtins.code_actions.gitrebase, -- inject a code action for fast git rebase interactive mode switching
-            none.builtins.diagnostics.actionlint, -- GitHub Actions linter
-            none.builtins.diagnostics.yamllint,   -- YAML linter
-            -- none.builtins.completion.luasnip,     -- LuaSnip snippets as completions
-            none.builtins.completion.spell,       -- Spelling suggestions as completions
-          },
+        sources = {
+          none.builtins.diagnostics.actionlint, -- GitHub Actions linter
+          none.builtins.code_actions.gitrebase, -- inject a code action for fast git rebase interactive mode switching
+          none.builtins.completion.spell, -- Spelling suggestions as completions
+          none.builtins.diagnostics.yamllint, -- YAML linter
+        },
         update_in_insert = true,
         debounce = 150,
         -- debug = true,
@@ -211,21 +179,24 @@ require('lazy').setup({
     opts = require('plugins.breadcrumbs'),
   },
 
-  { -- Highlighters, Querries and Contexts.
+  { -- Highlighters, Queries and Contexts.
     'nvim-treesitter/nvim-treesitter',
-    event = 'BufEnter',
-    build = ':TSUpdate',
-    main = 'nvim-treesitter.configs',
-    opts = require('plugins.treesitter'),
+    lazy = false,
+    branch = 'main',
+    opts = require('plugins.treesitter').ts,
+    dependencies = {
+      -- Automatically install selected parsers
+      'lewis6991/ts-install.nvim',
+      opts = require('plugins.treesitter').install,
+    },
   },
 
-  { -- bulk comments
+  { -- Bulk comments
     'numToStr/Comment.nvim',
     event = 'VeryLazy',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects', -- Syntax aware text-objects
-      'JoosepAlviste/nvim-ts-context-commentstring', -- set the commentstring based on the treesitter context
-    },
+    -- dependencies = {
+    --   'nvim-treesitter/nvim-treesitter-textobjects', -- Syntax aware text-objects
+    -- },
     opts = {
       padding = true,
       sticky = true,
@@ -233,56 +204,118 @@ require('lazy').setup({
       opleader = { line = '<leader>c', block = '<leader>b' },
       toggler = { line = '<leader>cc', block = '<leader>bb' },
       extra = { above = '<leader>cO', below = '<leader>co', eol = '<leader>cA' },
-      -- pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      pre_hook = nil,
       post_hook = nil,
       ignore = nil,
     },
   },
 
   { -- Autocompletion
-    'hrsh7th/nvim-cmp',
-    event = 'InsertEnter',
-      -- stylua: ignore
-      dependencies = {
-        'hrsh7th/cmp-calc',                    -- Math
-        -- 'uga-rosa/cmp-dynamic',             -- Generates suggestions from Lua functions
-        'petertriho/cmp-git',                  -- Git
-        'saadparwaiz1/cmp_luasnip',            -- LuaSnip cmp source
-        'hrsh7th/cmp-nvim-lsp-signature-help', -- LSP powered function signatures
-        'hrsh7th/cmp-nvim-lsp',                -- Adds LSP completion capabilities
-        'hrsh7th/cmp-omni',                    -- Neovim Omnifunc
-        'hrsh7th/cmp-path',                    -- File path completion
-        'chrisgrieser/cmp_yanky',              -- Clipboard/Yank history
-        'rafamadriz/friendly-snippets',        -- Adds a number of user-friendly snippets
-        'onsails/lspkind.nvim',                -- Icons for LSP suggestions
-        -- 'L3MON4D3/LuaSnip',                    -- Snippet Engine
+    'saghen/blink.cmp',
+    version = '1.*', -- use a release tag to download pre-built binaries
+    dependencies = { 'L3MON4D3/LuaSnip' },
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      -- See :h blink-cmp-config-keymap for defining your own keymap
+      keymap = { preset = 'enter' },
+      appearance = { nerd_font_variant = 'mono' },
+      signature = { enabled = true },
+      snippets = { preset = 'luasnip' },
+      sources = {
+        default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
+        providers = {
+          lazydev = {
+            name = 'LazyDev',
+            module = 'lazydev.integrations.blink',
+            -- make lazydev completions top priority (see `:h blink.cmp`)
+            score_offset = 100,
+          },
+        },
       },
-    config = require('plugins.cmp'),
+      ---@source Fuzzy/Sorting Mega issue
+      ---|https://github.com/Saghen/blink.cmp/issues/1642#issuecomment-2960900872
+      completion = {
+        documentation = { auto_show = true },
+        menu = { auto_show = true },
+        list = {
+          selection = {
+            preselect = true,
+            auto_insert = true,
+          },
+        },
+      },
+      fuzzy = {
+        implementation = 'prefer_rust_with_warning', -- currently kinda broken
+        -- implementation = 'lua',
+        sorts = { 'exact', 'score', 'sort_text' },
+        frecency = {
+          enabled = false,
+        },
+        use_proximity = false,
+        max_typos = function()
+          return 0
+        end,
+      },
+    },
+    opts_extend = { 'sources.default' },
   },
 
   { -- Snippet engine
     'L3MON4D3/LuaSnip',
-    -- install jsregexp (optional!).
+    version = 'v2.*',
     build = 'make install_jsregexp',
-    cond = function()
-      return false -- vim.fn.executable('make') == 1
-    end,
+    -- install jsregexp (optional).
   },
 
   -- automatically close tags in HTML, XML or embedded in Markdown
   { 'windwp/nvim-ts-autotag' },
 
+  { -- Colorized icons for filetypes, etc.
+    'nvim-tree/nvim-web-devicons',
+    opts = {
+      override = {
+        just = {
+          icon = '󰫷',
+          color = '#CC9057',
+          cterm_color = '215',
+          name = 'just',
+        },
+        lua = {
+          icon = '',
+          color = '#0759B6',
+          cterm_color = '4',
+        },
+        markdown = {
+          icon = '',
+          color = '#B0B2B4',
+          cterm_color = '250',
+        },
+        vimdoc = {
+          icon = '',
+          color = '#25982D',
+          cterm_color = '34',
+        },
+      },
+    },
+  },
+
   { -- There are way to many statusline plugins, we're using this one.
     'nvim-lualine/lualine.nvim',
     event = 'VeryLazy',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+      'SmiteshP/nvim-navic',
+    },
     opts = require('plugins.lualine'),
   },
 
   { -- Theme inspired by Atom
     'navarasu/onedark.nvim',
-    priority = 1000, -- make sure the colorscheme is loaded immediately
+    priority = 900, -- make sure the colorscheme is loaded immediately
+    dependencies = 'rktjmp/lush.nvim',
     config = function()
+      ---@type onedark.opts
       local opts = require('plugins.onedark').opts
       require('onedark').setup(opts)
       vim.cmd.colorscheme('onedark')
@@ -319,7 +352,6 @@ require('lazy').setup({
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VeryLazy',
-    branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- native fzf extension for telescope
@@ -334,6 +366,7 @@ require('lazy').setup({
 
   { -- nicer looking Markdown
     'MeanderingProgrammer/render-markdown.nvim',
+    ft = { 'markdown', 'html' },
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'nvim-tree/nvim-web-devicons',
@@ -356,13 +389,14 @@ require('lazy').setup({
     event = { 'BufReadPre', 'BufNewFile' },
     opts = {
       user_default_options = { names = false },
-          -- stylua: ignore
-          buftypes = {
-            '*',
-            '!prompt', -- exclude prompts
-            '!popup',  -- exclude popups
-            '!lazy',   -- exclude lazy.nvim
-          },
+      -- stylua: ignore
+      buftypes = {
+        '*',
+        '!alpha',  -- exclude dashboard
+        '!lazy',   -- exclude lazy.nvim
+        '!popup',  -- exclude menus
+        '!prompt', -- exclude prompts
+      },
     },
   },
   -- Hex test:
@@ -444,28 +478,9 @@ require('lazy').setup({
   { -- Discord Rich Presence
     'andweeb/presence.nvim',
     event = 'VeryLazy',
-    cond = function() -- Only load this plugin if Discord is installed.
-      return vim.fn.executable('discord') == 1 and true or false
+    enabled = function() -- Only load this plugin if Discord is installed.
+      return (vim.fn.executable('discord') == 1 or vim.fn.executable('discord-canary') == 1)
     end,
     opts = require('plugins.presence'),
   },
-
-  { -- yank history
-    'gbprod/yanky.nvim',
-    event = 'SafeState',
-    opts = {
-      ring = { -- yank ring
-        history_length = 100,
-        storage = 'shada',
-        sync_with_numbered_registers = true,
-        cancel_event = 'update',
-        ignore_registers = { '_' },
-        update_register_on_cycle = false,
-      },
-      system_clipboard = {
-        sync_with_ring = true,
-      },
-    },
-  },
-  ---@diagnostic disable: different-requires
 }, require('plugins.lazy'))

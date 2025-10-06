@@ -1,6 +1,7 @@
 local M = {}
 
 -- stylua: ignore
+---@class onedark.palette
 M.palette = {
   black       = '#050307',
   red         = '#DF0D0B',
@@ -21,6 +22,7 @@ M.palette = {
 }
 
 ---@see onedark.style.darker
+---@class onedark.colors
 -- stylua: ignore
 M.colors = {
   black       = M.palette.black,       -- #050307
@@ -54,6 +56,7 @@ M.colors = {
   diff_text   = '#274964',
 }
 
+---@class onedark.opts
 M.opts = { -- Main options
   style = 'darker', -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
   transparent = false, -- Show/hide background
