@@ -13,12 +13,23 @@ ov.data = '{\\an5}'        .. -- Align, NUMPAD style, 5 is centered
           '{\\c&HFFFFFF&}' .. -- Color, #FFFFFF
           '⏸'                 -- Actual text
 
-mp.observe_property('pause', 'bool', function(_, paused)
-  mp.add_timeout(0.1, function()
-    if paused then
-      ov:update()
-    else
-      ov:remove()
-    end
-  end)
+local paused, time = nil, nil
+local function remove_on_frame_advance(_, pos)
+  if paused and time and pos ~= time then
+    ov:remove()
+  end
+  time = pos
+end
+
+-- Track pause state
+mp.observe_property('pause', 'bool', function(_, state)
+  paused = state
+  if paused then
+    ov:update()
+  else
+    ov:remove()
+  end
 end)
+
+-- Detect frame advance while paused
+mp.observe_property('time-pos', 'number', remove_on_frame_advance)
