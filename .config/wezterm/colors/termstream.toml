@@ -1,0 +1,43 @@
+[colors]
+  ansi = [
+    '#0A0400',
+    '#D61E1C',
+    '#1DA65A',
+    '#EDBC00',
+    '#0A75AD',
+    '#FF33B8',
+    '#00CEF1',
+    '#B0B2B4',
+  ]
+  background = '#0A0400'
+  brights = [
+    '#4F4D4B',
+    '#E03C31',
+    '#64B141',
+    '#E26D0E',
+    '#2952B2',
+    '#9010F0',
+    '#39A78E',
+    '#F5FBFD',
+  ]
+  cursor_border = '#F5FBFD'
+  cursor_fg = '#0A0400'
+  cursor_bg = '#F5FBFD'
+  foreground = '#F5FBFD'
+  selection_bg = '#2952B2'
+  selection_fg = '#0A0400'
+
+  # [colors.indexed]
+  #   16 = ''
+  #   17 = ''
+  #   18 = ''
+  #   19 = ''
+  #   20 = ''
+  #   21 = ''
+
+[metadata]
+  aliases = [ 'termstream' ]
+  author = 'TomIO'
+  name = 'Termstream'
+  origin_url = 'https://github.com/TomJo2000/.dotfiles'
+  wezterm_version = 'N/A' # Not in any upstream version

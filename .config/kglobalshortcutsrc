@@ -261,7 +261,7 @@ activate widget 109=none,none,Activate Application Launcher Widget
 activate widget 130=none,none,Activate Application Launcher Widget
 activate widget 25=none,none,Activate Application Launcher Widget
 activate widget 251=none,none,Activate Application Launcher Widget
-activate widget 302=Alt+F1,none,Activate Application Launcher Widget
+activate widget 302=none,none,Activate Application Launcher Widget
 activate widget 328=none,none,Activate System Tray Widget
 activate widget 338=Meta+A,none,Activate Notifications Widget
 activate widget 348=none,none,Activate Application Launcher Widget
@@ -287,12 +287,6 @@ switch to next activity=none,,Switch to Next Activity
 switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=Meta+Shift+A,,Toggle do not disturb
 
-[services][foot.desktop]
-_launch=Ctrl+Alt+T
-
-[services][org.codeberg.dnkl.foot.desktop]
-_launch=Ctrl+Alt+T
-
 [services][org.kde.krunner.desktop]
 RunClipboard=none
 _launch=Search\tAlt+F2
@@ -310,8 +304,14 @@ _launch=Meta+Shift+S
 [services][org.kde.touchpadshortcuts.desktop]
 ToggleTouchpad=Touchpad Toggle\tMeta+Ctrl+Zenkaku Hankaku
 
+[services][org.wezfurlong.wezterm.desktop]
+_launch=Ctrl+Alt+T
+
 [services][pkill.desktop]
 _launch=Meta+Ctrl+Shift+B
+
+[services][rg.wezfurlong.wezterm.desktop]
+_launch=Ctrl+Alt+T
 
 [wacomtablet]
 Map to fullscreen=Meta+Ctrl+F,Meta+Ctrl+F,Map to fullscreen

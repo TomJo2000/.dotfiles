@@ -129,6 +129,7 @@ target_misc:
     just has 'spotify'               && files+=('.config/autostart/spotify.desktop')
     just has 'thunderbird'           && files+=('.config/autostart/org.mozilla.Thunderbird.desktop')
     just has 'vorta' 'borg'          && files+=('.config/autostart/vorta.desktop')
+    just has 'wezterm'               && files+=('.config/wezterm/')
     just has 'tmux'                  && files+=('.config/tmux/tmux.conf')
     just has 'kwallet-query'         && files+=(
         '.config/kwalletrc'
