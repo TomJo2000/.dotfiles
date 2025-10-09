@@ -119,10 +119,10 @@ target_misc:
     just has 'alacritty'             && files+=('.config/alacritty/alacritty.toml')
     just has 'btop'                  && files+=('.config/btop/themes/termstream.theme')
     just has 'cava'                  && files+=('.config/cava/config')
+    just has 'fastfetch'             && files+=('.config/fastfetch/config.jsonc')
     just has 'foot'                  && files+=('.config/foot/foot.ini')
     just has 'keepassxc' 'systemctl' && files+=('.local/share/systemd/user/keepassxc.service')
     just has 'mpv'                   && files+=('.config/mpv/')
-    just has 'neofetch'              && files+=('.config/neofetch/config.conf')
     just has 'paru'                  && files+=('.config/paru/paru.conf')
     just has 'qdirstat'              && files+=('.config/QDirStat/')
     just has 'nheko' 'keepassxc'     && files+=('.config/autostart/nheko.desktop') # Needs DBus Secret provider
