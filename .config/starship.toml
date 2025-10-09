@@ -24,9 +24,7 @@ format = """\
     $localip\
     [](fg:col_info bg:col_text_dark)\
     $shell\
-    ${env_var.pwd}\
     $directory\
-    [\u001B\\]8;;\u001B\\\\](fg:none bg:none)\
     $git_branch\
     $git_commit\
     $git_metrics\
@@ -35,6 +33,8 @@ format = """\
     $cmd_duration\
     $status\
 """
+# ${env_var.pwd}\
+# [\u001B\\]8;;\u001B\\\\](fg:none bg:none)\
 
 #?? A continuation prompt is trigged if you enter an incomplete statement on the command line.
 #?? Only supported in Bash, Zsh and PowerShell.
@@ -233,15 +233,15 @@ symbol = "󰀲"
 style = "fg:col_success bg:col_text_dark"
 format = "[$symbol]($style)"
 
-[env_var.pwd] # Blood sacrificed for OSC 8 file:// URI embedding
-disabled = false
-variable = "PWD"
-style = "fg:none bg:none"
-format = """\
-    [\u001B\\]8;;]($style)\
-    [file://$env_value]($style)\
-    [\u001B\\\\]($style)\
-"""
+# [env_var.pwd] # Blood sacrificed for OSC 8 file:// URI embedding
+# disabled = true
+# variable = "PWD"
+# style = "fg:none bg:none"
+# format = """\
+#     [\u001B\\]8;;]($style)\
+#     [file://$env_value]($style)\
+#     [\u001B\\\\]($style)\
+# """
 
 ### Modules for git
 [git_branch] # name of the current git branch
