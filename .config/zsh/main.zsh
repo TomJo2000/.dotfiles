@@ -3,44 +3,52 @@ timing[main]="-$EPOCHREALTIME"
 
 ### SSH Agent
 local promise
+local -A promises=() # holds a list of pending promises to resolve
 # If we are connected remotely, don't clobber a possible forwarded agent by overwriting SSH_AUTH_SOCK
 (( ${#SSH_CONNECTION} )) || export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+(( TERMUX_APP__PID )) && export SSH_AUTH_SOCK="${TERMUX__PREFIX}/var/run/ssh-agent.socket"
 
-exec {promise}<> <( #
-    systemctl show --property MainPID --value --user ssh-agent.service
+exec {promise}<> <( # Get main ssh-agent PID
+    systemctl show --property MainPID --value --user ssh-agent.service || \
+    cat "${TERMUX__PREFIX}/var/service/ssh-agent/supervise/pid" || \
+    echo "null"
 ); promises[ssh_pid]="$promise"; promise=''
 
 exec {promise}<> <( # promise agent status
-# We need SSH_AUTH_SOCK and SSH_AGENT_PID for `ssh-add` to connect to the SSH Agent
-parse_ssh_add() { # make sense of the `ssh-add -l` output and format the output accordingly
-    # Grab the `ssh-agent` PID from our service manager
-    local SSH_AGENT_PID
-    SSH_AGENT_PID="$(systemctl show --property MainPID --value --user ssh-agent.service)"
-    local -a keys=()
-    local line
-    while read -r line; do
-        keys+=("$line")
-    done < <(ssh-add -l)
+    # We need SSH_AUTH_SOCK and SSH_AGENT_PID for `ssh-add` to connect to the SSH Agent
+    parse_ssh_add() { # make sense of the `ssh-add -l` output and format the output accordingly
+        # Grab the `ssh-agent` PID from our service manager
+        local SSH_AGENT_PID
+        SSH_AGENT_PID="$(
+            systemctl show --property MainPID --value --user ssh-agent.service || \
+            cat "${TERMUX__PREFIX}/var/service/ssh-agent/supervise/pid"
+        )"
+        local -a keys=()
+        local line
+        while read -r line; do
+            keys+=("$line")
+        done < <(ssh-add -l)
 
-    local width; (( width = ${#SSH_AGENT_PID} >= ${#keys[*]} ? ${#SSH_AGENT_PID} : ${#keys[*]} ))
-    case "${keys[*]}" in
-        ('Could not open a connection to your authentication agent.') # couldn't connect to agent
-        printf '%s\n' "Error: could not attach to SSH Agent." "${keys[*]}"
-        return
-        ;;
-        ('The agent has no identities.') # success no keys
-        printf "%s ${col[inv]}%${width}s${col[reset]}\n" \
-            'Agent PID:    ' "${SSH_AGENT_PID}" \
-            'Keys in agent:' '0'
-        ;;
-        (*) # success and keys
-        printf "%s ${col[inv]}%${width}s${col[reset]}\n" \
-            'Agent PID:    ' "${SSH_AGENT_PID}" \
-            'Keys in agent:' "${#keys[*]}"
-        ;;
-    esac
-    echo 'Successfully connected to SSH Agent'
-}; parse_ssh_add
+        local width; (( width = ${#SSH_AGENT_PID} >= ${#keys[*]} ? ${#SSH_AGENT_PID} : ${#keys[*]} ))
+        case "${keys[*]}" in
+            ('Could not open a connection to your authentication agent.') # couldn't connect to agent
+            printf '%s\n' "Error: could not attach to SSH Agent." "${keys[*]}"
+            return
+            ;;
+            ('The agent has no identities.') # success no keys
+            printf "%s ${col[inv]}%${width}s${col[reset]}\n" \
+                'Agent PID:    ' "${SSH_AGENT_PID}" \
+                'Keys in agent:' '0'
+            ;;
+            (*) # success and keys
+            printf "%s ${col[inv]}%${width}s${col[reset]}\n" \
+                'Agent PID:    ' "${SSH_AGENT_PID}" \
+                'Keys in agent:' "${#keys[*]}"
+            ;;
+        esac
+        echo 'Successfully connected to SSH Agent'
+    }
+    parse_ssh_add
 ); promises[ssh_agent]="$promise"; promise=''
 
 [[ "${debug_verbosity[*]}" =~ (^| )(ssh|all)( |$) ]] && { # >< Debug: SSH
@@ -187,28 +195,34 @@ export HISTDUP='erase'
 (( timing[history] += EPOCHREALTIME ))
 timing[path]="-$EPOCHREALTIME"
 
-    function path_amend() { # <> add directories to $PATH if they are not in it already
-        local P
-        local -a add_to_path=(
-            "$HOME/.local/bin"
-            "$HOME/.cargo/bin"
-        )
+function path_amend() { # <> add directories to $PATH if they are not in it already
+    local P
+    for P in "$@"; do
+        # Check if the directory exists and isn't already in $PATH, only then add it.
+        [[ -d "$P" && "$PATH" != *"$P"* ]] && export PATH="$PATH:$P"
+    done
+}
 
-        for P in "${add_to_path[@]}"; do
-            [[ "$PATH" == *"$P"* ]] || export PATH="$PATH:$P" # (RegEx) Check if the directory is already in $PATH, if its not, add it.
-        done
-    }; path_amend
+local -a path_dirs=(
+    "$HOME/.local/bin"
+    "$HOME/.cargo/bin"
+    )
+
+path_amend "${path_dirs[@]}"
 
 (( timing[path] += EPOCHREALTIME ))
 timing[pager]="-$EPOCHREALTIME"
 
 # setup nvim as default EDITOR and MANPAGER program.
-if command -v 'nvim' &> '/dev/null'; then
+if command -v 'nvim' &> /dev/null; then
     export EDITOR='nvim'
     export MANPAGER='nvim -c Man! -o -'
+    # if `pacdiff` is present, set $DIFFPROG
+    command -v 'pacdiff' &> /dev/null && export DIFFPROG='nvim -d'
 fi
 
-alias ls='LC_COLLATE=C ls --file-type --color' # colorize ls by default
+alias ls='LC_COLLATE=C ls --file-type --color' # colorize `ls` output
+alias ip='ip -color=auto' # colorize `ip` output
 
 ### `less` pager stylization and options
 export LESSCHARSET='utf-8'
@@ -243,28 +257,6 @@ local -a less_prompt=( # <> Prompt for `less`
     '%t'            # trim trailing whitespace
 )
 
-local -a less_colors=( # <>
-    # >< "-DB" # binary chars
-    # >< "-DC" # Control char
-    # >< "-DE" # Errors
-    # >< "-DH" # Headers, lines, columns
-    # >< "-DM" # Marks
-    # >< "-DN" # Line numbers
-    # >< "-DP" # Prompts
-    # >< "-DR" # Right scroll, line overflow indicator
-    # >< "-DS" # Search results
-    # >< "-D1" # 1st sub-pattern of the search pattern
-    # >< "-D2" # 2nd sub-pattern of the search pattern
-    # >< "-D3" # 3rd sub-pattern of the search pattern
-    # >< "-D4" # 4th sub-pattern of the search pattern
-    # >< "-D5" # 5th sub-pattern of the search pattern
-    # >< "-DW" # Move highlight unread
-    # >< "-Dd" # Bold text
-    # >< "-Dk" # Blinking text
-    # >< "-Ds" # Standout text
-    # >< "-Du" # Underlined text
-)
-
 local -a less_opts=( # <> set default options for `less`
     '--save-marks' # retain marks across invocations
     '--file-size'  # determine file size on opening (may take a significant amount of time on pipes)
@@ -274,32 +266,20 @@ local -a less_opts=( # <> set default options for `less`
     '-R'           # display escape sequences for colors, hyperlinks and UTF-8 correctly
     '-x4'          # set tab width to 4 columns
     '-J'           # mark selected lines/search hits
+    '-F'           # Close if the output fits on a single screen
     '-K'           # Close on ctrl-c
     '-M'           # Use the 'long prompt'
     '-S'           # split long lines over multiple lines
-    # "$( printf '%s' "${less_colors[@]}" )" # colors
     "$( printf '%b' "${less_prompt[@]}" )" # (Long) prompt # ?? | ❮.zshrc❯[423-456/627]┆69%
 )
-# Set all the options we set up
+# Export all the options we set up
 export LESS="${less_opts[*]}"
 
-export LESSOPEN='|lesspipe.sh %s'
+command -v 'lesspipe.sh' &> /dev/null && export LESSOPEN='|lesspipe.sh %s'
 # Use these for the Systemd pager as well
-export SYSTEMD_LESS="-F ${LESS}"
-# export LESSEDIT='%E -rg %g:?lt+%lt.%t' # implicit LESSEDIT format is: '%E ?lm+%lm. %g'
+command -v 'journalctl' &> /dev/null && export SYSTEMD_LESS="${LESS}"
 
 (( timing[pager] += EPOCHREALTIME ))
-
-# (WIP)
-#function parse_ls_cols(){
-#    local value
-#    while read -rd ':' value; do
-#        printf '%b%b\e[0m:' "${value/#*=/\e[}m" "${value}"
-#    done <<< "$LS_COLORS"
-#    echo
-#
-#return
-#}
 
 timing[source]="-$EPOCHREALTIME" # sourcing stuff
 setopt NO_KSH_ARRAYS
@@ -343,7 +323,6 @@ compinit
 # <> Fast-syntax-highlighting customization
 timing[syntax-highlighting]="-$EPOCHREALTIME"
 # only source it if we haven't already
-# shellcheck source=/dev/null # ?? Ignore Shellcheck's inability to parse external sources by default
 (( ${#FAST_HIGHLIGHT} )) || source "$zsh_script_dir/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 (( timing[syntax-highlighting] += EPOCHREALTIME ))
 

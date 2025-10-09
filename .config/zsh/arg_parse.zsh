@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 function parse_args() { # (ACK) Based on: https://stackoverflow.com/a/14203146
 
-    (( $# )) || return 0 # if we have no args, return early
+    (( $# )) || return # if we have no args, return early
     timing[args]="-$EPOCHREALTIME"
 
     function get_new_verbosity() { # <> if we were given an invalid verbosity request a new one
@@ -20,23 +20,17 @@ function parse_args() { # (ACK) Based on: https://stackoverflow.com/a/14203146
     done
     }
 
-# shellcheck disable=SC2046
-{ # <> Version and dependency information
-local name; name="TomIO's .zshrc"
-local version; version="${col[uline]}${col[fg_zomp]}v2.0.0${col[reset]}"
-local license; license="${col[fg_green]}MIT${col[reset]}"
-local commit
-    : $(<"${DOT_FILES}/.git/HEAD") # last field of the HEAD
-    : $(<"${DOT_FILES}/.git/${_}") # actual SHA of the HEAD
-commit="${col[fg_green]}${col[dim]}#${_::7}${col[reset]}"
-local -a dependencies; dependencies=(
-    "${col[orange]}${col[uline]}Dependencies:${col[reset]}"
-    "${col[fg_light_green]}Zsh${col[reset]} - Shell (MIT License)"
-    "${col[fg_blue]}GNU Coreutils${col[reset]} - Utils (GPLv3+)"
-    "${col[fg_orange]}Git${col[reset]} - Update Checking/Version Control (GPLv2)"
-    "${col[fg_yellow]}OpenSSH${col[reset]} - Remote Access (BSD License)"
-    )
-}
+    local promise
+    exec {promise}<> <({ # <> Version and dependency information
+        local name; name="TomIO's .zshrc"
+        local version
+            : "$(git -C "${DOT_FILES}" describe --dirty='~')"
+            : "${_/-/+}"
+        version="${col[uline]}${col[fg_zomp]}${_/-/#}${col[reset]}"
+        local license; license="${col[fg_green]}MIT${col[reset]}"
+
+        printf '%b\n' "${name} ${version} | License: ${license}"
+    })
 
 local -a posargs=()
     while (( $# )); do # <> As long as we got positional args:
@@ -44,24 +38,16 @@ local -a posargs=()
             ('-v'|'--verbose') # |> set debug mode
             timing[verbosity]="-$EPOCHREALTIME"
             local -a debug_valid=( # ** valid values for ${debug_verbosity[*]}, set with the `-v|--verbose <value>` flag.
-                'all'
-                'args'
-                'async'
-                'banner'
-                'color'
-                'installed'
-                'missing'
-                'off'
-                'ssh'
-                'timings'
-                'updates'
+                'all' 'args' 'async' 'banner'
+                'color' 'installed' 'missing'
+                'off' 'ssh' 'timings' 'updates'
             )
 
             printf '%b' \
                 "Found ${col[uline]}${col[ital]}${col[fg_cyan]}'$1'${col[reset]} " \
                 "with option: ${col[uline]}${col[ital]}${col[fg_cyan]}'${2:-<none>}'${col[reset]}\n"
 
-            if [[ -n "$2" && ${2:0:1} != "-" && ${debug_valid[*]} =~ (^| )$2( |$) ]]; then
+            if [[ -n "$2" && ${2:0:1} != "-" && " ${debug_valid[*]} " == *" $2 "* ]]; then
                 debug_verbosity+=("$2")
                 shift "2"
             else
@@ -79,9 +65,7 @@ local -a posargs=()
         ;;
         ('-V'|'--version') # |> print version information
             debug_verbosity+=('off') # ?? This will make main() print the debug banner, which is more compact
-            printf '%b\n' \
-            "${name} ${version}${commit} | License: ${license}" \
-            "${dependencies[@]}"
+            echo "$(</dev/fd/"${promise}")"
             break
         ;;
         ('--') # |> end of args

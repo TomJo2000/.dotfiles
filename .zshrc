@@ -23,11 +23,9 @@ function setup() { # <> General setup that has to run regardless of shell level
 setopt BASH_RE_MATCH        # Make the =~ operator behave like in Bash, see `man zshoptions`
 setopt RE_MATCH_PCRE        # Make [[ "val" =~ ^pattern$ ]] use PCRE instead of ERE
 setopt INTERACTIVE_COMMENTS # Allow comments in interactive shells
-# >< can cause issues with some plugins, disable before loading problematic plugins then reenable
+# >< can cause issues with some plugins, disable before loading problematic plugins then re-enable
 setopt KSH_ARRAYS           # Make Arrays 0-indexed like Ken intended
 ### **================================**
-
-declare -gA promises=() # holds a list of pending promises to resolve
 
 timing[list_plugins]="-$EPOCHREALTIME"
 ### **=========User Specifics=========**
@@ -35,16 +33,10 @@ export zsh_script_dir="${HOME}/.local/share/zsh/scripts" # "plugin" script locat
 declare -g update_frequency='7d' # ?? interval between update checks. Format: 1w2d3h4m5s (case insensitive); Default: 7d
 
 declare -gA plugins=( # ?? List plugins you wish to use by repo URL
-                  [col_gen]="${zsh_script_dir}/col_gen/col_gen.sh"           # local
-                  [percode]="${zsh_script_dir}/percode/percode.sh"           # local
-             [shared_agent]="${zsh_script_dir}/shared_agent/shared_agent.sh" # local
-                [shell_pad]="${zsh_script_dir}/shell_pad/shell_pad.zsh"      # local
-                   [synker]="${zsh_script_dir}/synker/synker.sh"             # local
-                   [typeof]="${zsh_script_dir}/typeof/typeof.sh"             # local
- [fast-syntax-highlighting]='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
-         [zsh-autocomplete]='https://github.com/marlonrichert/zsh-autocomplete.git'
-      [zsh-autosuggestions]='https://github.com/zsh-users/zsh-autosuggestions.git'
-          [zsh-completions]='https://github.com/zsh-users/zsh-completions.git'
+                 [F-Sy-H]='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
+    [zsh-autosuggestions]='https://github.com/zsh-users/zsh-autosuggestions.git'
+        [zsh-completions]='https://github.com/zsh-users/zsh-completions.git'
+       # [zsh-autocomplete]='https://github.com/marlonrichert/zsh-autocomplete.git'
 )
 ### **================================**
 (( timing[list_plugins] += EPOCHREALTIME ))
@@ -154,7 +146,7 @@ col+=( # ** append the following sequences to the `col[]` array
   "${XDG_STATE_HOME:="${HOME}/.local/state"}" \
   "${XDG_RUNTIME_DIR:="/run/user/${UID}"}"
 
-(( TERMUX_APP_PID )) && XDG_RUNTIME_DIR="${PREFIX}/var/run/user"
+(( ${#TERMUX_VERSION} )) && XDG_RUNTIME_DIR="${PREFIX}/var/run/user"
 
 export XDG_CONFIG_HOME XDG_CACHE_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_RUNTIME_DIR
 
@@ -167,7 +159,7 @@ source "$XDG_CONFIG_HOME/zsh/main.zsh"
 parse_args "$@" # parse args
 (( $# )) && (( timing[args] += EPOCHREALTIME )) # this unit is only applicable if we had args
 
-[[ "$SHLVL" -eq 1 || ! "${debug_verbosity[*]}" =~ (^| )(off)?( |$) ]] && main # >< Only run `main()` if we're in a un-nested shell, or debugging.
+main # >< Run `main()`
 (( timing[main] += EPOCHREALTIME ))
 
 
