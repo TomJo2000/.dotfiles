@@ -19,5 +19,4 @@ WG0_FILE="$(find "${WG_CONF_DIR}" \
     -perm 0600 \
     | shuf -n1)"
 
-
 ln -sf "$WG0_FILE" "$WG_CONF_DIR/wg0.conf"

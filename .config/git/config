@@ -7,6 +7,10 @@
 	name       = TomIO
 	signingkey = ~/.ssh/keys/external/ed25519_GitHub.pub
 
+[format]
+	numbered = auto
+	outputDirectory = /tmp/patches
+
 [gpg]
 	format = ssh
 
@@ -24,14 +28,22 @@
 	autosetuprebase = always
 
 [fetch]
-	parallel = 0
 	writecommitgraph = true
+
+[commit]
+	gpgsign = true
+	verbose = true
 
 [push]
 	autosetupremote = true
 
 [pull]
 	rebase = true
+
+[rebase]
+	autosquash = true
+	autostash = true
+	stat = true
 
 [merge]
 	tool = nvimdiff
@@ -42,13 +54,6 @@
 
 [mergetool "nvimdiff"]
 	layout = "(BASE / REMOTE), MERGED"
-
-[rebase]
-	autostash = true
-
-[commit]
-	gpgsign = true
-	verbose = true
 
 [alias]
 	# Advanced aliases with full (POSIX) /bin/sh syntax.
