@@ -116,22 +116,23 @@ target_kde: (has 'plasmashell')
 target_misc:
     #!/usr/bin/env bash
     declare -a files=()
-    just has 'alacritty'             && files+=('.config/alacritty/alacritty.toml')
-    just has 'btop'                  && files+=('.config/btop/themes/termstream.theme')
-    just has 'cava'                  && files+=('.config/cava/config')
-    just has 'fastfetch'             && files+=('.config/fastfetch/config.jsonc')
-    just has 'foot'                  && files+=('.config/foot/foot.ini')
-    just has 'keepassxc' 'systemctl' && files+=('.local/share/systemd/user/keepassxc.service')
-    just has 'mpv'                   && files+=('.config/mpv/')
-    just has 'paru'                  && files+=('.config/paru/paru.conf')
-    just has 'qdirstat'              && files+=('.config/QDirStat/')
-    just has 'nheko' 'keepassxc'     && files+=('.config/autostart/nheko.desktop') # Needs DBus Secret provider
-    just has 'spotify'               && files+=('.config/autostart/spotify.desktop')
-    just has 'thunderbird'           && files+=('.config/autostart/org.mozilla.Thunderbird.desktop')
-    just has 'vorta' 'borg'          && files+=('.config/autostart/vorta.desktop')
-    just has 'wezterm'               && files+=('.config/wezterm/')
-    just has 'tmux'                  && files+=('.config/tmux/tmux.conf')
-    just has 'kwallet-query'         && files+=(
+    just has 'alacritty'                && files+=('.config/alacritty/alacritty.toml')
+    just has 'btop'                     && files+=('.config/btop/themes/termstream.theme')
+    just has 'cava'                     && files+=('.config/cava/config')
+    just has 'fastfetch'                && files+=('.config/fastfetch/config.jsonc')
+    just has 'foot'                     && files+=('.config/foot/foot.ini')
+    just has 'keepassxc' 'systemctl'    && files+=('.local/share/systemd/user/keepassxc.service')
+    just has 'mpv'                      && files+=('.config/mpv/')
+    just has 'ncdu' || just has 'ncdu2' && files+=('.config/ncdu/config')
+    just has 'paru'                     && files+=('.config/paru/paru.conf')
+    just has 'qdirstat'                 && files+=('.config/QDirStat/')
+    just has 'nheko' 'keepassxc'        && files+=('.config/autostart/nheko.desktop') # Needs DBus Secret provider
+    just has 'spotify'                  && files+=('.config/autostart/spotify.desktop')
+    just has 'thunderbird'              && files+=('.config/autostart/org.mozilla.Thunderbird.desktop')
+    just has 'vorta' 'borg'             && files+=('.config/autostart/vorta.desktop')
+    just has 'wezterm'                  && files+=('.config/wezterm/')
+    just has 'tmux'                     && files+=('.config/tmux/tmux.conf')
+    just has 'kwallet-query'            && files+=(
         '.config/kwalletrc'
         '.config/xdg-desktop-portal/portals.conf'
     )
