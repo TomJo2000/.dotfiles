@@ -1,7 +1,5 @@
-# -*- ini -*-
 [Wallet]
 First Use=false
 Enabled=false
 
-# vim: set ft=ini
-
+# vim: set ft=confini

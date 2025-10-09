@@ -1,4 +1,3 @@
-# -*- ini -*-
 # exclude everything by default
 exclude /***
 
@@ -8,5 +7,5 @@ include /.ssh/config
 include /.config/***
 include /.local/share/fonts/***
 include /documentation/***
-# vim: set ft=ini
 
+# vim: set ft=gitignore

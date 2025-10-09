@@ -1,6 +1,3 @@
-# -*- gitconfig -*-
-# This is Git's per-user configuration file.
-
 [core]
 	pager     = delta
 	fsmonitor = true

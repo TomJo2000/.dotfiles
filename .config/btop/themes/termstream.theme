@@ -1,4 +1,3 @@
-# -*- ini -*-
 # Theme: TermStream
 # By: TomIO
 
@@ -76,5 +75,4 @@ theme[temp_start]="#1DA65A"
 theme[temp_mid]="#EDBC00"
 theme[temp_end]="#D61E1C"
 
-# vim: set ft=conf
-
+# vim: set ft=confini
