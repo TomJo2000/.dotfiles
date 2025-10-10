@@ -91,10 +91,10 @@
 
 	history = log -p --
 
-[includeIf "hasconfig:remote.*.url:https://github.com/termux/**"]
+[includeIf "gitdir:*termux*/"]
 	path = termux.gitconfig
 
-[includeIf "hasconfig:remote.*.url:git@github.com:termux/**"]
+[includeIf "gitdir:*tur*/"]
 	path = termux.gitconfig
 
 [include]
