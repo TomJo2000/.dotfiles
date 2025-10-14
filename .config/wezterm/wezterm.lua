@@ -17,7 +17,6 @@ local config = {
       '+clig', -- Contextual Ligatures
       '+liga', -- Standard Ligatures
       '+mkmk', -- Mark to Mark Positioning (diacritics)
-      '+ss06', -- Slashed dollar sign [$]
     },
     ---@diagnostic enable: assign-type-mismatch
   }),
