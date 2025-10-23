@@ -1,4 +1,5 @@
 # This justfile contains all the deploy targets.
+home := home_directory()
 exclude_file := dotfiles / ".config/meta/rsync_ignore"
 
 # Load post deployment hooks.
@@ -21,8 +22,7 @@ deploy *targets='all':
 
     # Handle 'all' target
     [[ " $* " == *' all '* ]] && set -- "${TARGETS[@]}"
-    just  run_deploy "$@"
-    just post_deploy "$@"
+    just run_deploy "$@"
 
 [private]
 [positional-arguments]
@@ -70,16 +70,19 @@ run_deploy +targets:
     printf ' \e[30;47m%s\e[m' "$@"
     echo
 
-    declare -a files=()
+    declare -a FILES=()
+    declare -A HOOKS=()
     for target in "$@"; do
-        # Run the recipe for the target
-        files+=( $(just "target_${target}") )
+        # Source the recipe for the target
+        source <(just "target_${target}")
     done
 
     # Print out the list of all files we are deploying.
-    just deploy_preview "${files[@]}"
-    # This can fail if declined, that's fine
-    just deploy_files "${files[@]}" || :
+    just deploy_preview "${FILES[@]}"
+    # This can fail if declined, that's fine.
+    just deploy_files "${FILES[@]}" || exit 0
+    # But only run the post deploy hooks if the files were deployed.
+    just post_deploy "${!HOOKS[@]}"
 
 
 ### Targets
@@ -87,98 +90,94 @@ run_deploy +targets:
 [group('targets')]
 [doc('Git and Delta.')]
 target_git: (has 'git')
-    #!/usr/bin/env bash
-    declare -a files=(
+    #!/usr/bin/env cat
+    FILES+=(
         '.config/git/'
         '.config/delta.conf'
     )
-    printf '%s\n' "${files[@]}"
 
 [private]
 [group('targets')]
 [doc('KDE related.')]
 target_kde: (has 'plasmashell')
-    #!/usr/bin/env bash
-    declare -a files=(
+    #!/usr/bin/env cat
+    FILES+=(
         '.config/dolphinrc'
         '.local/share/kxmlgui5/dolphin/dolphinui.rc'
         '.config/kglobalshortcutsrc'
         '.config/klipperrc'
         '.config/krunnerrc'
         '.config/kscreenlockerrc'
+        '.config/kwalletrc'
         '.config/plasma-localerc'
+        '.config/xdg-desktop-portal/portals.conf'
     )
-    printf '%s\n' "${files[@]}"
 
 [private]
 [group('targets')]
 [doc('Random one-offs.')]
 target_misc:
-    #!/usr/bin/env bash
-    declare -a files=()
-    just has 'alacritty'                && files+=('.config/alacritty/alacritty.toml')
-    just has 'btop'                     && files+=('.config/btop/themes/termstream.theme')
-    just has 'cava'                     && files+=('.config/cava/config')
-    just has 'fastfetch'                && files+=('.config/fastfetch/config.jsonc')
-    just has 'foot'                     && files+=('.config/foot/foot.ini')
-    just has 'keepassxc' 'systemctl'    && files+=('.local/share/systemd/user/keepassxc.service')
-    just has 'mpv'                      && files+=('.config/mpv/')
-    just has 'ncdu' || just has 'ncdu2' && files+=('.config/ncdu/config')
-    just has 'paru'                     && files+=('.config/paru/paru.conf')
-    just has 'qdirstat'                 && files+=('.config/QDirStat/')
-    just has 'nheko' 'keepassxc'        && files+=('.config/autostart/nheko.desktop') # Needs DBus Secret provider
-    just has 'spotify'                  && files+=('.config/autostart/spotify.desktop')
-    just has 'thunderbird'              && files+=('.config/autostart/org.mozilla.Thunderbird.desktop')
-    just has 'vorta' 'borg'             && files+=('.config/autostart/vorta.desktop')
-    just has 'wezterm'                  && files+=('.config/wezterm/')
-    just has 'tmux'                     && files+=('.config/tmux/tmux.conf')
-    just has 'kwallet-query'            && files+=(
-        '.config/kwalletrc'
-        '.config/xdg-desktop-portal/portals.conf'
-    )
-    printf '%s\n' "${files[@]}"
+    #!/usr/bin/env cat
+    just has 'alacritty'                && { FILES+=('.config/alacritty/alacritty.toml') HOOKS[fonts]=''; }
+    just has 'btop'                     && FILES+=('.config/btop/themes/termstream.theme')
+    just has 'cava'                     && FILES+=('.config/cava/config')
+    just has 'fastfetch'                && FILES+=('.config/fastfetch/config.jsonc')
+    just has 'foot'                     && { FILES+=('.config/foot/foot.ini') HOOKS[fonts]=''; }
+    just has 'keepassxc' 'systemctl'    && FILES+=('.local/share/systemd/user/keepassxc.service')
+    just has 'mpv'                      && FILES+=('.config/mpv/')
+    just has 'ncdu' || just has 'ncdu2' && FILES+=('.config/ncdu/config')
+    just has 'nheko' 'keepassxc'        && { FILES+=('.config/autostart/nheko.desktop') HOOKS[fonts]=''; } # Needs DBus Secret provider
+    just has 'paru'                     && FILES+=('.config/paru/paru.conf')
+    just has 'qdirstat'                 && FILES+=('.config/QDirStat/')
+    just has 'spotify'                  && FILES+=('.config/autostart/spotify.desktop')
+    just has 'thunderbird'              && FILES+=('.config/autostart/org.mozilla.Thunderbird.desktop')
+    just has 'tmux'                     && { FILES+=('.config/tmux/tmux.conf') HOOKS[tmux]=''; }
+    just has 'vorta' 'borg'             && FILES+=('.config/autostart/vorta.desktop')
+    just has 'wezterm'                  && { FILES+=('.config/wezterm/') HOOKS[fonts]=''; }
 
 [private]
 [group('targets')]
 [doc('Neovim and formatter configurations')]
 target_nvim: (has 'nvim' 'git')
-    #!/usr/bin/env bash
-    declare -a files=(
+    #!/usr/bin/env cat
+    FILES+=(
         '.config/nvim/' # Config dir
         '.stylua.toml'  # Lua formatter config
         '.editorconfig' # Filetype specific formatting directives
     )
-    printf '%s\n' "${files[@]}"
+
+    HOOKS[fonts]=''
 
 [private]
 [group('targets')]
 [doc('SSH and agent service.')]
 target_ssh: (has 'ssh')
-    #!/usr/bin/env bash
+    #!/usr/bin/env cat
     # SSH config file
-    declare -a files=('.ssh/config')
+    FILES+=('.ssh/config')
     # SSH agent systemd user service
-    just has 'systemctl' && files+=('.local/share/systemd/user/ssh-agent.service')
-    printf '%s\n' "${files[@]}"
+    just has 'systemctl' && FILES+=('.local/share/systemd/user/ssh-agent.service')
+
+    HOOKS[ssh_keys]=''
 
 [private]
 [group('targets')]
 [doc('Wireguard.')]
 target_wg: (has 'wg-quick' 'resolvconf')
-    #!/usr/bin/env bash
-    declare -a files=('.config/wg/PostDown.sh')
-    printf '%s\n' "${files[@]}"
+    #!/usr/bin/env cat
+    FILES+=('.config/wg/PostDown.sh')
 
 [private]
 [group('targets')]
 [doc('Zsh and Starship prompt.')]
 target_zsh: (has 'zsh' 'git')
-    #!/usr/bin/env bash
-    declare -a files=(
+    #!/usr/bin/env cat
+    FILES+=(
         '.zshrc'       # Shell setup file
-        '.zlogout'     # Shell logout file
         '.config/zsh/' # Config dir
     )
     # Starship prompt config
-    just has 'starship' && files+=('.config/starship.toml')
-    printf '%s\n' "${files[@]}"
+    just has 'starship' && FILES+=('.config/starship.toml')
+
+    HOOKS[fonts]=''
+    HOOKS[zsh]=''
