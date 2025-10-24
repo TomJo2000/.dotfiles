@@ -1,4 +1,7 @@
 -- [[ Basic keybinds ]]
+
+local ufo = require('ufo')
+
 -- stylua: ignore
 local binds = {
   -- Moving lines
@@ -11,11 +14,17 @@ local binds = {
 
   -- Switching buffers
   { 'n', '<C-b>'  , vim.cmd.bprevious, { desc = 'Buffer [b]efore' } },
-  { 'n', '<C-n>'  , vim.cmd.bnext    , { desc = '[N]ext buffer' }   },
+  { 'n', '<C-n>'  , vim.cmd.bnext    , { desc = '[n]ext buffer' }   },
   { 'n', '<M-C-b>', vim.cmd.bfirst   , { desc = 'First buffer' }    },
   { 'n', '<M-C-n>', vim.cmd.blast    , { desc = 'Last buffer' }     },
 
-  -- dealing with line wrapping
+  -- Dealing with folds (remaps some default fold binds)
+  { 'n', 'zR', ufo.openAllFolds,         { desc = 'Open all folds' }  },
+  { 'n', 'zM', ufo.closeAllFolds,        { desc = 'Close all folds' } },
+  { 'n', 'zr', ufo.openFoldsExceptKinds, { desc = 'Fold less' }       },
+  { 'n', 'zm', ufo.closeFoldsWith,       { desc = 'Fold more' }       },
+
+  -- Dealing with line wrapping
   { { 'n', 'v' } , 'k'     , [[v:count == 0 ? 'gk' : 'k']], { expr = true, silent = true } },
   { { 'n', 'v' } , 'j'     , [[v:count == 0 ? 'gj' : 'j']], { expr = true, silent = true } },
   { { 'n', 'v' } , '<Up>'  , [[v:count == 0 ? 'gk' : 'k']], { expr = true, silent = true } },
