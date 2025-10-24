@@ -3,9 +3,7 @@
 -- Credit: glepnir
 -- Author: shadmansaleh
 
--- Color table for highlights
----@type onedark.colors
-local theme = require('plugins.onedark').colors
+local theme = require('onedark.colors')
 
 local conditions = {
   ---@return boolean
@@ -26,7 +24,9 @@ local conditions = {
 
 local custom = {
   -- buffers = require('plugins.lualine.buffers'),
-  filename = require('plugins.lualine.filename'),
+  filename = require('config.lualine.filename'),
+  lsp = require('config.lualine.lsp'),
+  treesitter = require('config.lualine.treesitter'),
 }
 
 -- Config
@@ -155,53 +155,12 @@ focused.left = {
     '%=',
   },
   { -- Treesitter parser
-    function()
-      local buf_ft = vim.bo[0].ft
-      local ts_parser = vim.treesitter.get_parser():lang()
-      local ft_icon, _ = require('nvim-web-devicons').get_icon_color_by_filetype(buf_ft)
-      local ret = ('%s %s'):format(ft_icon and ft_icon .. ' ' or '', buf_ft)
-      if ts_parser ~= nil then
-        local parser_info = vim.treesitter.language.inspect(ts_parser)
-        -- Starting at ABI version 15 TS parsers include version metadata
-        -- Display it if available.
-        local parser_version = ''
-        if parser_info.abi_version > 14 then
-          parser_version = ('(%d:%d.%d.%d)'):format(
-            parser_info.abi_version,
-            parser_info.metadata.major_version or '?',
-            parser_info.metadata.minor_version or '?',
-            parser_info.metadata.patch_version or '?'
-          )
-        end
-        ret = ('%s %s%s'):format(ft_icon or '', ts_parser, parser_version)
-      end
-      return ret
-    end,
-    color = function()
-      -- auto change color according to the filetype
-      local _, ft_color = require('nvim-web-devicons').get_icon_color_by_filetype(vim.bo[0].ft)
-      return { fg = ft_color or '#FFFFFF', gui = 'bold' }
-    end,
+    custom.treesitter.status,
+    color = custom.treesitter.color,
   },
   { -- Lsp server name.
-    function()
-      local clients = vim.lsp.get_clients({ bufnr = 0 })
-
-      if vim.tbl_isempty(clients) then
-        return ''
-      end
-      for _, client in ipairs(clients) do
-        if vim.tbl_contains(client.config['filetypes'], vim.bo[0].ft) then
-          return ('/%s '):format(client.name)
-        end
-      end
-      return ''
-    end,
-    color = function()
-      -- auto change color according to the filetype
-      local _, ft_color = require('nvim-web-devicons').get_icon_color_by_filetype(vim.bo[0].ft)
-      return { fg = ft_color or '#FFFFFF', gui = 'bold' }
-    end,
+    custom.lsp.status,
+    color = custom.lsp.color,
   },
 }
 
@@ -305,32 +264,12 @@ unfocused.left = {
     '%=',
   },
   { -- Treesitter parser
-    function()
-      local buf_ft = vim.bo[0].ft
-      local ts_parser = vim.treesitter.language.get_lang(buf_ft)
-      if ts_parser ~= nil then
-        return (' %s'):format(ts_parser)
-      end
-    end,
-    color = { fg = '#ffffff', gui = 'bold' },
+    custom.treesitter.status,
+    color = custom.treesitter.color,
   },
   { -- Lsp server name.
-    function()
-      local buf_ft = vim.bo[0].ft
-      local clients = vim.lsp.get_clients()
-
-      if next(clients) == nil then
-        return ''
-      end
-      for _, client in ipairs(clients) do
-        local filetypes = client.config['filetypes']
-        if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-          return ('/%s '):format(client.name)
-        end
-      end
-      return ''
-    end,
-    color = { fg = '#ffffff', gui = 'bold' },
+    custom.lsp.status,
+    color = custom.lsp.color,
   },
 }
 

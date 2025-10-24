@@ -9,5 +9,8 @@ vim.fn.setreg('/', '')
 
 vim.diagnostic.config({ update_in_insert = true })
 
+--[[ Lualine ]]
+require('lualine').setup(require('config.lualine'))
+
 --[[ Hydra bindings ]]
 require('config.hydra')
