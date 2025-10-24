@@ -168,13 +168,15 @@ main # >< Run `main()`
 # this way we just don't have to eval it.
 # shellcheck source=/dev/null
 if source <(starship init zsh --print-full-init); then
-    [[ "$TERM" == 'foot' ]] && {
-        function prompt_marker() {
-            # shellcheck disable=SC1003 # ?? this \\ is a u+009C string terminator
-            printf '\e]133;A\e\\'
-        }
-        precmd_functions+=('prompt_marker')
-    }
+    case "$TERM" in
+        'wezterm'|'foot')
+            function prompt_marker() {
+                # shellcheck disable=SC1003 # ?? this \\ is a u+009C string terminator
+                printf '\e]133;A\e\\'
+            }
+            precmd_functions+=('prompt_marker')
+        ;;
+    esac
 else
     printf '%s\n' "Error: failed to initialize starship prompt" # Print error message if starship failed to initialize
 fi
