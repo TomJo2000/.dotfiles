@@ -6,7 +6,6 @@ set quiet := true
 # variables
 
 dotfiles := justfile_directory()
-home := home_directory()
 
 [private]
 default:
@@ -18,23 +17,41 @@ import '.config/meta/deploy.just'
 
 # Placeholder
 [group('utils')]
+[private]
 diff DIRS:
     echo "diff {{ DIRS }}"
 
-# Fetch and install the latest version of the Hasklig NFM Fonts.
+[doc('Fetch and install the latest version of the Hasklig NFM Fonts.')]
 [group('utils')]
 fonts: (has 'bash' 'git' 'tail' 'curl' 'fc-cache')
     "{{ dotfiles }}/.config/meta/fetch_fonts.sh"
 
-# Update the stats section of the README
+[doc('Update the stats section of the README.')]
+[group('utils')]
 stats: (has 'bash' 'git' 'scc' 'awk' 'sed')
     "{{ dotfiles }}/.config/meta/readme_stats.sh"
 
-# check if the given dependencies are available in the $PATH
+[doc('Lint shebang recipes')]
 [group('utils')]
 [positional-arguments]
 [private]
-[unix]
+lint *targets: (has 'bash' 'shellcheck')
+    #!/usr/bin/env bash
+    declare -a justfiles=(
+        "{{ justfile() }}"
+        "{{ dotfiles }}/.config/meta/deploy.just"
+        "{{ dotfiles }}/.config/meta/post-deploy.just"
+    )
+
+    for file in "${justfiles[@]}"; do
+        while read -r line; do
+            :
+        done < "$file"
+    done
+
+[doc('Check if the given dependencies are available in the $PATH.')]
+[group('utils')]
+[positional-arguments]
 has +prog:
     #!/usr/bin/env sh
     err=0

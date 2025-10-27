@@ -2,12 +2,13 @@
 home := home_directory()
 exclude_file := dotfiles / ".config/meta/rsync_ignore"
 
-# Load post deployment hooks.
-import 'post-deploy.just'
+# Post deployment hooks.
+import 'deploy_hooks.just'
 
 # Deploy files
+[doc('Deploy specified targets. (This is usually what you want)')]
+[group('deploy')]
 [positional-arguments]
-[doc('Deploy specified targets.')]
 deploy *targets='all':
     #!/usr/bin/env bash
     declare -a TARGETS=(
@@ -22,10 +23,34 @@ deploy *targets='all':
 
     # Handle 'all' target
     [[ " $* " == *' all '* ]] && set -- "${TARGETS[@]}"
-    just run_deploy "$@"
+    # Print out our list of targets
+    printf '%s' 'Deploying targets:'
+    printf ' \e[30;47m%s\e[m' "$@"
+    echo
 
-[private]
+    declare -a FILES=()
+    declare -A HOOKS=()
+    for target in "$@"; do
+        # Check that this is a valid target.
+        [[ " ${TARGETS[*]} " == *" $target "* ]] || {
+            printf "\e[31m[  DEPLOY]: Unknown target '%s'\e[m\n" "$target"
+            continue
+        }
+        # Source the recipe for the target
+        source <(just "target_${target}")
+    done
+
+    # Print out the list of all files we are deploying.
+    just deploy_preview "${FILES[@]}"
+    # This can fail if declined, that's fine just exit before we do the hooks.
+    just deploy_files "${FILES[@]}" || exit 0
+    # But only run the post deploy hooks if the files were deployed.
+    just deploy_hooks "${!HOOKS[@]}"
+
+[doc('Show a preview of the files that are about to be deployed')]
+[group('deploy')]
 [positional-arguments]
+[private]
 deploy_preview +files:
     #!/usr/bin/env bash
     declare -a args=(
@@ -42,9 +67,10 @@ deploy_preview +files:
     rsync "${args[@]}" < <( printf '%s\0' "$@")
     printf '\n\e[33m[PREVIEW]: Deploying to \e[1;34m%s\e[m\n' "{{ home }}"
 
-[private]
+[confirm('Are you sure you want to deploy these files? (y/N)')]
+[doc('Deploy the previewed set of files.')]
+[group('deploy')]
 [positional-arguments]
-[confirm("Are you sure you want to deploy these files? (y/N)")]
 deploy_files +files:
     #!/usr/bin/env bash
     declare -a args=(
@@ -59,34 +85,7 @@ deploy_files +files:
     )
     rsync "${args[@]}" < <( printf '%s\0' "$@")
 
-# check if the given dependencies are available in the $PATH
-[unix]
-[private]
-[positional-arguments]
-run_deploy +targets:
-    #!/usr/bin/env bash
-    # Print out our list of targets
-    printf '%s' 'Deploying targets:'
-    printf ' \e[30;47m%s\e[m' "$@"
-    echo
-
-    declare -a FILES=()
-    declare -A HOOKS=()
-    for target in "$@"; do
-        # Source the recipe for the target
-        source <(just "target_${target}")
-    done
-
-    # Print out the list of all files we are deploying.
-    just deploy_preview "${FILES[@]}"
-    # This can fail if declined, that's fine.
-    just deploy_files "${FILES[@]}" || exit 0
-    # But only run the post deploy hooks if the files were deployed.
-    just post_deploy "${!HOOKS[@]}"
-
-
 ### Targets
-[private]
 [group('targets')]
 [doc('Git and Delta.')]
 target_git: (has 'git')
@@ -96,7 +95,6 @@ target_git: (has 'git')
         '.config/delta.conf'
     )
 
-[private]
 [group('targets')]
 [doc('KDE related.')]
 target_kde: (has 'plasmashell')
@@ -113,7 +111,6 @@ target_kde: (has 'plasmashell')
         '.config/xdg-desktop-portal/portals.conf'
     )
 
-[private]
 [group('targets')]
 [doc('Random one-offs.')]
 target_misc:
@@ -123,7 +120,7 @@ target_misc:
     just has 'cava'                     && FILES+=('.config/cava/config')
     just has 'fastfetch'                && FILES+=('.config/fastfetch/config.jsonc')
     just has 'foot'                     && { FILES+=('.config/foot/foot.ini') HOOKS[fonts]=''; }
-    just has 'keepassxc' 'systemctl'    && FILES+=('.local/share/systemd/user/keepassxc.service')
+    just has 'keepassxc' 'systemctl'    && { FILES+=('.local/share/systemd/user/keepassxc.service') HOOKS[reload_systemd]=''; }
     just has 'mpv'                      && FILES+=('.config/mpv/')
     just has 'ncdu' || just has 'ncdu2' && FILES+=('.config/ncdu/config')
     just has 'nheko' 'keepassxc'        && { FILES+=('.config/autostart/nheko.desktop') HOOKS[fonts]=''; } # Needs DBus Secret provider
@@ -135,9 +132,8 @@ target_misc:
     just has 'vorta' 'borg'             && FILES+=('.config/autostart/vorta.desktop')
     just has 'wezterm'                  && { FILES+=('.config/wezterm/') HOOKS[fonts]=''; }
 
-[private]
 [group('targets')]
-[doc('Neovim and formatter configurations')]
+[doc('Neovim and formatter configurations.')]
 target_nvim: (has 'nvim' 'git')
     #!/usr/bin/env cat
     FILES+=(
@@ -148,26 +144,27 @@ target_nvim: (has 'nvim' 'git')
 
     HOOKS[fonts]=''
 
-[private]
 [group('targets')]
-[doc('SSH and agent service.')]
+[doc('SSH and ssh-agent service.')]
 target_ssh: (has 'ssh')
     #!/usr/bin/env cat
     # SSH config file
     FILES+=('.ssh/config')
     # SSH agent systemd user service
-    just has 'systemctl' && FILES+=('.local/share/systemd/user/ssh-agent.service')
+    just has 'systemctl' && {
+        FILES+=('.local/share/systemd/user/ssh-agent.service')
+        HOOKS[reload_systemd]=''
+    }
+
 
     HOOKS[ssh_keys]=''
 
-[private]
 [group('targets')]
 [doc('Wireguard.')]
 target_wg: (has 'wg-quick' 'resolvconf')
     #!/usr/bin/env cat
     FILES+=('.config/wg/PostDown.sh')
 
-[private]
 [group('targets')]
 [doc('Zsh and Starship prompt.')]
 target_zsh: (has 'zsh' 'git')
