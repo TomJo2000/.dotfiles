@@ -110,6 +110,11 @@ target_kde: (has 'plasmashell')
         '.config/plasma-localerc'
         '.config/xdg-desktop-portal/portals.conf'
     )
+    # Systemd user environment file
+    just has 'systemctl' && {
+        FILES+=('.config/environment.d/kwin_overlay_planes.conf')
+        HOOKS[reload_systemd]=''
+    }
 
 [group('targets')]
 [doc('Random one-offs.')]
