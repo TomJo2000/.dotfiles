@@ -23,6 +23,7 @@ format = """\
     $hostname\
     $localip\
     [](fg:col_info bg:col_text_dark)\
+    $os\
     $shell\
     $directory\
     $git_branch\
@@ -331,19 +332,17 @@ ssh_only = true
 style = "fg:col_text bg:col_user"
 format = "[\\($localipv4\\)]($style)"
 
-# [os]
-# disabled = false
-# style = "fg:col_text bg:col_user"
-# format = "[$symbol ]($style)"
+[os]
+disabled = false
+style = "fg:col_info bg:col_text_dark"
+format = "[$symbol]($style)"
 
-# [os.symbols]
-# Android = "󰀲"
-# Arch = ""
-# Debian = ""
-# Fedora = ""
-# Raspbian = ""
-# Linux = ""
-# Windows = ""
+[os.symbols]
+Android = "[󰀲](fg:#A4C638 bg:col_text_dark)"
+Arch = "[](fg:#227CA5 bg:col_text_dark)"
+Fedora = "[](fg:#4276B9 bg:col_text_dark)"
+Linux = "[](fg:#FDD037 bg:col_text_dark)"
+Windows = "[](fg:#1F77D2 bg:col_text_dark)"
 
 [shell]
 disabled = false
