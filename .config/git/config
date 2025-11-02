@@ -56,23 +56,16 @@
 	layout = "(BASE / REMOTE), MERGED"
 
 [alias]
-	# Advanced aliases with full (POSIX) /bin/sh syntax.
-	# https://www.atlassian.com/blog/git/advanced-git-aliases
+	# Alias functions live in a separate bash script.
 
 	# show the last <n> (1 by default) commits
-	news = "!f() { git log -w -p HEAD~"${1:-1}".. "${@:2}"; }; f"
-
-	# fetch one or more GitHub PRs as local branches
-	pr-fetch = "!f() { "$HOME/.config/git/pr-fetch.sh" "$@"; }; f"
+	news = "!f() { "$HOME/.config/git/aliases.sh" news "$@"; }; f"
 
 	# show information and diffs for staged files with full colorization
-	staged = "!f() { git -c color.ui=always status "$@" ; git -P diff --staged --shortstat "$@"; git -P diff --staged --ignore-space-change "$@"; }; f -- "$@" | delta"
-			#               ^--- In Git versions before 2.20.1 (from Dec. 15, 2018)
-			#                    This needs to be color.status
-			# Also why the hell are you running such an ancient git version?
+	staged = "!f() { "$HOME/.config/git/aliases.sh" staged "$@"; }; f"
 
 	# same as above but for unstaged changes
-	unstaged = "!f() { git -c color.ui=always status -u "$@"; git -P diff --shortstat "$@"; git -P diff --ignore-space-change "$@"; }; f -- "$@" | delta"
+	unstaged = "!f() { "$HOME/.config/git/aliases.sh" unstaged "$@"; }; f"
 
 	# Show the <n> (20 by default) most edited files
 	# Written by Corey Haines
@@ -80,14 +73,10 @@
 	# Simplified and made extensile by TomIO
 	# Example, show the 10 most committed to files in the last month:
 	# ~$ git churn 10 --since='1 month ago'
-	churn = "!f() { git log --all --find-renames --find-copies --name-only --format='format:' \"${@:2}\" \
-		| sort \
-		| grep -v '^$' \
-		| uniq -c \
-		| awk '{print $1 \"\t\" $2}' \
-		| sort -g \
-		| tail -n "${1:-20}"; \
-	}; f"
+	churn = "!f() { "$HOME/.config/git/aliases.sh" churn "$@"; }; f"
+
+	# fetch one or more GitHub PRs as local branches
+	pr-fetch = "!f() { "$HOME/.config/git/pr-fetch.sh" "$@"; }; f"
 
 	history = log -p --
 
