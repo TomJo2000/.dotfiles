@@ -43,21 +43,23 @@ require('lazy').setup({
     event = 'VeryLazy',
     opts = require('plugins.folds'),
     init = function()
+      vim.o.foldenable = true
       vim.o.foldcolumn = '1'
       -- UFO requires a high base foldlevel to work.
-      vim.o.foldlevel = 32
-      vim.o.foldlevelstart = 32
-      vim.o.foldenable = true
+      vim.o.foldlevel = 2 ^ 5
+      vim.o.foldlevelstart = 2 ^ 5
       -- Default to treesitter folding
       vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
       -- Fold decorations
       vim.opt.fillchars = {
         fold = ' ',
         foldclose = '',
-        -- foldinner = ' ', ---@since Neovim 0.11.5
         foldopen = '',
         foldsep = ' ',
       }
+      if vim.fn.has('nvim-0.12') then
+        vim.opt.fillchars.foldinner = ' '
+      end
     end,
   },
 
