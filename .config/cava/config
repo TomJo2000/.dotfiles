@@ -46,8 +46,8 @@ higher_cutoff_freq = 400
 #
 sample_rate = 192000
 sample_bits = 16
-; channels = 2
-; autoconnect = 2
+# channels = 2
+# autoconnect = 2
 
 
 [output]
@@ -83,7 +83,7 @@ orientation = bottom
 # set 'reverse' to 1 to display frequencies the other way around.
 channels = mono
 mono_option = average
-; reverse = 0
+# reverse = 0
 
 # set label on bars on the x-axis. Can be 'frequency' or 'none'. Default: 'none'
 # 'frequency' displays the lower cut off frequency of the bar above.
@@ -99,18 +99,18 @@ alacritty_sync = 0
 vertex_shader = pass_through.vert
 fragment_shader = bar_spectrum.frag
 
-; for glsl output mode, keep rendering even if no audio
-; continuous_rendering = 0
+# for glsl output mode, keep rendering even if no audio
+# continuous_rendering = 0
 
 # disable console blank (screen saver) in tty
 # (Not supported on FreeBSD)
-; disable_blanking = 0
+# disable_blanking = 0
 
 # show a flat bar at the bottom of the screen when idle, 1 = on, 0 = off
-; show_idle_bar_heads = 1
+# show_idle_bar_heads = 1
 
 # show waveform instead of frequency spectrum, 1 = on, 0 = off
-; waveform = 0
+# waveform = 0
 
 [color]
 
@@ -118,12 +118,12 @@ fragment_shader = bar_spectrum.frag
 # Or defined by hex code '#xxxxxx' (hex code must be within ''). User defined colors requires
 # a terminal that can change color definitions such as Gnome-terminal or rxvt.
 # default is to keep current terminal color
-; background = default
-; foreground = default
+# background = default
+# foreground = default
 
 # SDL and sdl_glsl only support hex code colors, these are the default:
-; background = '#111111'
-; foreground = '#33ffff'
+# background = '#111111'
+# foreground = '#33ffff'
 
 
 # Gradient mode, only hex defined colors are supported,
@@ -153,10 +153,10 @@ noise_reduction = 60
 # This one is tricky. You can have as much keys as you want.
 # Remember to uncomment more than one key! More keys = more precision.
 # Look at readme.md on github for further explanations and examples.
-; 1 = 1
-; 2 = 1
-; 3 = 1
-; 4 = 1
-; 5 = 1
+# 1 = 1
+# 2 = 1
+# 3 = 1
+# 4 = 1
+# 5 = 1
 
 # vim: set ft=confini et ts=4 sw=4 ff=unix
