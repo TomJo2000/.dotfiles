@@ -1,0 +1,4 @@
+# Make all files show up in the languages section
+* linguist-detectable
+# Specfic detection overrides
+delta.conf linguist-language=gitconfig
