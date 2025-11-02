@@ -3,7 +3,7 @@
 	fsmonitor = true
 
 [user]
-	email      = tomjo00@web.de
+	email      = tom@termux.dev
 	name       = TomIO
 	signingkey = ~/.ssh/keys/external/ed25519_GitHub.pub
 
@@ -77,14 +77,6 @@
 
 	# fetch one or more GitHub PRs as local branches
 	pr-fetch = "!f() { "$HOME/.config/git/pr-fetch.sh" "$@"; }; f"
-
-	history = log -p --
-
-[includeIf "gitdir:*termux*/"]
-	path = termux.gitconfig
-
-[includeIf "gitdir:*tur*/"]
-	path = termux.gitconfig
 
 [include]
 	# Delta config
