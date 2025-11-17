@@ -338,14 +338,8 @@ require('lazy').setup({
 
   { -- Theme inspired by Atom
     'navarasu/onedark.nvim',
-    priority = 900, -- make sure the colorscheme is loaded immediately
-    dependencies = 'rktjmp/lush.nvim',
-    config = function()
-      ---@type onedark.opts
-      local opts = require('plugins.onedark').opts
-      require('onedark').setup(opts)
-      vim.cmd.colorscheme('onedark')
-    end,
+    -- dependencies = 'rktjmp/lush.nvim',
+    opts = require('plugins.onedark').opts,
   },
 
   { -- Git diffs in the status column

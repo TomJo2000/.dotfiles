@@ -1,3 +1,6 @@
+-- [[ Colorscheme ]]
+vim.cmd.colorscheme('onedark')
+
 -- [[ Telescope ]]
 vim.tbl_map(function(bind)
   vim.keymap.set(unpack(bind))
