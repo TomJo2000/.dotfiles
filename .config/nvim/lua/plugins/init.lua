@@ -478,20 +478,6 @@ require('lazy').setup({
     },
   },
 
-  { -- Incremental renaming
-    'smjonas/inc-rename.nvim',
-    event = 'CmdUndefined',
-    cmd = 'Rename',
-    opts = { cmd_name = 'Rename' },
-    keys = {
-      {
-        '<leader>rn',
-        vim.cmd.Rename,
-        { mode = { 'n', 'v' }, desc = 'Incremental [r]e[n]ame' },
-      },
-    },
-  },
-
   { -- Preview :{number} jumps
     'nacro90/numb.nvim',
     event = 'VeryLazy',
