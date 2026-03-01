@@ -100,12 +100,6 @@ target_git: (has 'git')
 target_kde: (has 'plasmashell')
     #!/usr/bin/env cat
     FILES+=(
-        '.config/dolphinrc'
-        '.local/share/kxmlgui5/dolphin/dolphinui.rc'
-        '.config/kglobalshortcutsrc'
-        '.config/klipperrc'
-        '.config/krunnerrc'
-        '.config/kscreenlockerrc'
         '.config/kwalletrc'
         '.config/plasma-localerc'
         '.config/xdg-desktop-portal/portals.conf'
