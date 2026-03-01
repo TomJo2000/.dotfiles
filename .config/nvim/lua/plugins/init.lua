@@ -450,13 +450,6 @@ require('lazy').setup({
     opts = require('plugins.mini.surround').opts,
   },
 
-  { -- Per project file shortcuts
-    'ThePrimeagen/harpoon',
-    lazy = true,
-    branch = 'harpoon2',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-  },
-
   { -- Ergonomic window movements
     'sindrets/winshift.nvim',
     cmd = 'WinShift',
