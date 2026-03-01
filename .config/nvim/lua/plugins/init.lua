@@ -405,10 +405,23 @@ require('lazy').setup({
   },
 
   { -- Hex color highlighting
-    'NvChad/nvim-colorizer.lua',
+    'catgoose/nvim-colorizer.lua',
     event = { 'BufReadPre', 'BufNewFile' },
     opts = {
-      user_default_options = { names = false },
+      lazy_load = true,
+      options = {
+        parsers = {
+          names = { enable = false },
+          -- stylua: ignore
+          hex = {
+            rgb      = false, -- #ABC
+            rgba     = false, -- #ABCD        Color test
+            rrggbb   = true,  -- #F42069      #000000 #000080 #0000ff #008000 #008080 #0080ff #00ff00 #00ff80 #00ffff
+            rrggbbaa = true,  -- #0123ABCD    #800000 #800080 #8000ff #808000 #808080 #8080ff #80ff00 #80ff80 #80ffff
+            aarrggbb = true,  -- 0xDEADBEEF   #ff0000 #ff0080 #ff00ff #ff8000 #ff8080 #ff80ff #ffff00 #ffff80 #ffffff
+          },
+        },
+      },
       -- stylua: ignore
       buftypes = {
         '*',
@@ -419,10 +432,6 @@ require('lazy').setup({
       },
     },
   },
-  -- Hex test:
-  -- #000000 #000080 #0000ff #008000 #008080 #0080ff #00ff00 #00ff80 #00ffff
-  -- #800000 #800080 #8000ff #808000 #808080 #8080ff #80ff00 #80ff80 #80ffff
-  -- #ff0000 #ff0080 #ff00ff #ff8000 #ff8080 #ff80ff #ffff00 #ffff80 #ffffff
 
   { -- Code minimap
     'echasnovski/mini.map',
