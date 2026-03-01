@@ -3,7 +3,7 @@
 -- Credit: glepnir
 -- Author: shadmansaleh
 
-local theme = require('onedark.colors')
+local theme = package.loaded['onedark.colors']
 
 local conditions = {
   ---@return boolean
@@ -22,24 +22,24 @@ local conditions = {
   end,
 }
 
-local custom = {
-  -- buffers = require('plugins.lualine.buffers'),
+local modules = {
   filename = require('config.lualine.filename'),
   lsp = require('config.lualine.lsp'),
   treesitter = require('config.lualine.treesitter'),
+  winbar = require('config.lualine.winbar'),
 }
 
 -- Config
 local config = {
   options = {
-    theme = 'onedark',
+    theme = vim.g.colors_name,
     always_divide_middle = false,
     globalstatus = true, -- one statusline to rule them all.
     component_separators = '',
     section_separators = '',
     icons_enabled = true,
     padding = { left = 0, right = 0 },
-    refresh = { statusline = 150, tabline = 150, winbar = 150 },
+    refresh = { statusline = 150, tabline = 150, winbar = 150 }, -- ms
     disabled_filetypes = { -- Filetypes to disable lualine for.
       statusline = {}, -- only ignores the ft for statusline.
       winbar = {}, -- only ignores the ft for winbar.
@@ -49,10 +49,10 @@ local config = {
   },
   -- stylua: ignore
   sections = {
-    -- these are to remove the defaults
+    -- These are to remove the defaults
     lualine_a = {}, lualine_b = {},
     lualine_y = {}, lualine_z = {},
-    -- These will be filled later
+    -- These will be filled below
     lualine_c = {}, lualine_x = {},
     winbar = {},
   },
@@ -136,7 +136,7 @@ focused.left = {
     padding = {},
   },
   { -- File name, with changed formatting
-    custom.filename,
+    modules.filename,
     color = { fg = theme.green },
     padding = { right = 1 },
   },
@@ -155,18 +155,18 @@ focused.left = {
     '%=',
   },
   { -- Treesitter parser
-    custom.treesitter.status,
-    color = custom.treesitter.color,
+    modules.treesitter.status,
+    color = modules.treesitter.color,
   },
   { -- Lsp server name.
-    custom.lsp.status,
-    color = custom.lsp.color,
+    modules.lsp.status,
+    color = modules.lsp.color,
   },
 }
 
 -- Add components to right sections
 focused.right = {
-  { -- search count with working total
+  { -- search count and total
     function()
       local count = vim.fn.searchcount({ maxcount = 0 })
       return count.incomplete > 0 and '?/?' -- unfinished search
@@ -245,85 +245,8 @@ focused.right = {
   },
 }
 
-local unfocused = {}
-
-unfocused.left = {
-  { -- File size (also controls save indicator)
-    'filesize',
-    cond = conditions.buffer_not_empty,
-    color = { fg = theme.cyan },
-    padding = { right = 1 },
-  },
-  { -- File name, with changed formatting
-    custom.filename,
-    color = { fg = theme.green },
-    padding = { right = 1 },
-  },
-  { -- Insert mid section. You can make any number of sections in neovim :)
-    -- for lualine it's any number greater than 2
-    '%=',
-  },
-  { -- Treesitter parser
-    custom.treesitter.status,
-    color = custom.treesitter.color,
-  },
-  { -- Lsp server name.
-    custom.lsp.status,
-    color = custom.lsp.color,
-  },
-}
-
-unfocused.right = {
-  { -- Git diff
-    'diff',
-    symbols = { added = '', modified = '󰓢', removed = '' },
-    diff_color = {
-      added = { fg = theme.green },
-      modified = { fg = theme.orange },
-      removed = { fg = theme.red },
-    },
-    cond = conditions.hide_in_width,
-    padding = { left = 1 },
-  },
-}
-
-local winbar = {
-  lualine_c = {
-    { -- open buffers
-      'buffers',
-      icons_enabled = false,
-      show_modified_status = false,
-      fmt = function(str, context) -- icons always have a space by default, if we add them ourselves, we can change that.
-        local icon, _ = require('nvim-web-devicons').get_icon(context.filetype)
-        return ('%s%s'):format(icon or '', str)
-      end,
-      max_length = 0, -- Maximum width of buffers component,
-      buffers_color = {
-        active = { fg = theme.bg_blue, bg = theme.bg1 }, -- Color for active buffer.
-        inactive = { fg = theme.grey, bg = theme.bg0 }, -- Color for inactive buffer.
-      },
-      filetype_names = {
-        alpha = 'Alpha',
-        fzf = 'FZF',
-        TelescopePrompt = 'Telescope',
-      },
-      padding = {},
-    },
-    { -- Breadcrumbs
-      'navic',
-      color_correction = 'static',
-    },
-    { -- If there is nothing after the navic module the background color doesn't work on it.
-      -- I don't know why, and I frankly don't care.
-      '%=',
-    },
-  },
-}
-
 config.sections.lualine_c = focused.left
 config.sections.lualine_x = focused.right
-config.inactive_sections.lualine_c = unfocused.left
-config.inactive_sections.lualine_x = unfocused.right
-config.winbar = winbar
+config.winbar = modules.winbar
 
 return config

@@ -4,8 +4,9 @@ local get_icon_and_color = require('nvim-web-devicons').get_icon_color_by_filety
 
 M.status = function()
   local buf_ft = vim.bo[0].ft
-  -- vim.treesitter.highlighter is a private part of the API
-  -- Not happy about using it here.
+  -- vim.treesitter.highlighter is a private submodule,
+  -- but this is the same method used to check highlighter status
+  -- that `vim.treesitter.stop()` uses.
   local ts_highlighting = vim.treesitter.highlighter.active[vim.fn.bufnr()]
   local ts_parser = vim.treesitter.get_parser():lang()
   local ft_icon, _ = get_icon_and_color(buf_ft)

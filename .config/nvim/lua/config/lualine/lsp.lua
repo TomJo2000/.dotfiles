@@ -6,10 +6,8 @@ M.status = function()
   local clients, ret, lsp_version = vim.lsp.get_clients({ bufnr = 0 }), '', nil
 
   for _, client in ipairs(clients) do
-    if vim.tbl_contains(client.config['filetypes'], vim.bo[0].ft) then
-      lsp_version = ('(%s)'):format(vim.tbl_get(client, 'server_info', 'version'))
-      ret = ('%s%s%s'):format(ret .. ', ', client.name, lsp_version)
-    end
+    lsp_version = ('(%s)'):format(vim.tbl_get(client, 'server_info', 'version'))
+    ret = ('%s%s%s'):format(ret .. ', ', client.name, lsp_version)
   end
 
   return ret ~= '' and ('/%s '):format(ret:sub(3)) or ''

@@ -328,12 +328,10 @@ require('lazy').setup({
 
   { -- There are way to many statusline plugins, we're using this one.
     'nvim-lualine/lualine.nvim',
-    event = 'VeryLazy',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'SmiteshP/nvim-navic',
     },
-    opts = require('plugins.lualine'),
   },
 
   { -- Theme inspired by Atom
