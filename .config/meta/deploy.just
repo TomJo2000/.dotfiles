@@ -122,7 +122,7 @@ target_misc:
     just has 'keepassxc' 'systemctl'    && { FILES+=('.local/share/systemd/user/keepassxc.service') HOOKS[reload_systemd]=''; }
     just has 'mpv'                      && FILES+=('.config/mpv/')
     just has 'ncdu' || just has 'ncdu2' && FILES+=('.config/ncdu/config')
-    just has 'nheko' 'keepassxc'        && { FILES+=('.config/autostart/nheko.desktop') HOOKS[fonts]=''; } # Needs DBus Secret provider
+    just has 'fluffychat' 'keepassxc'   && FILES+=('.config/autostart/fluffychat.desktop') # Needs DBus Secret provider
     just has 'paru'                     && FILES+=('.config/paru/paru.conf')
     just has 'qdirstat'                 && FILES+=('.config/QDirStat/')
     just has 'spotify'                  && FILES+=('.config/autostart/spotify.desktop')

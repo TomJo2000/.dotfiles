@@ -1,0 +1,12 @@
+[Desktop Entry]
+Categories=Network;InstantMessaging;Chat;MatrixClient
+Comment=The cutest instant messenger in the [matrix]
+Exec=fluffychat
+Icon=fluffychat
+Name=FluffyChat
+SingleMainWindow=true
+StartupNotify=false
+StartupWMClass=chat.fluffy.fluffychat
+Terminal=false
+Type=Application
+X-Purism-FormFactor=Workstation;Mobile;
