@@ -56,10 +56,13 @@
 	layout = "(BASE / REMOTE), MERGED"
 
 [alias]
-	# Alias functions live in a separate bash script.
+	# The alias functions live in the separate 'aliases.sh' Bash script.
 
 	# show the last <n> (1 by default) commits
 	news = "!f() { "$HOME/.config/git/aliases.sh" news "$@"; }; f"
+
+	# Sorts files by commit recency.
+	age = "!f() { "$HOME/.config/git/aliases.sh" age "$@"; }; f"
 
 	# show information and diffs for staged files with full colorization
 	staged = "!f() { "$HOME/.config/git/aliases.sh" staged "$@"; }; f"

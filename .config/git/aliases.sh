@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC2034 # Used by `delta` command in functions
 readonly DELTA_PAGER='less -R -f /dev/stdin'
-readonly -a aliases=('news' 'staged' 'unstaged' 'churn')
+readonly -a aliases=('age' 'churn' 'news' 'staged' 'unstaged')
 
 # show the last <n> (1 by default) commits
 news() {
@@ -56,6 +56,29 @@ churn() {
     | tail -n "${1:-20}"
 }
 
+# Sort the passed in files by commit recency.
+age() {
+    (( $# )) || {
+        echo "Usage: 'git age [file...]'"
+        return 1
+    } >&2
+
+    local i=0 line
+    local -a files=()
+
+    while read -r line; do
+        files+=("$line")
+        # Print out a running tally.
+        printf '\e[1K\rScanning packages - %d: %s' "$((++i))" "${files[-1]}"
+    done < <({
+        xargs -I"{}" -0 -P"$(nproc)" -n1 < <(printf '%s\0' "$@") \
+        git -P log -1 --date=short --format="%ad {}" -- "{}"
+    } 2> /dev/null)
+
+    printf '\e[1K\n'
+    sort -rn < <(printf '%s\n' "${files[@]}")
+    printf '\nFinished scanning %d files.\n' "${#files[@]}"
+}
 
 # These are not to be changed externally.
 readonly -f "${aliases[@]}"
