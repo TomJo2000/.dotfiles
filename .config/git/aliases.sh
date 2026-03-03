@@ -11,22 +11,33 @@ news() {
 
 # show information and diffs for staged files with full colorization
 staged() {
+    local del
+    local -a MODE=('--staged') removed=()
+
+    # If this function was called from git unstaged
+    # don't use the '--staged' argument for the git diff calls.
+    [[ "${FUNCNAME[1]}" == 'unstaged' ]] && MODE=()
+
+    while read -r del; do
+        removed+=("$del")
+    done < <(git -P diff "${MODE[@]}" --name-only --diff-filter=D)
+
     delta < <(
         # In Git versions before 2.20.1 (from Dec. 15, 2018) this needs to be color.status
         # Also why the hell are you running such an ancient git version?
         git -c color.ui=always status "$@"
-        git -P diff --staged --shortstat "$@"
-        git -P diff --staged --ignore-space-change "$@"
+        git -P diff "${MODE[@]}" --shortstat "$@"
+        (( ${#removed[@]} )) && {
+            echo
+            printf ' \e[31mdeleted:\t%s\e[m\n' "${removed[@]}"
+        }
+        git -P diff "${MODE[@]}" --diff-filter=d --ignore-space-change "$@"
     )
 }
 
 # same as above but for unstaged changes
 unstaged() {
-    delta < <(
-        git -c color.ui=always status -u "$@"
-        git -P diff --shortstat "$@"
-        git -P diff --ignore-space-change "$@"
-    )
+    staged "$@"
 }
 
 # Show the <n> (20 by default) most edited files
