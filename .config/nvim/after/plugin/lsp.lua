@@ -12,8 +12,8 @@ vim.api.nvim_create_autocmd('VimEnter', {
       },
       root_markers = { '.git' },
     })
-
-    vim.lsp.enable(require('config.mason'))
+    local lsps = require('config.mason')
+    vim.lsp.enable(lsps)
   end,
 })
 
