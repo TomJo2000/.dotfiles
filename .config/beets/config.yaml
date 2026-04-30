@@ -1,0 +1,90 @@
+library: ~/.config/beets/musiclibrary.db # beets metadata locatation.
+directory: ~/Music/                      # Music collection directory.
+
+include:
+    - secrets.yaml # API keys, usernames and other private values.
+
+# format_item: "\x1b[32m$artist\x1b[m - \x1b[34m$title \x1b[m(\x1b[33m$album\x1b[m)"
+# format_album: "\x1b[32m$albumartist\x1b[m - \x1b[34m$album\x1b[m"
+
+paths:
+    default: "%the{$albumartist}/$album/$title"
+    # When importing individual songs just dump them in the top level of the collection.
+    singleton: "%the{$albumartist}/$album/$title"
+
+import:
+    copy: true                   # copy don't move
+    quiet_fallback: asis         # ask for input when there's no strong match during automatic imports.
+    incremental: true            # support stopping and resuming imports.
+    incremental_skip_later: true # retry skipped files again in future imports.
+    resume: ask
+    languages: en
+    log: ~/.config/beets/import.log
+
+match:
+    preferred:
+        countries: ['US', 'GB|UK', 'CA', 'AU|NZ', 'DE']
+        media: ['CD', 'Digital Media|File']
+        original_year: true
+
+original_date: true
+
+replace:
+    ### Standardize whitespace ###
+    '\s+': ' '                 # Collapse whitespace
+    '^\s+': ''                 # Trim leading whitespace
+    '\s+$': ''                 # Trim trailing whitespace
+    ### Special characters     ###
+    '^[\-\.]': ''              # Leading '-' or '.'
+    '[\x00-\x1f]': ''          # ASCII C1 control chars
+    '[<:>\?\*\|\\/]': ''       # '<', ':', '>', '?', '*', '|', '\', '/'
+    ### ASCII conversions      ###
+    '…': '...'                 # Elipsis -> '...'
+    '[–—]': '-'                # Em-/en-dash -> '-'
+    '[‹›❮❯‘’‛‚❛❜❟＇]': "'"     # Unicode single quotes -> '
+    '[«»‟“”❝❞〝〞〟„⹂＂]': '"' # Unicode double quotes -> "
+    ### Extraneous qualifiers  ###
+    '[\(\[\-] ?\d{4}? -? ?Remaster[\)\]]?': '' # YEAR - Remaster
+    '[\(\[\-] ?Remaster(?:ed)?[\)\]]?': ''     # Remaster(ed)
+    '[\(\[\-] ?Deluxe(?: Edition)?[\)\]]?': '' # Deluxe Edition
+    '[\(\[\-] ?(?:Mono|Stereo)[\)\]]?': ''     # Mono|Stereo
+    '[\(\[\-] ?Live(?: at .*)?[\)\]]?': ''     # Live( at)
+    'from ".*"': ''                            # from ".*" -- Soundtracks
+
+
+ui:
+    # If the expected and observed length are off by more than 5 seconds note that.
+    length_diff_thresh: 5
+    colors:
+        action: ['cyan']
+        action_default: ['bold', 'cyan']
+        text_highlight_minor: ['blue']
+
+plugins:
+    - chroma
+    - convert
+    - discogs
+    - info
+    # - inline
+    - musicbrainz
+    - permissions
+    - replace
+    - spotify
+    - the
+    - web
+
+permissions:
+    file: 640
+    dir: 750
+
+convert:
+    no_convert: "format:FLAC" #, format:...
+    never_convert_lossy_files: true
+    format: opus
+    write_metadata: true
+
+discogs:
+    featured_string: ft.
+
+chroma:
+    auto: true

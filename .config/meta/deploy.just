@@ -115,6 +115,7 @@ target_kde: (has 'plasmashell')
 target_misc:
     #!/usr/bin/env cat
     just has 'alacritty'                && { FILES+=('.config/alacritty/alacritty.toml') HOOKS[fonts]=''; }
+    just has 'beet'                     && { FILES+=('.config/beets/config.yaml'); } # HOOKS[beets]=''; }
     just has 'btop'                     && FILES+=('.config/btop/themes/termstream.theme')
     just has 'cava'                     && FILES+=('.config/cava/config')
     just has 'fastfetch'                && FILES+=('.config/fastfetch/config.jsonc')
