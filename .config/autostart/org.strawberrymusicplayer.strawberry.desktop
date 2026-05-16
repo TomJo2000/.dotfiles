@@ -1,0 +1,35 @@
+[Desktop Entry]
+Actions=Play-Pause;Stop;StopAfterCurrent;Previous;Next;
+Categories=AudioVideo;Player;Qt;Audio;
+Comment=Plays music
+Exec=strawberry %U
+GenericName=Strawberry Music Player
+Icon=strawberry
+Keywords=Audio;Player;Clementine;
+MimeType=x-content/audio-player;application/ogg;application/x-ogg;application/x-ogm-audio;audio/flac;audio/ogg;audio/vorbis;audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/vnd.rn-realaudio;audio/x-flac;audio/x-oggflac;audio/x-vorbis;audio/x-vorbis+ogg;audio/x-speex;audio/x-wav;audio/x-wavpack;audio/x-ape;audio/x-mp3;audio/x-mpeg;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-pn-realaudio;audio/x-scpls;video/x-ms-asf;x-scheme-handler/tidal;
+Name=Strawberry
+StartupWMClass=strawberry
+Terminal=false
+TryExec=strawberry
+Type=Application
+Version=1.0
+
+[Desktop Action Next]
+Exec=strawberry --next
+Name=Next
+
+[Desktop Action Play-Pause]
+Exec=strawberry --play-pause
+Name=Play/Pause
+
+[Desktop Action Previous]
+Exec=strawberry --previous
+Name=Previous
+
+[Desktop Action Stop]
+Exec=strawberry --stop
+Name=Stop
+
+[Desktop Action StopAfterCurrent]
+Exec=strawberry --stop-after-current
+Name=Stop after this track

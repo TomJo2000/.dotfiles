@@ -126,7 +126,7 @@ target_misc:
     just has 'nheko' 'keepassxc'        && { FILES+=('.config/autostart/nheko.desktop') HOOKS[fonts]=''; } # Needs DBus Secret provider
     just has 'paru'                     && FILES+=('.config/paru/paru.conf')
     just has 'qdirstat'                 && FILES+=('.config/QDirStat/')
-    just has 'spotify'                  && FILES+=('.config/autostart/spotify.desktop')
+    just has 'strawberry'               && FILES+=('.config/autostart/org.strawberrymusicplayer.strawberry.desktop')
     just has 'thunderbird'              && FILES+=('.config/autostart/org.mozilla.Thunderbird.desktop')
     just has 'tmux'                     && { FILES+=('.config/tmux/tmux.conf') HOOKS[tmux]=''; }
     just has 'vorta' 'borg'             && FILES+=('.config/autostart/vorta.desktop')
