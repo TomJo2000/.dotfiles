@@ -1,26 +1,33 @@
-<!-- Title: Testing a PR, Last updated: 2026-03-10 -->
+<!-- Title: Testing a PR, Last updated: 2026-07-11 -->
 <!-- SPDX: CC0 (ↄ) 2026, Joshua "TomIO" Kahn -->
 <sup>(This is a pre-written, saved reply.)</sup>
 If you want to test this PR please download the appropriate DEB package(s)
-from the build artifacts of the [associated PR's latest CI run](https://github.com/termux/termux-packages/actions/runs/22800899053?pr=28840).
+from the build artifacts of the [associated PR's latest CI run](./30528/checks) <!-- Enter PR number manually here -->
+in the Checks tab of the PR.
 
-<img width="1029" height="1665" alt="image" src="https://github.com/user-attachments/assets/2d9c9820-b089-489e-9c45-9c65e036ef61" />
+GitHub documentation for downloading workflow artifacts.
+*https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts?tool=webui*
 
 After downloading the build artifact, make sure to `unzip` and un-`tar` it.
+You can then install the package(s) via `pkg i path/to/pkgname.deb`.
+
 <details><summary>Detailed instructions, if needed.</summary>
 <p>
 
 ```bash
-# finding out what architecture you need
-# architecture is just below the TERMUX_VERSION
+# To find out what architecture you need you can
+# use the `termux-info` script provided by Termux.
+#
+# architecture is just above your list of repositories
 termux-info
 
 # e.g.
 # [...]
-# TERMUX__UID=10228
-# TERMUX__USER_ID=0
 # Packages CPU architecture:
 # aarch64
+# Subscribed repositories:
+# # sources.list
+# deb https://packages-cf.termux.dev/apt/termux-main stable main
 # [...]
 
 # =======================
