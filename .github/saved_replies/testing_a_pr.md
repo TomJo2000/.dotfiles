@@ -1,9 +1,8 @@
-<!-- Title: Testing a PR, Last updated: 2026-07-11 -->
+<!-- Title: Testing a PR, Last updated: 2026-10-08 -->
 <!-- SPDX: CC0 (ↄ) 2026, Joshua "TomIO" Kahn -->
 <sup>(This is a pre-written, saved reply.)</sup>
 If you want to test this PR please download the appropriate DEB package(s)
-from the build artifacts of the [associated PR's latest CI run](./30528/checks) <!-- Enter PR number manually here -->
-in the Checks tab of the PR.
+build artifacts of the `Packages` workflow from the [associated PR's latest CI run](./32407/checks)<!-- Enter PR number manually here --> in the Checks tab of the PR.
 
 GitHub documentation for downloading workflow artifacts.
 *https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts?tool=webui*
